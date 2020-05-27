@@ -1,0 +1,12 @@
+// index.scss
+// Index stylesheet. Imports all other stylesheets.
+
+// Global styles
+@import 'global.scss';
+@import "{}/node_modules/bootstrap/scss/bootstrap.scss";
+
+// Component styles
+@import 'Nav';
+@import 'AccountsUI';
+
+

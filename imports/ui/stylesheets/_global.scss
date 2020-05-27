@@ -1,0 +1,31 @@
+// _global.scss
+// Global stylesheet
+
+//$primary: #00a6a3 !default;
+$primary: #2176BB;
+$info: #2AAAE1;
+$brand-primary: $primary;
+$brand-info: $info;
+$link-color:  $primary;
+$link-active-color: $info;
+$link-hover-color:   $link-active-color;
+$link-hover-decoration: none;
+$navbar-default-link-color: $link-color;
+$navbar-default-link-active-color: $link-active-color;
+$navbar-default-link-hover-color: $link-active-color;
+$tooltip-bg: $link-active-color;
+
+body {
+  position: relative;
+}
+
+p {
+  font-size:medium;
+}
+
+.disabled{
+  color:gray;
+  pointer-events: none;
+}
+
+

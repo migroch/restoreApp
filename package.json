@@ -1,0 +1,31 @@
+{
+  "name": "restoreApp",
+  "private": true,
+  "scripts": {
+    "start": "meteor run",
+    "test": "meteor test --once --driver-package meteortesting:mocha",
+    "test-app": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
+    "visualize": "meteor --production --extra-packages bundle-visualizer"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.8.4",
+    "babel-runtime": "^6.26.0",
+    "bcrypt": "^3.0.7",
+    "bootstrap": "^4.4.1",
+    "jquery": "^3.5.0",
+    "meteor-node-stubs": "^1.0.0",
+    "popper.js": "^1.16.1",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-scrollspy": "^3.4.2",
+    "styled-components": "^4.4.1",
+    "styled-icons": "^9.3.0"
+  },
+  "meteor": {
+    "mainModule": {
+      "client": "client/main.jsx",
+      "server": "server/main.js"
+    },
+    "testModule": "tests/main.js"
+  }
+}

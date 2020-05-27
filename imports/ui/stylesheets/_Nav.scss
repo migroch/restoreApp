@@ -1,0 +1,32 @@
+// _Nav.scss
+// Nav component stylesheet
+
+.tab-vizItems{
+  display: none !important;
+}
+
+.dropdown-item{
+  color: $link-color !important;
+  padding-left: 1em !important; 
+  padding-right: 1em !important;
+  background-color: transparent !important;
+  &:hover{
+    color: $link-hover-color !important;
+  }
+}
+
+.dropdown-item.active{
+  color: $link-active-color !important;
+  background-color: transparent !important;
+}
+
+.navbar-light .navbar-nav .nav-link{
+  color: $link-color !important;
+  &:hover{
+    color: $link-hover-color !important;
+  }
+}
+
+.navbar-light .navbar-nav .nav-link.active{
+   color: $link-active-color !important;
+}

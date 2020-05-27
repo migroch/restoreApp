@@ -1,0 +1,21 @@
+//AccountsUI.scss
+//AccountsUI component stylesheet
+
+.at-form{
+  margin-top:0;
+  padding-top:0;
+}
+
+#at-btn{
+  @extend .btn;
+  @extend .btn-primary;
+}
+
+.at-title{
+  display: none;
+}
+
+.accounts-dialog .login-button{
+  @extend .btn;
+  @extend .btn-primary;
+}
