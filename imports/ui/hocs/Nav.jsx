@@ -10,8 +10,9 @@ import {LogIn} from 'styled-icons/feather/LogIn';
 import {LogOut} from 'styled-icons/feather/LogOut';
 import {User} from 'styled-icons/feather/User';
 import {Menu} from 'styled-icons/material/Menu';
-
 import AccountsUIWrapper from './AccountsUI.jsx';
+import { Link, withRouter } from 'react-router-dom';
+
 
 const styles = {
   logoStyle:{
@@ -46,7 +47,7 @@ class Nav extends Component {
   
   render() {
     const { user, loading, menuitemsExists, menuitems } = this.props;
-    
+    const { history: { location: { pathname }} } = this.props
     if(loading){
       return(
 	<div className="d-flex justify-content-center text-primary">
@@ -58,7 +59,7 @@ class Nav extends Component {
     }else{
       
       const signIO = this.signIOButton(user) ;
-      const menuItems = this.makeMenu(menuitems);
+      const menuItems = this.makeMenu(menuitems, pathname);
       
       return (
 	<div>
@@ -101,21 +102,22 @@ class Nav extends Component {
     }
   }
 
-  makeMenu(menuitems){
+  makeMenu(menuitems, pathname){
     return(
       menuitems.map( (item, index) =>{
-	let active = (index == 0) ? 'active' : ''
+	let active = (item.route == pathname) ? 'active' : ''
 	let invisible = (index == 0) ? '' : 'invisible'
-	let Link
+	let CustomLink
 	if(item.externalLink){
-	  Link = (<a href={item.externalLink} id={item.key+'Link'} className={"nav-link "} target="_blank">{item.title}</a>)
+	  CustomLink = (<a href={item.externalLink} id={item.key+'Link'} className={"nav-link "} target="_blank">{item.title}</a>)
 	}
 	else {
-	  Link = (<a href={"#"+item.key} id={item.key+'Link'} className={"nav-link "+active}  onClick={this.handleLinkClick}>{item.title}</a>)
+    // Link = (<a href={"#"+item.key} id={item.key+'Link'} className={"nav-link "+active}  onClick={this.handleLinkClick}>{item.title}</a>)
+    CustomLink = (<Link to={item.route} id={item.key+'Link'} className={"nav-link "+active}>{item.title}</Link>)
 	}
 	return(
 	  <li key={index} className="nav-item">
-	    {Link}
+	    {CustomLink}
 	    <div id={item.key+"SubMenu"} className={"submenu d-none d-lg-inline-flex bg-transparent "+invisible} style={styles.subMenus}>
 	    </div>
 	  </li>
@@ -242,7 +244,7 @@ class Nav extends Component {
   
 }
 
-export default Nav = withTracker(() => {
+Nav = withTracker(() => {
   const user = Meteor.user();
   const menuitemsHandle = Meteor.subscribe('menuitems');
   const loading = !menuitemsHandle.ready();
@@ -255,5 +257,6 @@ export default Nav = withTracker(() => {
     menuitems: menuitemsExists ? menuitems_fetch : {}
   };
 })(Nav);
+export default withRouter(Nav)
 
 
