@@ -1,179 +1,152 @@
-import React from 'react';
-import { Select } from 'antd';
-import './index.scss'
-const { Option } = Select;
-const categories = [
+import React, { useState } from 'react';
+import Dimension from '../../reusable/Dimension';
+import SelectWrapper from '../../reusable/SelectWrapper';
+import './index.scss';
+
+const planItems_data = [
   {
     id: 1,
-    name: "category_1"
+    subcategories: [3,4],
+    users: [1, 2],
+    item: 1,
+    dimensions: {
+      Communication: true,
+      Data_Technology: false,
+      Pd_Training: true,
+      Human_Resource: true,
+      Policy_Governanace: false,
+      Finances_Resources: false
+    }
   },
   {
     id: 2,
-    name: "category_2"
+    subcategories: [3,4],
+    users: [1, 2],
+    item: 1,
+    dimensions: {
+      Communication: true,
+      Data_Technology: false,
+      Pd_Training: true,
+      Human_Resource: true,
+      Policy_Governanace: false,
+      Finances_Resources: false
+    }
   },
   {
     id: 3,
-    name: "category_3"
-  },
-  {
-    id: 4,
-    name: "category_4"
+    subcategories: [3,4],
+    users: [1, 2],
+    item: 1,
+    dimensions: {
+      Communication: true,
+      Data_Technology: false,
+      Pd_Training: true,
+      Human_Resource: true,
+      Policy_Governanace: false,
+      Finances_Resources: false
+    }
   }
 ]
-const plans = [
+const plans_data = [
   {
     id: 1,
     title: "plan_1",
     scenario: "High Restriction",
+    schools: [1, 2, 3],
+    districts: [1, 2, 3],
     planitems: [
-      1,2,3 //planitems id
+      1,2,0 //planitems id
     ]
   },
   {
     id: 2,
     title: "plan_2",
     scenario: "Medium Restriction",
-    planitems: [
-      1,2,3 //planitems id
+    schools: [1, 2, 3],
+    districts: [1, 2, 3],
+    planitems: [    
+      1,2,0 //planitems id
     ]
   },
   {
     id: 3,
     title: "plan_3",
     scenario: "Low Restriction",
+    schools: [1, 2, 3],
+    districts: [1, 2, 3],
     planitems: [
-      1,2,3 //planitems id
+      1,2,0 //planitems id
     ]
   }
 
 ]
-onChangeCategory = (value) => {
-  console.log(`selected ${value}`);
-}
 
-const SelectWrapper = () => {
+const Tags = (data) => data.map(item => <div className="custom-tag" key={item+"tag"}>{item}</div>)
+
+const Plan = ({data}) => {
+
+  const [isDetailVisible, setIsDetailVisible] = useState(false)
+  const { title, scenario, schools, districts, planitems } = data
+  const colors = {
+    "High Restriction": "red",
+    "Medium Restriction": "yellow",
+    "Low Restriction": "green"
+  }
+  const plan_color = colors[scenario]
   return (
-    <div className="select-wrapper">
-      <Select
-        showSearch
-        style={{ width: 150 }}
-        placeholder="Categories"
-        optionFilterProp="children"
-        onChange={onChangeCategory}
-        filterOption={(input, option) =>
-          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-        }
-      >
+    <div className="plan-wrapper" style={{backgroundColor: plan_color}}>         
+      <div className="header">
+        <div className="right">
+          <img src="icons/edit.png" />
+          <img src="icons/copy.png" />
+          <img src="icons/more.png" onClick={()=>setIsDetailVisible(!isDetailVisible)}/>
+        </div>        
+        <div className="title">{ title }</div>
+      </div>
+      <div className="content">
+        <div>Applies To:</div>
+        <div className="label_1">
+          Districts: 
+          <div className="tags-wrapper">
+            {Tags(districts)}
+          </div>
+
+        </div>
+        <div className="label_1">
+          Schools
+          <div className="tags-wrapper">
+            {Tags(schools)}
+          </div>
+        </div>
+      </div>
+      <div className="content-detail" style={{display: isDetailVisible ? "block" : "none"}}>
         {
-          categories.map(item=>(
-            <Option value={item.id}>{item.name}</Option>
+          planitems.map(item=>(
+            <div className="plan-item">
+              <div className="label_1">
+                Categories/SubCategories
+                <div className="tags-wrapper">
+                  {Tags(planItems_data[item].subcategories)}
+                </div>
+              </div>  
+              <Dimension value={planItems_data[item].dimensions} onChange={(checkedValues)=>console.log('checked = ', checkedValues)} disabled/>   
+            </div>
           ))
         }
-      </Select>
-      <Select
-        showSearch
-        style={{ width: 150 }}
-        placeholder="Subcategories"
-        optionFilterProp="children"
-        onChange={onChangeCategory}
-        filterOption={(input, option) =>
-          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-        }
-      >
-        {
-          categories.map(item=>(
-            <Option value={item.id}>{item.name}</Option>
-          ))
-        }
-      </Select>
-      <Select
-        showSearch
-        style={{ width: 150 }}
-        placeholder="Dimensions"
-        optionFilterProp="children"
-        onChange={onChangeCategory}
-        filterOption={(input, option) =>
-          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-        }
-      >
-        {
-          categories.map(item=>(
-            <Option value={item.id}>{item.name}</Option>
-          ))
-        }
-      </Select>
-      <Select
-        showSearch
-        style={{ width: 150 }}
-        placeholder="Senarios"
-        optionFilterProp="children"
-        onChange={onChangeCategory}
-        filterOption={(input, option) =>
-          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-        }
-      >
-        {
-          categories.map(item=>(
-            <Option value={item.id}>{item.name}</Option>
-          ))
-        }
-      </Select>
-      <Select
-        showSearch
-        style={{ width: 150 }}
-        placeholder="Countries"
-        optionFilterProp="children"
-        onChange={onChangeCategory}
-        filterOption={(input, option) =>
-          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-        }
-      >
-        {
-          categories.map(item=>(
-            <Option value={item.id}>{item.name}</Option>
-          ))
-        }
-      </Select>
-      <Select
-        showSearch
-        style={{ width: 150 }}
-        placeholder="Districts"
-        optionFilterProp="children"
-        onChange={onChangeCategory}
-        filterOption={(input, option) =>
-          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-        }
-      >
-        {
-          categories.map(item=>(
-            <Option value={item.id}>{item.name}</Option>
-          ))
-        }
-      </Select>         
-      <Select
-        showSearch
-        style={{ width: 150 }}
-        placeholder="Schools"
-        optionFilterProp="children"
-        onChange={onChangeCategory}
-        filterOption={(input, option) =>
-          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-        }
-      >
-        {
-          categories.map(item=>(
-            <Option value={item.id}>{item.name}</Option>
-          ))
-        }
-      </Select>                        
+      </div>
     </div>
   )
 }
-
 const PlanView = () => {
   return (
     <div className="plan-view">
-      <SelectWrapper />
+      <SelectWrapper />    
+      <div className="plans-wrapper">
+        {
+          plans_data.map((plan, index)=><Plan  data={plan} key={"plan"+index}/>)
+        }
+      </div>
+      
     </div>
   )
 }
