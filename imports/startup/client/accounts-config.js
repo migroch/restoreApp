@@ -1,7 +1,6 @@
 //accounts-config.js
 // User accounts configuration
 
-
 var mySubmitFunc = (error, state)=>{
     if (!error) {
 	if (state === "signIn") {
@@ -20,6 +19,12 @@ var myLogoutFunc = ()=>{
      console.log('User signed out');
 };
 
+AccountsTemplates.addField({
+    _id: 'name',
+    type: 'text',
+    displayName: "Name",
+    required: true
+});
 
 AccountsTemplates.configure({
     // Behavior
@@ -70,7 +75,7 @@ AccountsTemplates.configure({
             signUp: "Register!"
 	},
 	socialIcons: {
-            //google: 'SCCOE_Logo_Color.svg'
+            //google: 'google_icon.svg'
         },
 	//socialSignUp: "Register",
 	title: {
@@ -79,14 +84,6 @@ AccountsTemplates.configure({
 	
     },
 });
-
-AccountsTemplates.addField({
-    _id: 'name',
-    type: 'text',
-    displayName: "Name",
-    required: true
-});
-
 
 Accounts.onEmailVerificationLink(function(token,done){
     Accounts.verifyEmail(token, function (error) {

@@ -3,18 +3,16 @@
 
 export default  roles_data =  {
     'Admin':{
-	emails:[ 'data@santacruzcoe.org' ],
+	emails:[
+	    'data@santacruzcoe.org',
+	    'mrocha@santacruzcoe.org',
+	    'jborgen@santacruzcoe.org',
+	    'fsabbah@santacruzcoe.org',
+	    'vlad.yakymenko1@gmail.com'],
 	domains: []
     },
     'All':{
 	emails:[
-	    'mrocha@santacruzcoe.org',
-	    'jborgen@santacruzcoe.org',
-	    'fsabbah@santacruzcoe.org', 
-	    'robdarrow@robdarrow.us',
-	    'ssorensen@santacruzcoe.org',
-	    'jmcrae@santacruzcoe.org',
-	    'dbodenheimer@santacruzcoe.org',
 	    'cchopra@santacruzcoe.org'],
 	domains: []
     },
