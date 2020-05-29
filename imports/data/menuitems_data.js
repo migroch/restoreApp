@@ -1,5 +1,5 @@
 // menuitems_data.js
-// Initial menu items data
+// Initial menu items 
 
 export default menuitems_data = [
 	{

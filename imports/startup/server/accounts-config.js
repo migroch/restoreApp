@@ -86,7 +86,7 @@ AccountsTemplates.configure({
             signUp: "Register!"
 	},
 	socialIcons: {
-            //google: 'SCCOE_Logo_Color.svg'
+            //google: 'google_icon.svg'
         },
 	//socialSignUp: "Register",
 	title: {
