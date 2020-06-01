@@ -40,13 +40,14 @@ Schemas.plans = new SimpleSchema({
 Schemas.planitems = new SimpleSchema({
     // we can get categories from subcategories, categories may be removed in the future
     unitIds: [SimpleSchema.oneOf(String, SimpleSchema.Integer)],
-    ownerId:SimpleSchema.oneOf(String, SimpleSchema.Integer),
-    assignedToIds:  [SimpleSchema.oneOf(String, SimpleSchema.Integer)],
-    dueDate: Date,
+    ownerId: SimpleSchema.oneOf(String, SimpleSchema.Integer),
+    assignedToIds:  { type: Array, optional: true},
+    'assignedToIds.$': SimpleSchema.oneOf(String, SimpleSchema.Integer),
+    dueDate: {type:Date, optional: true},
     dimension: Schemas.dimension,
     item: Object,
     'item.text': String,
-    'item.html': {type: String, optional: true}
+    'item.delta': {type: Object, optional: true}   // A Quill Delta Object https://quilljs.com/docs/delta/
 });
 
 // Guidance Items
@@ -58,7 +59,7 @@ Schemas.guidanceitems = new SimpleSchema({
     type: Schemas.guidancetype,
     item: Object,
     'item.text': String,
-    'item.html': {type: String, optional: true}
+    'item.delta': {type: Object, optional: true}   // A Quill Delta Object https://quilljs.com/docs/delta/
 });
 
 // Categories
