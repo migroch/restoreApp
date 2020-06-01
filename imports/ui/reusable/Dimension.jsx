@@ -21,7 +21,6 @@ const Dimension = ({disabled, value, onChange}) => {
   Object.keys(value).forEach(function (item) {
     if (value[item]) defaultValue.push(item)
   });
-  console.log("ssss", defaultValue)
   return (
     <>
       <Checkbox.Group

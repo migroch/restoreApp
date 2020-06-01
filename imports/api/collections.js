@@ -28,4 +28,12 @@ let menuitems = new Mongo.Collection('menuitems');
 menuitems.schema = Schemas.menuitems;
 menuitems.attachSchema(Schemas.menuitems);
 
+// if (Meteor.isServer) {
+//   // This code only runs on the server
+//   // Only publish tasks that are public or belong to the current user
+//   Meteor.publish('plans', function plansPublication() {
+//     return plans.find({});
+//   })
+// }
+
 export { plans, planitems, guidanceitems, categories, subcategories, menuitems};

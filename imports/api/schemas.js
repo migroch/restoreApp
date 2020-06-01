@@ -32,7 +32,7 @@ Schemas.guidancetype = new SimpleSchema({
 // Plans
 Schemas.plans = new SimpleSchema({
     title: String,
-    scenario: Schemas.scenario,
+    scenario:  {type: String, allowedValues:['High Restrictions', 'Medium Restrictions', 'Low Restrictions']},
     planItems: [SimpleSchema.oneOf(String, SimpleSchema.Integer)]
 });
 
@@ -42,7 +42,10 @@ Schemas.planitems = new SimpleSchema({
     categories: [SimpleSchema.oneOf(String, SimpleSchema.Integer)], 
     subcategories: [SimpleSchema.oneOf(String, SimpleSchema.Integer)],
     owner:SimpleSchema.oneOf(String, SimpleSchema.Integer),
-    dimension: Schemas.dimension,
+    dimension: {
+                    type: String,
+                    allowedValues:['Communication', 'Data/Technology', 'PD/Training', 'Human Resources', 'Policy/Governance', 'Finances/Resources'  ]
+                },
     item: Object,
     'item.text': String,
     'item.html': {type: String, optional: true}

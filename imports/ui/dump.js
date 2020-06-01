@@ -1,3 +1,4 @@
+  // import { uniq } from 'lodash'
   // let plan_schools, plan_countries, plan_districts
   // planItems.foreach(item => {
   //   const { dimenions, users, subcategories } = planItems
@@ -11,4 +12,4 @@
   
   // plan_schools = uniq(plan_schools)
   // plan_countries = uniq(plan_countries) 
-  // plan_districts = uniq(plan_districts)
+  // plan_districts = uniq(plan_districts)ok

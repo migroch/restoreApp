@@ -50,11 +50,11 @@ class Nav extends Component {
     const { history: { location: { pathname }} } = this.props
     if(loading){
       return(
-	<div className="d-flex justify-content-center text-primary">
-	  <div className="spinner-border" role="status">
-	    <span className="sr-only">Loading...</span>
-	  </div>
-	</div>
+        <div className="d-flex justify-content-center text-primary">
+          <div className="spinner-border" role="status">
+            <span className="sr-only">Loading...</span>
+          </div>
+        </div>
       )
     }else{
       
