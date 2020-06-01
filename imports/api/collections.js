@@ -24,8 +24,14 @@ let subcategories = new Mongo.Collection('subcategories');
 subcategories.schema = Schemas.subcategories;
 subcategories.attachSchema(Schemas.subcategories);
 
+let units = new Mongo.Collection('units');
+units.schema = Schemas.units;
+units.attachSchema(Schemas.units);
+
 let menuitems = new Mongo.Collection('menuitems');
 menuitems.schema = Schemas.menuitems;
 menuitems.attachSchema(Schemas.menuitems);
 
-export { plans, planitems, guidanceitems, categories, subcategories, menuitems};
+
+
+export { plans, planitems, guidanceitems, categories, subcategories, units, menuitems};

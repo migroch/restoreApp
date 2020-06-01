@@ -17,7 +17,7 @@ Schemas.scenario = new SimpleSchema({
 Schemas.dimension = new SimpleSchema({
     dimension:{
 	type: String,
-	allowedValues:['Communication', 'Data/Technology', 'PD/Training', 'Human Resources', 'Policy/Governance', 'Finances/Resources'  ]
+	allowedValues:['Communication', 'Data/Technology', 'Professional Development', 'HR/Bargaining Units', 'Policy/Governance/Liability', 'Finances/Resources'  ]
     }
 });
 
@@ -33,15 +33,16 @@ Schemas.guidancetype = new SimpleSchema({
 Schemas.plans = new SimpleSchema({
     title: String,
     scenario: Schemas.scenario,
-    planItems: [SimpleSchema.oneOf(String, SimpleSchema.Integer)]
+    planItemIds: [SimpleSchema.oneOf(String, SimpleSchema.Integer)]
 });
 
 // Plan Items
 Schemas.planitems = new SimpleSchema({
     // we can get categories from subcategories, categories may be removed in the future
-    categories: [SimpleSchema.oneOf(String, SimpleSchema.Integer)], 
-    subcategories: [SimpleSchema.oneOf(String, SimpleSchema.Integer)],
-    owner:SimpleSchema.oneOf(String, SimpleSchema.Integer),
+    unitIds: [SimpleSchema.oneOf(String, SimpleSchema.Integer)],
+    ownerId:SimpleSchema.oneOf(String, SimpleSchema.Integer),
+    assignedToIds:  [SimpleSchema.oneOf(String, SimpleSchema.Integer)],
+    dueDate: Date,
     dimension: Schemas.dimension,
     item: Object,
     'item.text': String,
@@ -50,9 +51,8 @@ Schemas.planitems = new SimpleSchema({
 
 // Guidance Items
 Schemas.guidanceitems = new SimpleSchema({
-    subcategories: [SimpleSchema.oneOf(String, SimpleSchema.Integer)],
-    scenarios:[Schemas.scenario],
-    dimensions:Schemas.dimension,
+    unitIds: [SimpleSchema.oneOf(String, SimpleSchema.Integer)],
+    dimension:[Schemas.dimension],
     source: String,
     location_in_source: String,
     type: Schemas.guidancetype,
@@ -68,9 +68,14 @@ Schemas.categories = new SimpleSchema({
 
 // Subcategories
 Schemas.subcategories = new SimpleSchema({
-    parent_category: String,
+    categoryId: SimpleSchema.oneOf(String, SimpleSchema.Integer),
     name: String,
-    group: {type:String, optional:true}
+});
+
+// Units
+Schemas.units = new SimpleSchema({
+    subcategoryId: SimpleSchema.oneOf(String, SimpleSchema.Integer),
+    name: String,
 });
 
 // Menu Items
