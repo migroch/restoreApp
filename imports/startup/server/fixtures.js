@@ -9,6 +9,7 @@ import dummyusers_data from  '../../data/dummyusers_data.js';
 import roles_data from '../../data/roles_data.js';
 import menuitems_data from '../../data/menuitems_data.js';
 import sampleplanitems_data from '../../data/sampleplanitems_data.js';
+import guidance_data from '../../data/guidance_data.js';
 import {categories_data, subcategories_data, units_data} from '../../data/initialmap_data.js';
 
 // Insert data into colllections
