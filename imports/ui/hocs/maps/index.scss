@@ -1,0 +1,38 @@
+svg {
+  .node {
+    cursor: pointer;
+  }
+  path.link {
+    fill: none;
+    stroke: #2593B8 !important;
+    stroke-width: 10px;
+  }
+  path.black {
+    fill: none;
+    stroke: black !important;
+    stroke-width: 10px;
+    /* transform: scale(-1, 1); */
+  }
+  .node circle {
+    stroke: #2593B8;
+    stroke-width: 0px;
+    fill: white;
+  }
+  span {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #F4F4F4;
+    text-shadow: 0 1px 4px black;
+    float: right;
+  }
+  
+  .node text {
+    font-size: 11px;
+    fill: black;
+    margin-top: 30px;
+  }
+  .custom_left .node text {
+   transform: scale(-1, 1);
+  }
+}
+
+
