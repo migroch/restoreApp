@@ -23,7 +23,8 @@
     "react-scrollspy": "^3.4.2",
     "simpl-schema": "^1.7.3",
     "styled-components": "^4.4.1",
-    "styled-icons": "^9.3.0"
+    "styled-icons": "^9.3.0",
+    "x2js": "^3.4.0"
   },
   "meteor": {
     "mainModule": {

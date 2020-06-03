@@ -2,8 +2,7 @@
 // Publish mongo collections
 
 import { Meteor } from 'meteor/meteor';
-import { check, Match } from 'meteor/check';
-import { plans, planitems, guidanceitems, categories, subcategories, menuitems} from '../../api/collections.js';
+import { plans, planitems, guidanceitems, categories, subcategories, units, menuitems} from '../../api/collections.js';
 
 // User custom top level fields
 Meteor.publish(null, function(){
@@ -45,10 +44,17 @@ Meteor.publish("categories", function(){
 
 // Subcategories
 Meteor.publish("subcategories", function(){
-    return menuitems.find({});
+    return subcategories.find({});
+});
+
+// Units
+Meteor.publish("units", function(){
+    return units.find({});
 });
 
 // Menu Items
 Meteor.publish("menuitems", function(){
     return menuitems.find({});
 });
+
+

@@ -18,3 +18,6 @@ import './methods.js';
 
 // User setup
 import './user-setup.js';
+
+// Add grapher collection links
+import './add-collection-links.js';
