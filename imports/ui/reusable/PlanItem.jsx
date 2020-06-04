@@ -11,7 +11,8 @@ function handleChange(value) {
 }
 const dimensions = ['Communication', 'Data/Technology', 'PD/Training', 'Human Resources', 'Policy/Governance', 'Finances/Resources']
 
-PlanItem = ({data, disabled}) => {
+PlanItem = ({data, disabled, isLoading}) => {
+  if (isLoading) return null
   const { subcategories, item, dimension } = data
   return (
     <div className="plan-item">
@@ -31,8 +32,19 @@ PlanItem = ({data, disabled}) => {
   )
 }
 export default withTracker(({id}) => {
+  const handles = [
+    Meteor.subscribe('planitems'),
+  ];
+  const isLoading = handles.some(handle => !handle.ready());
+  if(isLoading){
+    return {
+      data: null,
+      isLoading: true
+    };
+  }
   return {
-    data: planitems.findOne(id)
+    data: planitems.findOne(id),
+    isLoading: false
   };
 })(PlanItem);
 

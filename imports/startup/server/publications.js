@@ -56,5 +56,3 @@ Meteor.publish("units", function(){
 Meteor.publish("menuitems", function(){
     return menuitems.find({});
 });
-
-

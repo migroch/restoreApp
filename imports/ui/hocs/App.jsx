@@ -13,7 +13,7 @@ const App = () => (
     <div className="app-body">
       <Switch>
         <Route exact path="/map" component={Map}/>
-        <Route exact path="/plan-editor" component={PlanEditor}/>
+        <Route path="/plan-editor/:id" component={PlanEditor}/>
         <Route exact path="/plan-viewer" component={PlanView}/>
         <Redirect to="/map" from="/"/>
       </Switch>
