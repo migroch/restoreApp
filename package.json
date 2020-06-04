@@ -21,9 +21,11 @@
     "react-dom": "^16.9.0",
     "react-router-dom": "^5.2.0",
     "react-scrollspy": "^3.4.2",
+    "react-tree-graph": "^4.1.0",
     "simpl-schema": "^1.7.3",
     "styled-components": "^4.4.1",
-    "styled-icons": "^9.3.0"
+    "styled-icons": "^9.3.0",
+    "x2js": "^3.4.0"
   },
   "meteor": {
     "mainModule": {

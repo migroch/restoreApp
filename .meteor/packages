@@ -30,3 +30,5 @@ service-configuration
 aldeed:collection2@3.0.0
 accounts-base
 random
+cultofcoders:grapher
+dburles:collection-helpers

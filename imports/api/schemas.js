@@ -17,7 +17,7 @@ Schemas.scenario = new SimpleSchema({
 Schemas.dimension = new SimpleSchema({
     dimension:{
 	type: String,
-	allowedValues:['Communication', 'Data/Technology', 'PD/Training', 'Human Resources', 'Policy/Governance', 'Finances/Resources'  ]
+	allowedValues:['Communication', 'Data/Technology', 'Professional Development', 'HR/Bargaining Units', 'Policy/Governance/Liability', 'Finances/Resources']
     }
 });
 
@@ -33,35 +33,36 @@ Schemas.guidancetype = new SimpleSchema({
 Schemas.plans = new SimpleSchema({
     title: String,
     scenario:  {type: String, allowedValues:['High Restrictions', 'Medium Restrictions', 'Low Restrictions']},
-    planItems: [SimpleSchema.oneOf(String, SimpleSchema.Integer)]
+    planItemIds: [SimpleSchema.oneOf(String, SimpleSchema.Integer)]
 });
 
 // Plan Items
 Schemas.planitems = new SimpleSchema({
     // we can get categories from subcategories, categories may be removed in the future
-    categories: [SimpleSchema.oneOf(String, SimpleSchema.Integer)], 
-    subcategories: [SimpleSchema.oneOf(String, SimpleSchema.Integer)],
-    owner:SimpleSchema.oneOf(String, SimpleSchema.Integer),
+    unitIds: [SimpleSchema.oneOf(String, SimpleSchema.Integer)],
+    ownerId: SimpleSchema.oneOf(String, SimpleSchema.Integer),
+    assignedToIds:  { type: Array, optional: true},
+    'assignedToIds.$': SimpleSchema.oneOf(String, SimpleSchema.Integer),
+    dueDate: {type:Date, optional: true},
     dimension: {
-                    type: String,
-                    allowedValues:['Communication', 'Data/Technology', 'PD/Training', 'Human Resources', 'Policy/Governance', 'Finances/Resources'  ]
-                },
+        type: String,
+        allowedValues:['Communication', 'Data/Technology', 'Professional Development', 'HR/Bargaining Units', 'Policy/Governance/Liability', 'Finances/Resources']
+    },
     item: Object,
     'item.text': String,
-    'item.html': {type: String, optional: true}
+    'item.delta': {type: Object, optional: true}   // A Quill Delta Object https://quilljs.com/docs/delta/
 });
 
 // Guidance Items
 Schemas.guidanceitems = new SimpleSchema({
-    subcategories: [SimpleSchema.oneOf(String, SimpleSchema.Integer)],
-    scenarios:[Schemas.scenario],
-    dimensions:Schemas.dimension,
+    unitIds: [SimpleSchema.oneOf(String, SimpleSchema.Integer)],
+    dimension:[Schemas.dimension],
     source: String,
     location_in_source: String,
     type: Schemas.guidancetype,
     item: Object,
     'item.text': String,
-    'item.html': {type: String, optional: true}
+    'item.delta': {type: Object, optional: true}   // A Quill Delta Object https://quilljs.com/docs/delta/
 });
 
 // Categories
@@ -71,9 +72,14 @@ Schemas.categories = new SimpleSchema({
 
 // Subcategories
 Schemas.subcategories = new SimpleSchema({
-    parent_category: String,
+    categoryId: SimpleSchema.oneOf(String, SimpleSchema.Integer),
     name: String,
-    group: {type:String, optional:true}
+});
+
+// Units
+Schemas.units = new SimpleSchema({
+    subcategoryId: SimpleSchema.oneOf(String, SimpleSchema.Integer),
+    name: String,
 });
 
 // Menu Items

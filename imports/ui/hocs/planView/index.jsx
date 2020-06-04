@@ -23,7 +23,7 @@ const PlanWrapper = ({data}) => {
   const [isEditable, setIsEditable] = useState(false)
   const [ title, setTitle ] = useState(data.title)
   const [ scenario, setScenario ] = useState(data.scenario)
-  const { planItems, _id } = data
+  const { planItemIds, _id } = data
   const colors = {
     "High Restrictions": "red",
     "Medium Restrictions": "yellow",
@@ -106,7 +106,7 @@ const PlanWrapper = ({data}) => {
         </div>
         <div className="content-detail" style={{display: isDetailVisible ? "block" : "none"}}>
           {
-            planItems.map(id=><PlanItem id={id} disabled={!isEditable} key={"planItem"+id}/>)
+            planItemIds.map(id=><PlanItem id={id} disabled={!isEditable} key={"planItem"+id}/>)
           }
         </div>
       </div>

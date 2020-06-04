@@ -234,14 +234,15 @@ const data_right = {
 const Maps = () => {
   return (
     <div>
-      <svg height="900" width="100%">
+      {/* <svg height="900" width="100%">
       <LogisticMap data={data_left} isLeft/>
       <svg xmlns="http://www.w3.org/2000/svg" width="210" height="50" transform="translate(500, 500)">
         <polygon points="10,0 200,0 200,20 210,25 200,30 200,50 10,50 10,30 0,25 10,20 10,0"  style={{fill:"grey", stroke:"grey", strokeWidth:1}} />
         <text x="0" y="15" fill="black" transform="translate(40, 20)">Logistics Map</text>
       </svg>      
       <LogisticMap data={data_right} />
-      </svg>
+      </svg> */}
+      map
     </div>
   )
 }
