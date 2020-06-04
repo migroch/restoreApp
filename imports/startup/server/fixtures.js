@@ -87,6 +87,25 @@ Meteor.startup(() => {
     sampleplans.forEach((plan)=>{
 	plans.update({title: plan.title}, {$setOnInsert: plan}, {upsert: true});
     });
+
+    // Upsert guidance_data into guidanceitems collection
+    guidance_data.forEach((gitem_d)=>{
+
+	let gitem = {source: gitem_d.Source, location_in_source: gitem_d.Location, type: gitem_d.Type , item: {text:gitem_d.Item, delta:{}} };
+
+	gitem.unitIds = [];
+	let unit = units.findOne({name: gitem_d.Subcategory});
+	if (unit) gitem.unitIds.push(unit._id);
+	unit = subcategories.findOne({name: gitem_d.Subcategory2});
+	if (unit) gitem.unitIds.push(unit._id);
+	
+	gitem.dimensions = [ gitem_d.Dimension, gitem_d.Dimension2];
+
+	if (gitem.unitIds.length){
+	    guidanceitems.update({'item.text': gitem.item.text}, {$setOnInsert: gitem}, {upsert: true});
+	} 
+	
+    });
     
 });
 

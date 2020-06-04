@@ -48,7 +48,8 @@ Schemas.guidanceitems = new SimpleSchema({
     dimensions: { type: Array },
     'dimensions.$':{
         type: String,
-        allowedValues: Schemas.dimensions
+        allowedValues: Schemas.dimensions,
+	optional: true
     },
     source: String,
     location_in_source: String,
