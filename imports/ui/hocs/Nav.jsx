@@ -65,7 +65,6 @@ class Nav extends Component {
       return (
 	<div>
 	  <nav className="navbar navbar-expand-lg navbar-light  fixed-top" style={{backgroundColor: '#F2F2F2'}}>
-	    
 	    {/*Logo & Brand*/}
 	    <a  className="navbar-brand" href="#">
 	      <img className=" " style={styles.logoStyle} alt="Santa Cruz COE RESTORE Logo" src="Restore_logo.png"/>
