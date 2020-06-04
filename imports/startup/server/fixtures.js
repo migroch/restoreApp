@@ -70,17 +70,17 @@ Meteor.startup(() => {
     let sampleplans = [
 	{
 	    title: 'Sample Plan1',
-	    scenario: {scenario: 'High Restrictions'},
+	    scenario: 'High Restrictions',
 	    planItemIds:[pitems[0]._id, pitems[1]._id,  pitems[2]._id] 
 	},
 	{
 	    title: 'Sample Plan2',
-	    scenario:  {scenario: 'Medium Restrictions'},
+	    scenario:  'Medium Restrictions',
 	    planItemIds:[pitems[0]._id,   pitems[2]._id] 
 	},
 	{
 	    title: 'Sample Plan3',
-	    scenario:  {scenario: 'Low Restrictions'},
+	    scenario:  'Low Restrictions',
 	    planItemIds:[ pitems[1]._id ]  
 	},
     ];

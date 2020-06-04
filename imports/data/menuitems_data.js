@@ -3,9 +3,9 @@
 
 export default menuitems_data = [
 	{
-		key:'Maps',
+		key:'Map',
 		title:'Map',
-		route:'/maps',
+		route:'/map',
 	},
 	{
 		key:'PlanViewer',

@@ -47,7 +47,8 @@ class Nav extends Component {
   
   render() {
     const { user, loading, menuitemsExists, menuitems } = this.props;
-    const { history: { location: { pathname }} } = this.props
+    const { history: { location: { pathname }} } = this.props;
+    
     if(loading){
       return(
         <div className="d-flex justify-content-center text-primary">
@@ -63,7 +64,7 @@ class Nav extends Component {
       
       return (
 	<div>
-	  <nav className="navbar navbar-expand-lg navbar-light bg-white fixed-top">
+	  <nav className="navbar navbar-expand-lg navbar-light  fixed-top" style={{'background-color': '#F2F2F2'}}>
 	    
 	    {/*Logo & Brand*/}
 	    <a  className="navbar-brand" href="#">
@@ -84,7 +85,7 @@ class Nav extends Component {
 	    <div className="collapse navbar-collapse text-right" id="navbarSupportedContent">
 
 	      {/*Left Menu*/}
-	      <ul id="LeftNavMenu" className="navbar-nav nav-tabs d-flex w-100">
+	      <ul id="LeftNavMenu" className="navbar-nav nav-pills d-flex w-100">
 		  {menuItems}
 	      </ul> 
 	      
@@ -212,7 +213,7 @@ class Nav extends Component {
       return(
 	<li className="nav-item">
 	  <button id="signIOButton" type="button" className="btn text-primary"  data-toggle="modal" data-target="#loginModal" onClick={this.handleSignInClick}>
-	    <LogIn size="50" />
+	    <LogIn size="40" />
 	    <p className="m-0">Sign In</p>
 	  </button>
 	</li>

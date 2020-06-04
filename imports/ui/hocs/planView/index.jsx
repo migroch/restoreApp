@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import SelectWrapper from '../../reusable/SelectWrapper';
 import { withTracker } from 'meteor/react-meteor-data';
 import { planitems, plans } from '../../../api/collections';
+import  Schemas from '../../../api/schemas';
 import PlanItem from '../../reusable/PlanItem';
 import { Input, Select, Button } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
@@ -10,11 +11,7 @@ import './index.scss';
 
 const { Option } = Select;
 
-const scenarios = [
-  "High Restrictions",
-  "Medium Restrictions",
-  "Low Restrictions"
-]
+const scenarios = Schemas.scenarios
 const Tags = (data) => data.map(item => <div className="custom-tag" key={item+"tag"}>{item}</div>)
 
 const PlanWrapper = ({data}) => {
@@ -23,7 +20,7 @@ const PlanWrapper = ({data}) => {
   const [isEditable, setIsEditable] = useState(false)
   const [ title, setTitle ] = useState(data.title)
   const [ scenario, setScenario ] = useState(data.scenario)
-  const { planItems, _id } = data
+  const { planItemIds, _id } = data
   const colors = {
     "High Restrictions": "red",
     "Medium Restrictions": "yellow",
@@ -106,7 +103,7 @@ const PlanWrapper = ({data}) => {
         </div>
         <div className="content-detail" style={{display: isDetailVisible ? "block" : "none"}}>
           {
-            planItems.map(id=><PlanItem id={id} disabled={!isEditable} key={"planItem"+id}/>)
+            planItemIds.map(id=><PlanItem id={id} disabled={!isEditable} key={"planItem"+id}/>)
           }
         </div>
       </div>
