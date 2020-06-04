@@ -6,7 +6,6 @@ import { planitems, plans } from '../../../api/collections';
 import  Schemas from '../../../api/schemas';
 import PlanItem from '../../reusable/PlanItem';
 import { Input, Select, Button } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
 import { useHistory } from "react-router-dom";
 import './index.scss';
 
@@ -83,7 +82,7 @@ PlansListView = ({initial_plans, isLoading})=>{
   return (
     <div className="plans-wrapper">
     {
-      plans.map((plan, index)=><PlanWrapper  data={plan} key={"plan"+index} />)
+      initial_plans.map((plan)=><PlanWrapper  data={plan} key={"plan"+plan._id} />)
     }
   </div>
   )
@@ -109,11 +108,15 @@ PlansListView = withTracker(({search}) => {
 
 PlanView = () => {
   const [searchQuery, setSearchQuery] = useState({})
+  const history = useHistory();
   return (
     <div className="plan-view">
-      {/* set searchquery */}
+      {/* set searchquery in selectwrapper */}
       <SelectWrapper />    
       <PlansListView search={searchQuery} />
+      <div className="add-btn">
+        <img src="icons/add.png" onClick={()=>history.push(`/plan-editor`)}/>
+      </div>  
     </div>
   )
 }

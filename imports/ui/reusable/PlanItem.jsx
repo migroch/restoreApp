@@ -1,9 +1,10 @@
 
 
 import React from 'react';
+import { Meteor } from 'meteor/meteor';
 import { Select } from 'antd';
 import { withTracker } from 'meteor/react-meteor-data';
-import { planitems, plans } from '../../api/collections';
+import { planitems, categories, subcategories, units } from '../../api/collections';
 
 const { Option } = Select;
 function handleChange(value) {
@@ -42,10 +43,23 @@ export default withTracker(({id}) => {
       isLoading: true
     };
   }
+  let data = planitems.findOne(id)
   return {
-    data: planitems.findOne(id),
+    data,
     isLoading: false
   };
 })(PlanItem);
 
-
+// "_id" : "K5X3yPvTbZbPcF2om", 
+// "item" : {
+//     "text" : "dummy1 plan item"
+// }, 
+// "assignedToIds" : [
+//     "NNDBCzLdEG3cb9nTP"
+// ], 
+// "dimension" : "Professional Development", 
+// "dueDate" : ISODate("2020-06-04T16:08:37.268+0000"), 
+// "ownerId" : "ReuhYSY42CB52487P", 
+// "unitIds" : [
+//     "4zYjujorqFD2QJ7yk"
+// ]

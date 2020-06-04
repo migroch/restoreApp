@@ -37,6 +37,9 @@ Meteor.methods({
 		const plan = plans.findOne(id);
 		plans.remove(id);
 	},
+	'plans.add'(arg) {
+		plans.insert(arg);
+	},
 	'plans.update'(arg) {
 		const { id, title, scenario } = arg;
 		check(id, Match.OneOf(String, Mongo.ObjectID));

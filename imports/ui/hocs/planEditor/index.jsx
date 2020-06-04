@@ -4,8 +4,8 @@ import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import { planitems, plans } from '../../../api/collections';
 import PlanItem from '../../reusable/PlanItem';
-import { Input, Select, Button } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
+import { Input, Select, Button, Form } from 'antd';
+import PlanEditForm from '../../reusable/PlanEditForm'
 import './index.scss';
 
 const { Option } = Select;
@@ -18,81 +18,24 @@ const scenarios = [
 
 const PlanEdit = ({ isLoading, data, id }) => {
   if (isLoading) return null
+  if (!id) console.log("PlanEdit: new plan edit now")
 
   const history = useHistory();
-  const [isDetailVisible, setIsDetailVisible] = useState(true)
   const [isEditable, setIsEditable] = useState(true)
-  const [ title, setTitle ] = useState(data.title)
-  const [ scenario, setScenario ] = useState(data.scenario)
   const { planItemIds } = data
   const colors = {
     "High Restrictions": "red",
     "Medium Restrictions": "yellow",
     "Low Restrictions": "green"
   }
-  const onChangeTitle = e => {
-    setTitle(e.target.value)
-  }
-  const onChangeScenario = value => {
-    setScenario(value)
-  }  
-  const savePlan = () => {
-    Meteor.call('plans.update', { id, title, scenario }, (err, res) => {
-      if (err) {
-        alert(err);
-      } else {
-        history.push('/plan-viewer')
-      }
-    })
-  }
-  const plan_color = colors[scenario]
-  return (
-    <div className="plan-wrapper">         
-      <div className="header" style={{backgroundColor: plan_color}}>
-        <div className="right">
-          <Button type="primary" shape="round" onClick={()=>savePlan()}>Save</Button>
-          <Button type="primary" shape="round" onClick={()=>history.push('/plan-viewer')}>
-            Cancel
-          </Button>          
-        </div>    
-      <div className="title">{ title }</div>
-      </div>
-      <div className="content-wrapper">
-        <div className="content">
-          <div>
-            Title
-            <Input placeholder={title} onChange={onChangeTitle}/>
-          </div>
-          <div>
-            Scenario
-            <Select
-              style={{ width: 250 }}
-              placeholder={scenario}
-              onChange={onChangeScenario}
-            >
-              {
-                scenarios.map(item=>(
-                  <Option value={item}>{item}</Option>
-                ))
-              }
-            </Select>
-          </div>
-          <div>Applies To:</div>
-          <div className="label_1">
-            Districts: 
-            {/* <div className="tags-wrapper">
-              {Tags(districts)}
-            </div> */}
 
-          </div>
-          <div className="label_1">
-            Schools
-            {/* <div className="tags-wrapper">
-              {Tags(schools)}
-            </div> */}
-          </div>
+  return (
+    <div className="plan-edit">         
+      <div className="content-wrapper">
+        <div className="plan-edit-form">
+          <PlanEditForm data={data} id={id}/>
         </div>
-        <div className="content-detail" style={{display: isDetailVisible ? "block" : "none"}}>
+        <div className="content-detail">
           {
             planItemIds.map(id=><PlanItem id={id} disabled={false} key={"planItem"+id}/>)
           }
@@ -110,6 +53,21 @@ PlanEditWrapper = withTracker(({match}) => {
   ];
   const isLoading = handles.some(handle => !handle.ready());
   const plan_id = match.params.id
+  console.log("plan_id: ", plan_id)
+  //in case add new plans
+  if(!plan_id) {
+    console.log("we are going to add new plan now")
+    return {
+      isLoading: false,
+      id: plan_id,
+      data: {
+        title:'',
+        scenario:'',
+        planItemIds:[]
+      }
+    }
+  }
+
   if(isLoading){
     return {
       data: null,
@@ -118,7 +76,7 @@ PlanEditWrapper = withTracker(({match}) => {
     };
   }
 
-  console.log("plan:", plans.findOne(plan_id))
+  //in case edit the plan
   return {
     data: plans.findOne(plan_id),
     id: plan_id,
