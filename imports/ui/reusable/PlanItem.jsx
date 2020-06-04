@@ -1,9 +1,10 @@
 
 
 import React from 'react';
+import { Meteor } from 'meteor/meteor';
 import { Select } from 'antd';
 import { withTracker } from 'meteor/react-meteor-data';
-import { planitems, plans } from '../../api/collections';
+import { planitems, categories, subcategories, units } from '../../api/collections';
 
 const { Option } = Select;
 function handleChange(value) {
@@ -11,7 +12,8 @@ function handleChange(value) {
 }
 const dimensions = ['Communication', 'Data/Technology', 'PD/Training', 'Human Resources', 'Policy/Governance', 'Finances/Resources']
 
-PlanItem = ({data, disabled}) => {
+PlanItem = ({data, disabled, isLoading}) => {
+  if (isLoading) return null
   const { subcategories, item, dimension } = data
   return (
     <div className="plan-item">
@@ -31,9 +33,33 @@ PlanItem = ({data, disabled}) => {
   )
 }
 export default withTracker(({id}) => {
+  const handles = [
+    Meteor.subscribe('planitems'),
+  ];
+  const isLoading = handles.some(handle => !handle.ready());
+  if(isLoading){
+    return {
+      data: null,
+      isLoading: true
+    };
+  }
+  let data = planitems.findOne(id)
   return {
-    data: planitems.findOne(id)
+    data,
+    isLoading: false
   };
 })(PlanItem);
 
-
+// "_id" : "K5X3yPvTbZbPcF2om", 
+// "item" : {
+//     "text" : "dummy1 plan item"
+// }, 
+// "assignedToIds" : [
+//     "NNDBCzLdEG3cb9nTP"
+// ], 
+// "dimension" : "Professional Development", 
+// "dueDate" : ISODate("2020-06-04T16:08:37.268+0000"), 
+// "ownerId" : "ReuhYSY42CB52487P", 
+// "unitIds" : [
+//     "4zYjujorqFD2QJ7yk"
+// ]

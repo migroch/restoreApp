@@ -20,7 +20,7 @@ Schemas.plans = new SimpleSchema({
     scenario: {
         type: String,
         allowedValues: Schemas.scenarios,
-	label: 'Restriction level'
+	    label: 'Restriction level'
     },
     planItemIds: [SimpleSchema.oneOf(String, SimpleSchema.Integer)]
 });

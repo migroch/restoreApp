@@ -80,12 +80,12 @@ Meteor.startup(() => {
 	},
 	{
 	    title: 'Sample Plan3',
-	    scenario:  'Low Restrictions',
+	    scenario: 'Low Restrictions',
 	    planItemIds:[ pitems[1]._id ]  
 	},
     ];
     sampleplans.forEach((plan)=>{
-	plans.update({title: plan.title}, {$setOnInsert: plan}, {upsert: true});
+			plans.update({title:plan.title}, {$setOnInsert: plan}, {upsert: true});
     });
 
     // Upsert guidance_data into guidanceitems collection

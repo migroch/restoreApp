@@ -31,17 +31,20 @@ Meteor.methods({
     //     username: Meteor.users.findOne(this.userId).username,
     //   });
     // },
-    'plans.remove'(planId) {
-	check(planId, Match.OneOf(String, Mongo.ObjectID));
-	
-	const plan = plans.findOne(planId);
-	plans.remove(planId);
-    },
-    'plans.update'(arg) {
-	const { _id, title, scenario } = arg;
-	check(_id, Match.OneOf(String, Mongo.ObjectID));
-	plans.update(_id, { $set: { scenario, title} });
-    },
+	'plans.remove'(id) {
+		check(id, Match.OneOf(String, Mongo.ObjectID));
+		
+		const plan = plans.findOne(id);
+		plans.remove(id);
+	},
+	'plans.add'(arg) {
+		plans.insert(arg);
+	},
+	'plans.update'(arg) {
+		const { id, title, scenario } = arg;
+		check(id, Match.OneOf(String, Mongo.ObjectID));
+		plans.update(id, { $set: { scenario, title} });
+	},
 });
 
 

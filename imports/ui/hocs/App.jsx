@@ -14,6 +14,7 @@ const App = () => (
       <Switch>
         <Route exact path="/map" component={Map}/>
         <Route exact path="/plan-editor" component={PlanEditor}/>
+        <Route exact path="/plan-editor/:id" component={PlanEditor}/>
         <Route exact path="/plan-viewer" component={PlanView}/>
         <Redirect to="/map" from="/"/>
       </Switch>

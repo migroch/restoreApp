@@ -1,75 +1,45 @@
-.plan-view {
-  .select-wrapper {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
+
+.plan-edit {
+  border: 1px solid gray;
+  .header {
+    position: relative;
+    padding: 20px;
+    border-bottom: 1px solid grey;
+    .title {
+      text-align: center;
+      font-family: 'Roboto';
+      font-style: normal;
+      font-weight: normal;
+      font-size: 25px;
+      line-height: 28px;
+    }
+    .right {
+      position: absolute;
+      right: 15px;
+      img {
+        cursor: pointer;
+        width: 18px;
+        margin-left: 10px;
+      }
+    }
   }
-  .plans-wrapper {
-    margin-top: 50px;
-    .plan-wrapper {
-      margin-top: 30px;
-      background-color: grey;
-      border: 1px solid grey;
-      .header {
-        position: relative;
-        padding: 20px;
-        border-bottom: 1px solid grey;
-        .title {
-          text-align: center;
-          font-family: 'Roboto';
-          font-style: normal;
-          font-weight: normal;
-          font-size: 25px;
-          line-height: 28px;
-        }
-        .right {
-          position: absolute;
-          right: 15px;
-          img {
-            cursor: pointer;
-            width: 18px;
-            margin-left: 10px;
-          }
-        }
-      }
+  .content-wrapper {
+    padding: 15px;
+    background-color: white;
+    .content {
+      // padding: 15px;
     }
-    .content-wrapper {
-      padding: 15px;
-      background-color: #ececec;
-      .content {
-        // padding: 15px;
+    .content-detail {
+      background-color: white;
+      padding: 10px;
+      margin-top: 15px;
+      border-radius: 10px;
+      // padding: 15px;
+      .plan-item {
+        margin-bottom: 5px;
+        border-bottom: 1px solid black;
+        padding: 10px 0px;
       }
-      .content-detail {
-        background-color: white;
-        padding: 10px;
-        margin-top: 15px;
-        border-radius: 10px;
-        // padding: 15px;
-        .plan-item {
-          margin-bottom: 5px;
-          border-bottom: 1px solid black;
-          padding: 10px 0px;
-        }
-      }      
-    }
-
-    .label_1 {
-      display: flex;
-      margin-top: 5px;
-    }
-    .tags-wrapper {
-      display: flex;
-      margin-left: 10px;
-      .custom-tag {
-        border: 1px solid black;
-        width: 30px;
-        border-radius: 6px;
-        margin-right: 3px;
-        opacity: 0.6;
-        background-color: gray;
-        text-align: center;
-      }
-    }    
-
+    }      
   }
 }
