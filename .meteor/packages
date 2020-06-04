@@ -32,5 +32,3 @@ accounts-base
 random
 cultofcoders:grapher
 dburles:collection-helpers
-cfs:standard-packages
-cfs:filesystem

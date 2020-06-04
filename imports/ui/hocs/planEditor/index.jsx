@@ -3,18 +3,16 @@ import { useHistory } from "react-router-dom";
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import { planitems, plans } from '../../../api/collections';
+import Schemas from '../../../api/schemas'
 import PlanItem from '../../reusable/PlanItem';
 import { Input, Select, Button, Form } from 'antd';
 import PlanEditForm from '../../reusable/PlanEditForm'
-import './index.scss';
+import GuidanceItems from '../GuidanceItems'
+import './index.scss'
 
 const { Option } = Select;
 
-const scenarios = [
-  "High Restrictions",
-  "Medium Restrictions",
-  "Low Restrictions"
-]
+const scenarios = Schemas.scenarios;
 
 const PlanEdit = ({ isLoading, data, id }) => {
   if (isLoading) return null
@@ -30,18 +28,23 @@ const PlanEdit = ({ isLoading, data, id }) => {
   }
 
   return (
-    <div className="plan-edit">         
-      <div className="content-wrapper">
-        <div className="plan-edit-form">
-          <PlanEditForm data={data} id={id}/>
-        </div>
-        <div className="content-detail">
-          {
-            planItemIds.map(id=><PlanItem id={id} disabled={false} key={"planItem"+id}/>)
-          }
-        </div>
+    <>
+      <GuidanceItems />
+       
+      <div className="plan-edit">
+	<div className="content-wrapper">
+	  <div className="plan-edit-form">
+	    <PlanEditForm data={data} id={id}/>
+	  </div>
+	  <div className="content-detail">
+	    {
+	      planItemIds.map(id=><PlanItem id={id} disabled={false} key={"planItem"+id}/>)
+	    }
+          </div>
+	</div>
       </div>
-    </div>
+      
+    </>
   )
 }
 

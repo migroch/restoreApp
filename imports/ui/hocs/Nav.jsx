@@ -139,7 +139,7 @@ class Nav extends Component {
   }
 
   setActiveLink(target){
-    history.pushState({}, '', $(target)[0].href);
+    if ( $(target)[0])  history.pushState({}, '', $(target)[0].href);
     $('.nav-link').removeClass('active');
     $('.nav-link').blur();
     $(target).addClass('active');
