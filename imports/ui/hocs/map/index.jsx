@@ -231,7 +231,7 @@ const data_right = {
     }
   ]
 }
-const Maps = () => {
+const Map = () => {
   return (
     <div>
       {/* <svg height="900" width="100%">
@@ -247,4 +247,4 @@ const Maps = () => {
   )
 }
 
-export default Maps
+export default Map

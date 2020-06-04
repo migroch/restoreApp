@@ -7,7 +7,7 @@ export default sampleplanitems_data = [
 	ownerId: 'dummy1',   // converted to Ids in fixtures
 	assignedToIds: ['dummy3'],  // converted to Ids in fixtures
 	dueDate: Date.now(),
-	dimension: 'Data/Technology',
+	dimension: 'Professional Development',
 	item:{text:'dummy1 plan item'}
     },
     {
@@ -15,7 +15,7 @@ export default sampleplanitems_data = [
 	ownerId: 'dummy2',   // converted to Ids in fixtures
 	assignedToIds: ['dummy1', 'dummy2'],  // converted to Ids in fixtures
 	dueDate: Date.now(),
-	dimension: 'Communication',
+	dimension: 'Policy/Governance/Liability',
 	item:{text:'dummy2 plan item'}
     },
     {
@@ -23,7 +23,7 @@ export default sampleplanitems_data = [
 	ownerId: 'dummy3',   // converted to Ids in fixtures
 	assignedToIds: ['dummy1'],  // converted to Ids in fixtures
 	dueDate: Date.now(),
-	dimension:'Finances/Resources',
+	dimension: 'Finances/Resources',
 	item:{text:'dummy3 plan item'}
     },
 ]

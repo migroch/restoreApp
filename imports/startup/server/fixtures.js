@@ -15,26 +15,26 @@ import {categories_data, subcategories_data, units_data} from '../../data/initia
 // Insert data into colllections
 Meteor.startup(() => {
 
-	// Create roles based on the permissions data object
-	Object.keys(roles_data).forEach((key)=>{
-		Roles.createRole(key, {unlessExists: true});
-	});
+    // Create roles based on the permissions data object
+    Object.keys(roles_data).forEach((key)=>{
+	Roles.createRole(key, {unlessExists: true});
+    });
 
-	// Create dummy users
-	dummyusers_data.forEach((dummy)=>{
-		if (Meteor.users.find({"email": dummy.email}).count() == 0){
-				Accounts.createUser({
-					email: dummy.email,
-					password: dummy.password,
-					profile:{name: dummy.name}
-				});
-		}
-	});
-	
-	// Upsert menuitems_data into menuitems collection
-	menuitems_data.forEach((menuitem)=>{
-		menuitems.update({key: menuitem.key}, {$setOnInsert: menuitem}, {upsert: true});
-	});
+    // Create dummy users
+    dummyusers_data.forEach((dummy)=>{
+	if (Meteor.users.find({"email": dummy.email}).count() == 0){
+	    Accounts.createUser({
+		email: dummy.email,
+		password: dummy.password,
+		profile:{name: dummy.name}
+	    });
+	}
+    });
+   
+     // Upsert menuitems_data into menuitems collection
+    menuitems_data.forEach((menuitem)=>{
+	menuitems.update({key: menuitem.key}, {$setOnInsert: menuitem}, {upsert: true});
+    });
 
     // Upsert categories_data into categories collection
     categories_data.forEach((category)=>{

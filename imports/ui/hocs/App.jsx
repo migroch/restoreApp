@@ -4,7 +4,7 @@ import Nav from './Nav.jsx';
 import Footer from '../reusable/Footer.jsx';
 import PlanEditor from './planEditor';
 import PlanView from './planView';
-import Maps from './maps';
+import Map from './map';
 
 
 const App = () => (
@@ -12,10 +12,10 @@ const App = () => (
     <Nav />
     <div className="app-body">
       <Switch>
-        <Route exact path="/maps" component={Maps}/>
-        <Route exact path="/Plan-editor" component={PlanEditor}/>
+        <Route exact path="/map" component={Map}/>
+        <Route exact path="/plan-editor" component={PlanEditor}/>
         <Route exact path="/plan-viewer" component={PlanView}/>
-        <Redirect to="/maps" from="/"/>
+        <Redirect to="/map" from="/"/>
       </Switch>
     </div>
     <Footer />

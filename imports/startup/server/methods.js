@@ -3,6 +3,7 @@
 import { Meteor } from 'meteor/meteor';
 import { check, Match } from 'meteor/check';
 import { plans } from '../../api/collections';
+
 Meteor.methods({
   'updateEmailVerified'(user){
 		let email;
@@ -19,27 +20,28 @@ Meteor.methods({
 				verified_email: verified_email
 		}});
 	},
-		// 'plans.insert'(text) {
-	//   check(text, String);
-	//   // let's make sure the user is logged in before inserting a pllan
-	//   plans.insert({
-	//     text,
-	//     createdAt: new Date(),
-	//     owner: this.userId,
-	//     username: Meteor.users.findOne(this.userId).username,
-	//   });
-	// },
-	'plans.remove'(planId) {
-		check(planId, Match.OneOf(String, Mongo.ObjectID));
 
-		const plan = plans.findOne(planId);
-		plans.remove(planId);
-	},
-	'plans.update'(arg) {
-		const { _id, title, scenario } = arg
-		check(_id, Match.OneOf(String, Mongo.ObjectID));
-		plans.update(_id, { $set: { scenario, title} });
-	},
+    // 'plans.insert'(text) {
+    //   check(text, String);
+    //   // let's make sure the user is logged in before inserting a pllan
+    //   plans.insert({
+    //     text,
+    //     createdAt: new Date(),
+    //     owner: this.userId,
+    //     username: Meteor.users.findOne(this.userId).username,
+    //   });
+    // },
+    'plans.remove'(planId) {
+	check(planId, Match.OneOf(String, Mongo.ObjectID));
+	
+	const plan = plans.findOne(planId);
+	plans.remove(planId);
+    },
+    'plans.update'(arg) {
+	const { _id, title, scenario } = arg;
+	check(_id, Match.OneOf(String, Mongo.ObjectID));
+	plans.update(_id, { $set: { scenario, title} });
+    },
 });
 
 

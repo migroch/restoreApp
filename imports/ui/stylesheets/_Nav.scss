@@ -28,5 +28,8 @@
 }
 
 .navbar-light .navbar-nav .nav-link.active{
-   color: $link-active-color !important;
+  //color: $link-active-color !important;
+  color: $link-active-color  !important;
+  background-color: transparent !important;
+  border-color: $link-active-color  !important;
 }

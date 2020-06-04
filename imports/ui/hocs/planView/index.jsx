@@ -3,6 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import SelectWrapper from '../../reusable/SelectWrapper';
 import { withTracker } from 'meteor/react-meteor-data';
 import { planitems, plans } from '../../../api/collections';
+import  Schemas from '../../../api/schemas';
 import PlanItem from '../../reusable/PlanItem';
 import { Input, Select, Button } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
@@ -10,11 +11,7 @@ import './index.scss';
 
 const { Option } = Select;
 
-const scenarios = [
-  "High Restrictions",
-  "Medium Restrictions",
-  "Low Restrictions"
-]
+const scenarios = Schemas.scenarios
 const Tags = (data) => data.map(item => <div className="custom-tag" key={item+"tag"}>{item}</div>)
 
 const PlanWrapper = ({data}) => {

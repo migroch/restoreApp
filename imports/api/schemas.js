@@ -5,34 +5,23 @@ import SimpleSchema from 'simpl-schema';
 
 const Schemas = {};
 
-// Scenario
-Schemas.scenario = new SimpleSchema({
-    scenario:{
-	type: String,
-	allowedValues:['High Restrictions', 'Medium Restrictions', 'Low Restrictions']
-    }
-});
+// Scenarios
+Schemas.scenarios = ['High Restrictions', 'Medium Restrictions', 'Low Restrictions'];
 
-// Dimension
-Schemas.dimension = new SimpleSchema({
-    dimension:{
-	type: String,
-	allowedValues:['Communication', 'Data/Technology', 'Professional Development', 'HR/Bargaining Units', 'Policy/Governance/Liability', 'Finances/Resources']
-    }
-});
+// Dimensions
+Schemas.dimensions = ['Communication', 'Data/Technology', 'Professional Development', 'HR/Bargaining Units', 'Policy/Governance/Liability', 'Finances/Resources'  ];
 
-// Guidance Type
-Schemas.guidancetype = new SimpleSchema({
-    guidanceType:{
-	type: String,
-	allowedValues:['Assumptions', 'Actions', 'Resources', 'Questions', 'Considerations']
-    }
-});
+// Guidance Types
+Schemas.guidance_types = ['Assumptions', 'Actions', 'Resources', 'Questions', 'Considerations', 'Goals'];
 
 // Plans
 Schemas.plans = new SimpleSchema({
     title: String,
-    scenario:  {type: String, allowedValues:['High Restrictions', 'Medium Restrictions', 'Low Restrictions']},
+    scenario: {
+        type: String,
+        allowedValues: Schemas.scenarios,
+	    label: 'Restriction level'
+    },
     planItemIds: [SimpleSchema.oneOf(String, SimpleSchema.Integer)]
 });
 
@@ -45,8 +34,8 @@ Schemas.planitems = new SimpleSchema({
     'assignedToIds.$': SimpleSchema.oneOf(String, SimpleSchema.Integer),
     dueDate: {type:Date, optional: true},
     dimension: {
-        type: String,
-        allowedValues:['Communication', 'Data/Technology', 'Professional Development', 'HR/Bargaining Units', 'Policy/Governance/Liability', 'Finances/Resources']
+                    type: String,
+                    allowedValues: Schemas.dimensions
     },
     item: Object,
     'item.text': String,
@@ -56,10 +45,18 @@ Schemas.planitems = new SimpleSchema({
 // Guidance Items
 Schemas.guidanceitems = new SimpleSchema({
     unitIds: [SimpleSchema.oneOf(String, SimpleSchema.Integer)],
-    dimension:[Schemas.dimension],
+    dimensions: { type: Array },
+    'dimensions.$':{
+        type: String,
+        allowedValues: Schemas.dimensions
+    },
     source: String,
     location_in_source: String,
-    type: Schemas.guidancetype,
+    type: {
+        type: String,
+        allowedValues: Schemas.guidance_types,
+	label: 'Guidance type'
+    },
     item: Object,
     'item.text': String,
     'item.delta': {type: Object, optional: true}   // A Quill Delta Object https://quilljs.com/docs/delta/
@@ -89,4 +86,4 @@ Schemas.menuitems = new SimpleSchema({
     route: String
 });
 
-export default Schemas;
+export  default Schemas;

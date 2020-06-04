@@ -1,6 +1,8 @@
 // _global.scss
 // Global stylesheet
 
+$body-bg: #F2F2F2 !important ;
+$navbar-default-bg: $body-bg;
 //$primary: #00a6a3 !default;
 $primary: #2176BB;
 $info: #2AAAE1;
@@ -17,6 +19,7 @@ $tooltip-bg: $link-active-color;
 
 body {
   position: relative;
+  
 }
 
 p {
@@ -26,6 +29,13 @@ p {
 .disabled{
   color:gray;
   pointer-events: none;
+}
+
+.app-body {
+  max-width: 1249px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: #F2F2F2;
 }
 
 
