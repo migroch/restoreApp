@@ -1,7 +1,9 @@
 import React from 'react'
 import { useHistory } from "react-router-dom";
-import { Form, Input, Button, Select } from 'antd';
+import { Form, Input, Button, Select } from 'antd/dist/antd.min.js';
 import { Meteor } from 'meteor/meteor';
+import  Schemas from '../../api/schemas';
+import { planitems, categories, subcategories, units } from '../../api/collections';
 
 const layout = {
   labelCol: { span: 2 },
@@ -11,7 +13,7 @@ const tailLayout = {
   wrapperCol: { offset: 2, span: 12 },
 };
 
-const scenarios = ['High Restrictions', 'Medium Restrictions', 'Low Restrictions'];
+const scenarios = Schemas.scenarios;
 
 const PlanEditComponent = ({id, data}) => {
   const history = useHistory()
@@ -66,8 +68,8 @@ const PlanEditComponent = ({id, data}) => {
           // onChange={onChangeScenario}
         >
           {
-            scenarios.map(item=>(
-              <Option value={item}>{item}</Option>
+            scenarios.map((item, index)=>(
+              <Option key={index} value={item}>{item}</Option>
             ))
           }
         </Select>

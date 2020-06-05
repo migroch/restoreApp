@@ -1,16 +1,15 @@
-
-
 import React from 'react';
 import { Meteor } from 'meteor/meteor';
-import { Select } from 'antd';
+import { Select } from 'antd/dist/antd.min.js';
 import { withTracker } from 'meteor/react-meteor-data';
+import  Schemas from '../../api/schemas';
 import { planitems, categories, subcategories, units } from '../../api/collections';
 
 const { Option } = Select;
 function handleChange(value) {
   console.log(`selected ${value}`);
 }
-const dimensions = ['Communication', 'Data/Technology', 'PD/Training', 'Human Resources', 'Policy/Governance', 'Finances/Resources']
+const dimensions = Schemas.dimensions;
 
 PlanItem = ({data, disabled, isLoading}) => {
   if (isLoading) return null
@@ -25,7 +24,7 @@ PlanItem = ({data, disabled, isLoading}) => {
       </div>  
       <div>Dimension: 
         <Select defaultValue={dimension} style={{ width: 180 }} disabled={disabled} onChange={handleChange}>
-          { dimensions.map(item=><Option value={item}>{item}</Option>) }
+          { dimensions.map((item, index)=><Option key={index} value={item}>{item}</Option>) }
         </Select>        
       </div>
       <div>Item: {item.text}</div>

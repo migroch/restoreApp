@@ -1,21 +1,17 @@
-
-
 import React from 'react';
-import { Checkbox } from 'antd';
+import { Checkbox } from 'antd/dist/antd.min.js';
+import  Schemas from '../../api/schemas';
 
 // const onChange = (checkedValues) => {
 //   console.log('checked = ', checkedValues);
 // }
 
+const dimensions =  Schemas.dimensions;
 
-const options = [
-  { label: 'Communication', value: 'Communication' },
-  { label: 'Data/Technology', value: 'Data_Technology' },
-  { label: 'PD/Training', value: 'Pd_Training' },
-  { label: 'Human/Resource', value: 'Human_Resource' },
-  { label: 'Policy/Governanace', value: 'Policy_Governanace' },
-  { label: 'Finances?Resources', value: 'Finances_Resources' },
-];
+const options = dimensions.map( (dimension) =>{
+  {label: dimension, value: dimension}
+})
+
 const Dimension = ({disabled, value, onChange}) => {
   let defaultValue = []
   Object.keys(value).forEach(function (item) {

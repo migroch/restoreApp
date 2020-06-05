@@ -5,7 +5,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { planitems, plans } from '../../../api/collections';
 import Schemas from '../../../api/schemas'
 import PlanItem from '../../reusable/PlanItem';
-import { Input, Select, Button, Form } from 'antd';
+import { Input, Select, Button, Form } from 'antd/dist/antd.min.js';
 import PlanEditForm from '../../reusable/PlanEditForm'
 import GuidanceItems from '../GuidanceItems'
 import './index.scss'
