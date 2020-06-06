@@ -4,8 +4,8 @@ import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import { planitems, plans } from '../../../api/collections';
 import Schemas from '../../../api/schemas'
-import PlanItem from '../../reusable/PlanItem';
-import { Input, Select, Button, Form } from 'antd/dist/antd.min.js';
+import PlanItemList from '../../reusable/PlanItemList';
+import { Select } from 'antd/dist/antd.min.js';
 import PlanEditForm from '../../reusable/PlanEditForm'
 import GuidanceItems from '../GuidanceItems'
 import './index.scss'
@@ -29,21 +29,17 @@ const PlanEdit = ({ isLoading, data, id }) => {
 
   return (
     <>
-      <GuidanceItems />
-       
+      {/* <GuidanceItems /> */}
       <div className="plan-edit">
-	<div className="content-wrapper">
-	  <div className="plan-edit-form">
-	    <PlanEditForm data={data} id={id}/>
-	  </div>
-	  <div className="content-detail">
-	    {
-	      planItemIds.map(id=><PlanItem id={id} disabled={false} key={"planItem"+id}/>)
-	    }
+      	<div className="content-wrapper">
+          <div className="plan-edit-form">
+            <PlanEditForm data={data} id={id}/>
           </div>
-	</div>
+          <div className="plan-item-list">
+            <PlanItemList data={planItemIds} planId={id} editable={true}/>
+          </div>
+      	</div>
       </div>
-      
     </>
   )
 }
@@ -56,10 +52,8 @@ PlanEditWrapper = withTracker(({match}) => {
   ];
   const isLoading = handles.some(handle => !handle.ready());
   const plan_id = match.params.id
-  console.log("plan_id: ", plan_id)
   //in case add new plans
   if(!plan_id) {
-    console.log("we are going to add new plan now")
     return {
       isLoading: false,
       id: plan_id,
