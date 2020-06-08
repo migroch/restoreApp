@@ -123,7 +123,7 @@ const sample_categories = [
   },
 ]
 
-const makecategorlists = (categories) => {
+const makecategorylists = (categories) => {
   return (
     categories.map((category, idx)=>(
       <TreeNode title={category.name} value={category.name} selectable={false} key={'category'+idx+category.name}>
@@ -143,21 +143,30 @@ const makecategorlists = (categories) => {
   )
 }
 
-PlanItem = ({id, data, disabled, isLoading, disableEditMode}) => {
+PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, planId}) => {
   if (isLoading) return null
   const { subcategories, item, dimension, assignedToIds, dueDate, unitIds, ownerId } = data
   const onFinish = planItem => {
-    console.log("PlanItem: ", planItem)
     planItem.dueDate = planItem.dueDate.format(dateFormat)
-    console.log("Updated-PlanItem: ", planItem)
-    Meteor.call('planItem.update', {planItemId:id, planItem}, (err, res) => {
-      if (err) {
-       alert(err);
-      } else {
-        // history.push('/plan-viewer')
-        disableEditMode();
-      }
-    })
+    if (id) {
+      Meteor.call('planItem.update', {planItemId:id, planItem}, (err, res) => {
+        if (err) {
+         alert(err);
+         disableEditMode();
+        } else {
+          disableEditMode();
+        }
+      })
+    } else {
+      Meteor.call('planItem.add', {planId, planItem}, (err, res) => {
+        if (err) {
+         alert(err);
+         finishAddItem();
+        } else {
+          finishAddItem();
+        }
+      })
+    }
   }
   return (
     <div className="plan-item-edit">
@@ -183,7 +192,7 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode}) => {
             multiple
             disabled={disabled}
           >
-            {makecategorlists(sample_categories)}
+            {makecategorylists(sample_categories)}
           </TreeSelect>
         </Form.Item>        
         <Form.Item
@@ -233,7 +242,6 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode}) => {
             },
           ]}
         >
-          : 
           <DatePicker disabled={disabled}  format={dateFormat} />
         </Form.Item>     
         <Form.Item
@@ -246,7 +254,7 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode}) => {
           <Button type="primary" htmlType="submit">
             Save
           </Button>
-          <Button type="cancel" style={{marginLeft: 50}} onClick={disableEditMode}>
+          <Button type="cancel" style={{marginLeft: 50}} onClick={ id ? disableEditMode : finishAddItem }>
             Cancel
           </Button>        
         </Form.Item>        
@@ -259,6 +267,22 @@ export default withTracker(({id}) => {
     Meteor.subscribe('planitems'),
   ];
   const isLoading = handles.some(handle => !handle.ready());
+  if (!id) {
+    const data = {
+      unitIds: [],
+      item: {
+        text: ''
+      },
+      ownerId: '',
+      dueDate: new Date(),
+      assignedToIds: [],
+      dimension: ''
+    }
+    return {
+      data,
+      isLoading: null
+    };
+  }
   if(isLoading){
     return {
       data: null,

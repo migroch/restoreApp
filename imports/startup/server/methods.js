@@ -60,6 +60,16 @@ Meteor.methods({
 		check(planItemId, Match.OneOf(String, Mongo.ObjectID));
 		planitems.update(planItemId, { $set: planItem });
 	},
+	'planItem.add'({planId, planItem}) {
+		check(planId, Match.OneOf(String, Mongo.ObjectID));
+
+		planitems.insert(planItem, function(err, newPlanItem){
+				const plan = plans.findOne(planId);
+				let planItemIds = [...plan.planItemIds, newPlanItem]
+				plans.update(planId, { $set: { planItemIds } });
+		});		
+
+	},
 });
 
 

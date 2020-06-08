@@ -215,6 +215,10 @@ PlanItemView = ({data, disabled, isLoading}) => {
 export default withTracker(({id}) => {
   const handles = [
     Meteor.subscribe('planitems'),
+    Meteor.subscribe('categories'),
+    Meteor.subscribe('subcategories'),
+    Meteor.subscribe('units'),
+    Meteor.subscribe('allUserData'),
   ];
   const isLoading = handles.some(handle => !handle.ready());
   if(isLoading){
@@ -224,6 +228,9 @@ export default withTracker(({id}) => {
     };
   }
   let data = planitems.findOne(id)
+
+  // let users = Meteor.users.find({}).fetch().map(user=>user.profile.name)
+  // console.log("users:::::", users)
   return {
     data,
     isLoading: false
