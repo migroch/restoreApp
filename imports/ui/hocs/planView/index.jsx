@@ -106,7 +106,7 @@ PlanView = () => {
   const [searchQuery, setSearchQuery] = useState({})
     const history = useHistory();
   return (
-    <div className="plan-view">
+    <div className="plan-view container">
       {/* set searchquery in selectwrapper */}
       <SelectWrapper />    
       <PlansListView search={searchQuery} />

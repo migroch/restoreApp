@@ -46,10 +46,10 @@ class Map extends Component {
     
     let  width = this.state.width,
 	 height =this.state.height,
-	 treeWidth = 0.35*width,
+	 treeWidth = 0.3*width,
 	 treeHeight = 0.95*height,
 	//dendradius = width / 2, // radius of dendrogram
-        noderadius = 5; // radius of nodes	    
+        noderadius = 3; // radius of nodes	    
 
     const svg = d3.select("#mapcanvas").append("svg")
 		  .attr("id", "svgMap")

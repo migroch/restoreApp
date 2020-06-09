@@ -30,7 +30,7 @@ const PlanEdit = ({ isLoading, data, id }) => {
   return (
     <>
       {/* <GuidanceItems /> */}
-      <div className="plan-edit">
+      <div className="plan-edit container">
       	<div className="content-wrapper">
           <div className="plan-edit-form">
             <PlanEditForm data={data} id={id}/>
