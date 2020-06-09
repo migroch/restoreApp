@@ -2,7 +2,7 @@
 // Insert startup data from imports/data/
 
 // Import Mongo collections
-import { plans, planitems, guidanceitems, categories, subcategories, units, menuitems} from '../../api/collections.js';
+import { plans, planitems, guidanceitems, categories, subcategories, units, mapnodes, menuitems} from '../../api/collections.js';
 
 // Import data
 import dummyusers_data from  '../../data/dummyusers_data.js';
@@ -10,7 +10,7 @@ import roles_data from '../../data/roles_data.js';
 import menuitems_data from '../../data/menuitems_data.js';
 import sampleplanitems_data from '../../data/sampleplanitems_data.js';
 import guidance_data from '../../data/guidance_data.js';
-import {categories_data, subcategories_data, units_data} from '../../data/initialmap_data.js';
+import {categories_data, subcategories_data, units_data, mapnodes_data} from '../../data/initialmap_data.js';
 
 // Insert data into colllections
 Meteor.startup(() => {
@@ -52,6 +52,9 @@ Meteor.startup(() => {
 	unit.subcategoryId = subcategories.findOne({name: unit.subcategoryId})._id;
 	units.update({name: unit.name}, {$setOnInsert: unit}, {upsert: true});
     });
+
+    // Map nodes
+    mapnodes.update({name: mapnodes_data.name}, {$setOnInsert: mapnodes_data}, {upsert: true});
     
     // Upsert sampleplanitems_data into planitmes collection
     sampleplanitems_data.forEach((planitem)=>{
@@ -87,7 +90,7 @@ Meteor.startup(() => {
     sampleplans.forEach((plan)=>{
 			plans.update({title:plan.title}, {$setOnInsert: plan}, {upsert: true});
     });
-
+    
     // Upsert guidance_data into guidanceitems collection
     guidance_data.forEach((gitem_d)=>{
 

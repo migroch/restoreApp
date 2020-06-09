@@ -42,10 +42,10 @@
                     <font NAME="Helvetica" SIZE="12"/>
                 </node>
             </node>
-            <node TEXT="Extra Curricular" FOLDED="false" POSITION="left" ID="fb0b731bb3c398ba86c152c5">
+            <node TEXT="**Extra Curricular**" FOLDED="false" POSITION="left" ID="fb0b731bb3c398ba86c152c5">
                 <edge COLOR="#66d4c0"/>
                 <font NAME="Helvetica" SIZE="13"/>
-                <node TEXT="" FOLDED="false" POSITION="left" ID="8ca4bb844340e02f461fa828">
+                <node TEXT="Before and After School" FOLDED="false" POSITION="left" ID="8ca4bb844340e02f461fa828">
                     <edge COLOR="#65d5bf"/>
                     <font NAME="Helvetica" SIZE="12"/>
                 </node>
@@ -173,7 +173,7 @@
                     <edge COLOR="#fea135"/>
                     <font NAME="Helvetica" SIZE="12"/>
                 </node>
-                <node TEXT="Air Circulation" FOLDED="false" POSITION="right" ID="e4b4a0bdcb2019015d5597f4">
+                <node TEXT="Ventilation / Air Circulation" FOLDED="false" POSITION="right" ID="e4b4a0bdcb2019015d5597f4">
                     <edge COLOR="#ff9f30"/>
                     <font NAME="Helvetica" SIZE="12"/>
                 </node>

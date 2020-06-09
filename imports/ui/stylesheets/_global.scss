@@ -4,6 +4,8 @@
 $body-bg: #F2F2F2 !important ;
 $navbar-default-bg: $body-bg;
 //$primary: #00a6a3 !default;
+//$primary: #005d80;
+//$info: #00a6a3;
 $primary: #2176BB;
 $info: #2AAAE1;
 $brand-primary: $primary;
@@ -32,9 +34,9 @@ p {
 }
 
 .app-body {
-  max-width: 1249px;
+  //max-width: 1249px;
   margin: 0 auto;
-  padding: 30px;
+  //padding: 30px;
   background-color: #F2F2F2;
 }
 

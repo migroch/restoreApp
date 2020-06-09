@@ -4,8 +4,8 @@ import Nav from './Nav.jsx';
 import Footer from '../reusable/Footer.jsx';
 import PlanEdit from './planEditor';
 import PlanView from './planView';
-// import GuidanceItems from './GuidanceItems'
-import Map from './map';
+import GuidanceItems from './GuidanceItems'
+import Map from './Map';
 
 // Couldn't make it work this way, will try again. For now I inserted the GuidanceItems component into the PlanEditor component
 /* const PlanEditorWrapper = () =>(
@@ -21,7 +21,7 @@ const App = () => (
     <div className="app-body">
       <Switch>
         <Route exact path="/map" component={Map}/>
-	      <Route exact path="/plan-viewer" component={PlanView}/>
+        <Route exact path="/plan-viewer" component={PlanView}/>
         <Route exact path="/plan-editor" component={PlanEdit}/>
         <Route exact path="/plan-editor/:id" component={PlanEdit}/>
         <Redirect to="/map" from="/"/>
