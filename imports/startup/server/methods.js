@@ -2,7 +2,7 @@
 // Define Meteor methods
 import { Meteor } from 'meteor/meteor';
 import { check, Match } from 'meteor/check';
-import { plans } from '../../api/collections';
+import { plans, planitems } from '../../api/collections';
 
 Meteor.methods({
   'updateEmailVerified'(user){
@@ -44,6 +44,31 @@ Meteor.methods({
 		const { id, title, scenario } = arg;
 		check(id, Match.OneOf(String, Mongo.ObjectID));
 		plans.update(id, { $set: { scenario, title} });
+	},
+	'planItem.remove'({planId, planItemId}) {
+		check(planId, Match.OneOf(String, Mongo.ObjectID));
+		check(planItemId, Match.OneOf(String, Mongo.ObjectID));
+		const plan = plans.findOne(planId);
+		let planItemIds = plan.planItemIds
+		const index = planItemIds.indexOf(planItemId);
+		if (index > -1) {
+			planItemIds.splice(index, 1);
+		}
+		plans.update(planId, { $set: { planItemIds } });
+	},
+	'planItem.update'({planItemId, planItem}) {
+		check(planItemId, Match.OneOf(String, Mongo.ObjectID));
+		planitems.update(planItemId, { $set: planItem });
+	},
+	'planItem.add'({planId, planItem}) {
+		check(planId, Match.OneOf(String, Mongo.ObjectID));
+
+		planitems.insert(planItem, function(err, newPlanItem){
+				const plan = plans.findOne(planId);
+				let planItemIds = [...plan.planItemIds, newPlanItem]
+				plans.update(planId, { $set: { planItemIds } });
+		});		
+
 	},
 });
 

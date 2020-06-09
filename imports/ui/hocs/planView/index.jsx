@@ -4,7 +4,7 @@ import SelectWrapper from '../../reusable/SelectWrapper';
 import { withTracker } from 'meteor/react-meteor-data';
 import { planitems, plans } from '../../../api/collections';
 import  Schemas from '../../../api/schemas';
-import PlanItem from '../../reusable/PlanItem';
+import PlanItemList from '../../reusable/PlanItemList';
 import { Input, Select, Button } from 'antd/dist/antd.min.js';
 import { useHistory } from "react-router-dom";
 import './index.scss';
@@ -27,7 +27,6 @@ const Tags = (data) => data.map(item => <div className="custom-tag" key={item+"t
    "Low Restrictions": "green"
    }
    const deletePlanWithId = ()=>{
-   console.log("ddddddd")
    Meteor.call('plans.remove', id, (err, res) => {
    if (err) {
    alert(err);
@@ -51,7 +50,6 @@ const Tags = (data) => data.map(item => <div className="custom-tag" key={item+"t
    </div>
    <div className="content-wrapper">
    <div className="content">
-   <div>Applies To:</div>
    <div className="label_1">
    Districts: 
    {/* <div className="tags-wrapper">
@@ -66,10 +64,8 @@ const Tags = (data) => data.map(item => <div className="custom-tag" key={item+"t
             </div> */}
           </div>
 </div>
-<div className="content-detail" style={{display: isDetailVisible ? "block" : "none"}}>
-  {
-    planItemIds.map(id=><PlanItem id={id} disabled key={"planItem"+id}/>)
-  }
+<div className="plan-item-list" style={{display: isDetailVisible ? "block" : "none"}}>
+  <PlanItemList data={planItemIds} editable={false}/>
 </div>
 </div>
 </div>

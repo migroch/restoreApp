@@ -61,3 +61,7 @@ Meteor.publish("mapnodes", function(){
 Meteor.publish("menuitems", function(){
     return menuitems.find({});
 });
+
+Meteor.publish("allUserData", function () {
+    return Meteor.users.find({}, {fields: {'nested.things': 1}});
+});

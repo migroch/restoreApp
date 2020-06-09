@@ -78,3 +78,24 @@
     }    
   }
 }
+.plan-item-list{
+  border: 1px solid;
+  padding: 20px;
+  background-color: #2176bb;
+  .plan-item-wrapper{
+    border: 1px solid;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: white;//00a6a3
+    .button-group {
+      float:right;
+      font-size: 20px;
+      span {
+        margin-right:10px
+      }
+    }
+    .plan-item-view{
+
+    }
+  }
+}

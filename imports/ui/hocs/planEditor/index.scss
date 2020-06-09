@@ -1,6 +1,10 @@
 
 .plan-edit {
   border: 1px solid gray;
+  .plan-edit-form {
+    background-color: #005d80;
+    padding: 25px;
+  }
   .header {
     position: relative;
     padding: 20px;
