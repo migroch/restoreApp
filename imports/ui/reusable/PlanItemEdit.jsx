@@ -11,128 +11,19 @@ import 'react-quill/dist/quill.snow.css';
 const { Option } = Select;
 const { TreeNode } = TreeSelect;
 const dateFormat = 'YYYY/MM/DD';
-
-function handleChange(value) {
-  console.log(`selected ${value}`);
-}
-handleChangeItem = (value) => {
-  console.log("item text: ", value)
-}
 const dimensions = Schemas.dimensions;
 
-const owners = [
-  {
-    name: 'owner_1',
-  },
-  {
-    name: 'owner_2',
-  },
-  {
-    name: 'owner_3',
-  },
-]
-
-const sample_categories = [
-  {
-    name: "category-1",
-    subcategories: [
-      {
-        name: "subcategory-1",
-        units: [
-          {
-            name: "unit-11"
-          },
-          {
-            name: "unit-13"
-          },
-          {
-            name: "unit-15"
-          },
-        ]
-      },
-      {
-        name: "subcategory-2",
-        units: [
-          {
-            name: "unit-21"
-          },
-          {
-            name: "unit-25"
-          },
-        ]
-      },
-      {
-        name: "subcategory-3",
-        units: [
-          {
-            name: "unit-31"
-          },
-          {
-            name: "unit-33"
-          },
-          {
-            name: "unit-35"
-          },
-        ]
-      },
-    ]
-  },
-  {
-    name: "category-2",
-    subcategories: [
-      {
-        name: "subcategory-22",
-        units: [
-          {
-            name: "unit-82"
-          },
-          {
-            name: "unit-84"
-          },
-          {
-            name: "unit-85"
-          },
-        ]
-      },
-      {
-        name: "subcategory-23",
-        units: [
-          {
-            name: "unit--91"
-          },
-          {
-            name: "unit-95"
-          },
-        ]
-      },
-      {
-        name: "subcategory-4",
-        units: [
-          {
-            name: "unit-51"
-          },
-          {
-            name: "unit-53"
-          },
-          {
-            name: "unit-5"
-          },
-        ]
-      },
-    ]
-  },
-]
 
 const makecategorylists = (categories) => {
   return (
     categories.map((category, idx)=>(
-      <TreeNode title={category.name} value={category.name} selectable={false} key={'category'+idx+category.name}>
+      <TreeNode title={category.name} value={category.id} selectable={false} key={'category'+idx+category.name}>
         {
           category.subcategories.map((subcategory, idx)=>(
-            <TreeNode title={subcategory.name} value={subcategory.name}  selectable={false} key={'subcategory'+idx+subcategory.name}>
+            <TreeNode title={subcategory.name} value={subcategory.id}  selectable={false} key={'subcategory'+idx+subcategory.name}>
               {
                 subcategory.units.map((unit, idx)=>(
-                  <TreeNode value={unit.name} title={unit.name} key={'unit'+idx+unit.name}/>
+                  <TreeNode value={unit.id} title={unit.name} key={'unit'+idx+unit.name}/>
                 ))
               }
             </TreeNode>
@@ -142,10 +33,22 @@ const makecategorylists = (categories) => {
     ))    
   )
 }
+const empty_data = {
+  unitIds: [],
+  item: {
+    text: ''
+  },
+  ownerId: '',
+  dueDate: new Date(),
+  assignedToIds: [],
+  dimension: ''
+}
 
-PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, planId}) => {
+PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, planId, users, catergoryData}) => {
   if (isLoading) return null
-  const { subcategories, item, dimension, assignedToIds, dueDate, unitIds, ownerId } = data
+
+  const { subcategories, item, dimension, assignedToIds, dueDate, unitIds, ownerId } = (id) ? data : empty_data
+
   const onFinish = planItem => {
     planItem.dueDate = planItem.dueDate.format(dateFormat)
     if (id) {
@@ -184,7 +87,7 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
         >
           <TreeSelect
             showSearch
-            style={{ width: '20%' }}
+            style={{ width: '100%' }}
             // defaultValue={['unit-21', 'unit-11']}
             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
             placeholder="Please select unit"
@@ -192,7 +95,7 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
             multiple
             disabled={disabled}
           >
-            {makecategorylists(sample_categories)}
+            {makecategorylists(catergoryData)}
           </TreeSelect>
         </Form.Item>        
         <Form.Item
@@ -200,7 +103,7 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
           name="dimension"
           rules={[{ required: true, message: 'Please input Dimension!' }]}
         >
-          <Select disabled={disabled} onChange={handleChange}>
+          <Select disabled={disabled}>
             { dimensions.map((item, index)=><Option key={index+item} value={item}>{item}</Option>) }
           </Select>   
         </Form.Item>  
@@ -209,8 +112,8 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
           name="ownerId"
           rules={[{ required: true, message: 'Please input Dimension!' }]}
         >
-          <Select disabled={disabled} onChange={handleChange}>
-            { owners.map((item, index)=><Option key={index+item.name} value={item.name}>{item.name}</Option>) }
+          <Select disabled={disabled}>
+            { users.map((user, index)=><Option key={"owner"+user.id} value={user.id}>{user.name}</Option>) }
           </Select>   
         </Form.Item>  
         <Form.Item
@@ -224,9 +127,10 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
             // placeholder="Please select"
             // onChange={handleChange}
             style={{ width: '30%' }}
-            listHeight={30}
+            // listHeight={30}
           >
             {/* {children} */}
+            { users.map((user, index)=><Option key={"assigned"+user.id} value={user.id}>{user.name}</Option>) }
           </Select>   
         </Form.Item>  
  
@@ -248,7 +152,7 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
           label=""
           name={["item", "text"]}
         >
-          <ReactQuill onChange={handleChangeItem} />
+          <ReactQuill/>
         </Form.Item>      
         <Form.Item style={{display:disabled?"none":"block"}}>
           <Button type="primary" htmlType="submit">
@@ -265,48 +169,50 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
 export default withTracker(({id}) => {
   const handles = [
     Meteor.subscribe('planitems'),
+    Meteor.subscribe('categories'),
+    Meteor.subscribe('subcategories'),
+    Meteor.subscribe('units'),
+    Meteor.subscribe('allUserData'),
+
   ];
   const isLoading = handles.some(handle => !handle.ready());
-  if (!id) {
-    const data = {
-      unitIds: [],
-      item: {
-        text: ''
-      },
-      ownerId: '',
-      dueDate: new Date(),
-      assignedToIds: [],
-      dimension: ''
-    }
-    return {
-      data,
-      isLoading: null
-    };
-  }
+
   if(isLoading){
     return {
       data: null,
       isLoading: true
     };
   }
-  let data = planitems.findOne(id)
+
+  const catergoryData = categories.find({}).fetch()
+                                  .map(category=>{
+                                    category.subcategories = subcategories.find({categoryId:category._id}).fetch()
+                                          .map(sub=>{
+                                                sub.units = units.find({subcategoryId:sub._id}).fetch()
+                                                            .map(unit=>({id:unit._id, name:unit.name}))
+                                                return {
+                                                  id: sub._id,
+                                                  name:sub.name,
+                                                  units:sub.units
+                                                }
+                                          })
+                                    return {
+                                      id: category._id,
+                                      name:category.name,
+                                      subcategories: category.subcategories
+                                    }
+                                  })                    
+  const users = Meteor.users.find({}).fetch()
+                    .map(user => ({id: user._id, name: user.profile.name}));
+
+  let data
+  if (id) {
+    data = planitems.findOne(id)
+  }
   return {
     data,
+    users,
+    catergoryData,
     isLoading: false
   };
 })(PlanItem);
-
-
-// "_id" : "K5X3yPvTbZbPcF2om", 
-// "item" : {
-//     "text" : "dummy1 plan item"
-// }, 
-// "assignedToIds" : [
-//     "NNDBCzLdEG3cb9nTP"
-// ], 
-// "dimension" : "Professional Development", 
-// "dueDate" : ISODate("2020-06-04T16:08:37.268+0000"), 
-// "ownerId" : "ReuhYSY42CB52487P", 
-// "unitIds" : [
-//     "4zYjujorqFD2QJ7yk"
-// ]

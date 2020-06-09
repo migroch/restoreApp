@@ -11,118 +11,29 @@ import 'react-quill/dist/quill.snow.css';
 const { Option } = Select;
 const { TreeNode } = TreeSelect;
 const dateFormat = 'YYYY/MM/DD';
-
-function handleChange(value) {
-  console.log(`selected ${value}`);
-}
-handleChangeItem = (value) => {
-  console.log("item text: ", value)
-}
 const dimensions = Schemas.dimensions;
 
-const owners = [
-  {
-    name: 'owner_1',
-  },
-  {
-    name: 'owner_2',
-  },
-  {
-    name: 'owner_3',
-  },
-]
+const makecategorylists = (categories) => {
+  return (
+    categories.map((category, idx)=>(
+      <TreeNode title={category.name} value={category.id} selectable={false} key={'category'+idx+category.name}>
+        {
+          category.subcategories.map((subcategory, idx)=>(
+            <TreeNode title={subcategory.name} value={subcategory.id}  selectable={false} key={'subcategory'+idx+subcategory.name}>
+              {
+                subcategory.units.map((unit, idx)=>(
+                  <TreeNode value={unit.id} title={unit.name} key={'unit'+idx+unit.name}/>
+                ))
+              }
+            </TreeNode>
+          ))
+        }
+      </TreeNode>
+    ))    
+  )
+}
 
-const sample_categories = [
-  {
-    name: "category-1",
-    subcategories: [
-      {
-        name: "subcategory-1",
-        units: [
-          {
-            name: "unit-11"
-          },
-          {
-            name: "unit-13"
-          },
-          {
-            name: "unit-15"
-          },
-        ]
-      },
-      {
-        name: "subcategory-2",
-        units: [
-          {
-            name: "unit-21"
-          },
-          {
-            name: "unit-25"
-          },
-        ]
-      },
-      {
-        name: "subcategory-3",
-        units: [
-          {
-            name: "unit-31"
-          },
-          {
-            name: "unit-33"
-          },
-          {
-            name: "unit-35"
-          },
-        ]
-      },
-    ]
-  },
-  {
-    name: "category-2",
-    subcategories: [
-      {
-        name: "subcategory-22",
-        units: [
-          {
-            name: "unit-82"
-          },
-          {
-            name: "unit-84"
-          },
-          {
-            name: "unit-85"
-          },
-        ]
-      },
-      {
-        name: "subcategory-23",
-        units: [
-          {
-            name: "unit--91"
-          },
-          {
-            name: "unit-95"
-          },
-        ]
-      },
-      {
-        name: "subcategory-4",
-        units: [
-          {
-            name: "unit-51"
-          },
-          {
-            name: "unit-53"
-          },
-          {
-            name: "unit-5"
-          },
-        ]
-      },
-    ]
-  },
-]
-PlanItemView = ({data, disabled, isLoading}) => {
+PlanItemView = ({data, disabled, isLoading, users, catergoryData}) => {
   if (isLoading) return null
   const { subcategories, item, dimension, assignedToIds, dueDate, unitIds, ownerId } = data
 
@@ -132,8 +43,8 @@ PlanItemView = ({data, disabled, isLoading}) => {
         Units:
         <TreeSelect
           showSearch
-          style={{ width: '20%' }}
-          defaultValue={['unit-21', 'unit-11']}
+          style={{ width: '100%' }}
+          defaultValue={unitIds}
           dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
           placeholder="Please select"
           allowClear
@@ -142,42 +53,17 @@ PlanItemView = ({data, disabled, isLoading}) => {
           // treeDefaultExpandAll
           // onChange={this.onChange}
         >
-          {/* <TreeNode value="Category_1" title="parent 1" selectable={false}>
-            <TreeNode value="Subcategory_2" title="parent 1-0" >
-              <TreeNode value="leaf1" title="my leaf" />
-              <TreeNode value="leaf2" title="your leaf" />
-            </TreeNode>
-            <TreeNode value="parent 1-1" title="parent 1-1" selectable={false}>
-              <TreeNode value="sss" title={<b style={{ color: '#08c' }}>sss</b>} />
-            </TreeNode>
-          </TreeNode> */}
-          {
-            sample_categories.map((category, idx)=>(
-              <TreeNode title={category.name} value={category.name} selectable={false} key={'category'+idx+category.name}>
-                {
-                  category.subcategories.map((subcategory, idx)=>(
-                    <TreeNode title={subcategory.name} value={subcategory.name}  selectable={false} key={'subcategory'+idx+subcategory.name}>
-                      {
-                        subcategory.units.map((unit, idx)=>(
-                          <TreeNode value={unit.name} title={unit.name} key={'unit'+idx+unit.name}/>
-                        ))
-                      }
-                    </TreeNode>
-                  ))
-                }
-              </TreeNode>
-            ))
-          }
+          {makecategorylists(catergoryData)}
         </TreeSelect>
       </div>  
       <div>Dimension: 
-        <Select defaultValue={dimension} style={{ width: 180 }} disabled={disabled} onChange={handleChange}>
+        <Select defaultValue={dimension} style={{ width: 180 }} disabled={disabled}>
           { dimensions.map((item, index)=><Option key={index+item} value={item}>{item}</Option>) }
         </Select>        
       </div>
       <div>Owner: 
-        <Select defaultValue={"owner"} style={{ width: 180 }} disabled={disabled} onChange={handleChange}>
-          { owners.map((item, index)=><Option key={index+item.name} value={item.name}>{item.name}</Option>) }
+        <Select defaultValue={ownerId} style={{ width: 180 }} disabled={disabled} >
+          { users.map((user, index)=><Option key={"owner"+user.id} value={user.id}>{user.name}</Option>) }
         </Select>        
       </div>
       <div>Assigned To: 
@@ -190,7 +76,7 @@ PlanItemView = ({data, disabled, isLoading}) => {
           style={{ width: '30%' }}
           listHeight={30}
         >
-          {/* {children} */}
+          { users.map((user, index)=><Option key={"assigned"+user.id} value={user.id}>{user.name}</Option>) }
         </Select>      
       </div>      
       <div>
@@ -227,12 +113,32 @@ export default withTracker(({id}) => {
       isLoading: true
     };
   }
-  let data = planitems.findOne(id)
+  const data = planitems.findOne(id)
+  const catergoryData = categories.find({}).fetch().
+                    map(category=>{
+                      category.subcategories = subcategories.find({categoryId:category._id}).fetch()
+                            .map(sub=>{
+                                  sub.units = units.find({subcategoryId:sub._id}).fetch()
+                                              .map(unit=>({id:unit._id, name:unit.name}))
+                                  return {
+                                    id: sub._id,
+                                    name:sub.name,
+                                    units:sub.units
 
-  // let users = Meteor.users.find({}).fetch().map(user=>user.profile.name)
-  // console.log("users:::::", users)
+                                  }
+                            })
+                      return {
+                        id: category._id,
+                        name:category.name,
+                        subcategories: category.subcategories
+                      }
+                    })  
+  const users = Meteor.users.find({}).fetch()
+                    .map(user => ({id: user._id, name: user.profile.name}))
   return {
     data,
+    users,
+    catergoryData,
     isLoading: false
   };
 })(PlanItemView);
