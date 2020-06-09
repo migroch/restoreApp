@@ -2,7 +2,7 @@
 // Publish mongo collections
 
 import { Meteor } from 'meteor/meteor';
-import { plans, planitems, guidanceitems, categories, subcategories, units, menuitems} from '../../api/collections.js';
+import { plans, planitems, guidanceitems, categories, subcategories, units, mapnodes, menuitems} from '../../api/collections.js';
 
 // User custom top level fields
 Meteor.publish(null, function(){
@@ -50,6 +50,11 @@ Meteor.publish("subcategories", function(){
 // Units
 Meteor.publish("units", function(){
     return units.find({});
+});
+
+// Mapnodes
+Meteor.publish("mapnodes", function(){
+    return mapnodes.find({});
 });
 
 // Menu Items

@@ -28,10 +28,12 @@ let units = new Mongo.Collection('units');
 units.schema = Schemas.units;
 units.attachSchema(Schemas.units);
 
+let mapnodes = new Mongo.Collection('mapnodes');
+
 let menuitems = new Mongo.Collection('menuitems');
 menuitems.schema = Schemas.menuitems;
 menuitems.attachSchema(Schemas.menuitems);
 
 
 
-export { plans, planitems, guidanceitems, categories, subcategories, units, menuitems};
+export { plans, planitems, guidanceitems, categories, subcategories, units, mapnodes, menuitems};

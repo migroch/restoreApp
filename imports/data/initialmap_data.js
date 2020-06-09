@@ -8,12 +8,12 @@ const x2js = new X2JS();
 const data_mm = Assets.getText('LogisticsMap.mm');
 const data_json = x2js.xml2js(data_mm);
 
-const tree = convertFreemindNodes(data_json);
+const mapnodes_data = convertFreemindNodes(data_json);
 const categories_data = [];
 const subcategories_data = [];
 const units_data = [];
 
-tree.children.forEach( (child) =>{
+mapnodes_data.children.forEach( (child) =>{
     let category = child.name;
     categories_data.push({name: category});
     child.children.forEach( (child) =>{
@@ -26,4 +26,4 @@ tree.children.forEach( (child) =>{
     });
 });
 
-export {tree, categories_data, subcategories_data, units_data}
+export {mapnodes_data, categories_data, subcategories_data, units_data}
