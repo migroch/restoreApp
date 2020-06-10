@@ -4,7 +4,7 @@
 export default menuitems_data = [
 	{
 		key:'Map',
-		title:'Map',
+		title:'Logistic Map',
 		route:'/map',
 	},
 	{

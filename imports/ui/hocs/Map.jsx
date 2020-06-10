@@ -7,7 +7,8 @@ import {mapnodes} from '../../api/collections.js'
 import * as d3 from "d3";
 
 const Categories =  ['Health & Safety / Operations', 'Instructional Programs',  'Student Support & Family Engagement']
-const Colors = ['#ff8500','#00a6a3','#2AAAE1']
+const Colors = ['#FF9263','#00a6a3','#2AAAE1'] 
+//const textColors =  ['#C06D4A','#006765','#196181'] 
 const LeftCategories = ['Instructional Programs',  'Student Support & Family Engagement']
 
 class Map extends Component {
@@ -34,7 +35,9 @@ class Map extends Component {
       )
     }else{
       return(
-	<div id="mapcanvas" className="">
+	<div id="Map" className="scrollspy">
+	  <div id="mapcanvas" className="">
+	  </div>
 	</div>
       );
     }    
@@ -48,15 +51,18 @@ class Map extends Component {
 	 height =this.state.height,
 	 treeWidth = 0.3*width,
 	 treeHeight = 0.95*height,
-	//dendradius = width / 2, // radius of dendrogram
-        noderadius = 3; // radius of nodes	    
+	 shiftdx = 0.025*width,
+	 shiftdy = 0.025*height,
+	 //dendradius = width / 2, // radius of dendrogram
+         noderadius = 12; // radius of nodes
+    
 
     const svg = d3.select("#mapcanvas").append("svg")
 		  .attr("id", "svgMap")
 		  .attr("width", width)
 		  .attr("height", height)
 		  .append("g")
-		  //.attr("transform", "translate(40,0)");
+		  .attr("transform", "translate("+shiftdx+","+shiftdy+")");
 
     //console.log(nodes_data);
     let LeftNodes = {...nodes_data}; LeftNodes.children = nodes_data.children.filter(child => LeftCategories.includes(child.name) );
@@ -72,14 +78,14 @@ class Map extends Component {
     
     tree(rootLeft);
     tree(rootRight);
-    rootLeft.x = rootRight.x; rootLeft.y = rootRight.y;
-    let root = rootRight.copy();
-    //rootRight.x = rootLeft.x; rootRight.y = rootLeft.y;
-    //let root = rootLeft.copy();
+    //rootLeft.x = rootRight.x; rootLeft.y = rootRight.y;
+    //let root = rootRight.copy();
+    rootRight.x = rootLeft.x; rootRight.y = rootLeft.y;
+    let root = rootLeft.copy();
     tree(root);
-    root.children = rootRight.children.concat(rootLeft.children);
-    //root.children = rootLeft.children.concat(rootRight.children);
-        
+    //root.children = rootRight.children.concat(rootLeft.children);
+    root.children = rootLeft.children.concat(rootRight.children);
+
     let flip = (d) => {
       let anames = d.ancestors().map( a => a.data.name);
       let inLeft = anames.filter(e => LeftCategories.includes(e) );
@@ -87,6 +93,19 @@ class Map extends Component {
       if (inLeft.length) flip = -1;
       return flip;
     };
+
+    let selectColor = (d) =>{
+      let node =  d.target ?  d.target :  d;
+      let anames = node.ancestors().map( a => a.data.name);
+      let index = Categories.findIndex( cat => anames.includes(cat) );
+      return Colors[index];
+    }
+
+    let nodeSize = (d) =>{
+      let node =  d.source ?  d.source :  d;
+      let size = noderadius - 0.25*noderadius*node.depth;
+      return size;
+    }
    
     // Link generator
     const linksGenerator = d3.linkHorizontal()
@@ -95,14 +114,6 @@ class Map extends Component {
 			     })
 			     .y(function(d) { return d.x; });
 
-    let selectColor = (d) =>{
-      let node =  d.target ?  d.target :  d;
-      //console.log(node)
-      let anames = node.ancestors().map( a => a.data.name);
-      let index = Categories.findIndex( cat => anames.includes(cat) );
-      return Colors[index];
-    }
-    
     // Add links between nodes
     const link = svg.selectAll("path")
 		    .data(root.links())
@@ -111,7 +122,8 @@ class Map extends Component {
 		    .attr("class", "link")
 		    .attr("fill", "none")
 		    .attr("stroke", d => selectColor(d))
-		    .attr("stroke-width", noderadius+3);	    
+		    .attr("stroke-width", d=> nodeSize(d))
+		    .attr("stroke-opacity", '0.6');	    	    
     
     // Add  nodes.
     const node = svg.selectAll("g")
@@ -122,22 +134,50 @@ class Map extends Component {
 		      return "translate(" + (flip(d)*d.y + 0.5*width) + "," + d.x + ")";
 		    });
                    //.attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
-
-		     
-    node.filter(d => (d.depth >0 && d.children)).append("path")
+    
+    // Add triangles/arrows
+    node.filter(d => (d.depth == 0)).append("path")
 		     .attr('d', d => {
-		       let size = noderadius+2;
-		       return  'M ' + 0 +' '+ 0 + ' l '+size+' '+size+' l '+ -2*size+' 0 z';
+		       let size =  0.75*nodeSize(d);
+		       let dx = '-'+0.9*size;
+		       let dy = 0;
+		       return  ('M ' + dy +' '+ dx + ' l '+size+' '+size+' l '+ -2*size+' 0 z');
 		     })
-		     .attr("transform", function(d) { return "rotate(" + (flip(d)*90) + ")"; })
-		     .attr("fill", "#fff")
-      
-      node.filter(d => (!d.children)).append("circle")
+		     .attr("transform", function(d) { return "rotate(" + (90) + ")"; })
+      		     .attr("fill", "#fff");
+
+    node.filter(d => (d.depth == 0)).append("path")
+	.attr('d', d => {
+	  let size =  0.75*nodeSize(d);
+	  let dx = '-'+0.9*size;
+	  let dy = 0;
+	  return  ('M ' + dy +' '+ dx + ' l '+size+' '+size+' l '+ -2*size+' 0 z');
+	})
+	.attr("transform", function(d) { return "rotate(" + (-90) + ")"; })
+      	.attr("fill", "#fff");
+    
+    node.filter(d => (d.depth >0 && d.children)).append("path")
+	.attr('d', d => {
+	  let size =  0.75*nodeSize(d);
+	  let dx = '-'+size;
+	  let dy = 0;
+	  return  ('M ' + dy +' '+ dx + ' l '+size+' '+size+' l '+ -2*size+' 0 z');
+	})
+	.attr("transform", function(d) { return "rotate(" + (flip(d)*90) + ")"; })
+      	.attr("fill", "#fff");
+
+    // Add circles
+    node.filter(d => (!d.children)).append("circle")
       		     .attr("fill", "#fff")
-      		     .attr("r", noderadius)
+      		     .attr("r", d => nodeSize(d))
 		     .attr("stroke", d => selectColor(d))
 		     .attr("stroke-width", "2px")	    
-      
+
+      // Add text background
+      node.filter(d => (d.depth > 0)).append("text")
+
+
+      // Add Black Text
       node.filter(d => (d.depth > 0)).append("text")
 		     .attr("dx", function(d) {
 		       let f = flip(d);
@@ -151,7 +191,42 @@ class Map extends Component {
 		       return dy;
 		     })
     		     .attr("font-family", "Helvetica")
-    		     .attr("font-size", d => (d.children ? 16 : 13 ))
+    		     .attr("font-size", d => {
+		       let fs = 17 - d.depth
+		       return fs;
+		     })
+		     //.attr("font-weight", 'bold' )
+		     .attr("text-anchor", function(d) {
+		       if (flip(d) == 1) {
+			 return d.children ? "middle" : "start";
+		       } else {
+			 return d.children ? "middle" : "end";
+		       };
+		     })
+		     //.attr("fill", d => selectColor(d))
+		     .attr("fill", 'black')
+		     .text(function(d) {
+		       return d.data.name;
+		     });      
+      // Add Colored Text
+      node.filter(d => (d.depth > 0)).append("text")
+		     .attr("dx", function(d) {
+		       let f = flip(d);
+		       let dx = d.children ? 0 : f*8;
+		       if (d.depth == 1)  dx = f*-50;
+		       return dx;
+		     })
+		     .attr("dy",  function(d) {
+		       let  dy =  d.depth > 0 ? -15 : 3;
+		       dy = d.children ? dy : 3;	 
+		       return dy;
+		     })
+    		     .attr("font-family", "Helvetica")
+    		     .attr("font-size", d => {
+		       let fs = 17 - d.depth
+		       return fs;
+		     })
+	             //.attr("font-weight", 'bold' )
 		     .attr("text-anchor", function(d) {
 		       if (flip(d) == 1) {
 			 return d.children ? "middle" : "start";
@@ -160,6 +235,7 @@ class Map extends Component {
 		       };
 		     })
 		     .attr("fill", d => selectColor(d))
+		     .attr("fill-opacity", '0.5')
 		     .text(function(d) {
 		       return d.data.name;
 		     });

@@ -9,7 +9,7 @@ const Schemas = {};
 Schemas.scenarios = ['High Restrictions', 'Medium Restrictions', 'Low Restrictions'];
 
 // Dimensions
-Schemas.dimensions = ['Communication', 'Data/Technology', 'Professional Development', 'HR/Bargaining Units', 'Policy/Governance/Liability', 'Finances/Resources'  ];
+Schemas.dimensions = ['Communication', 'Data / Technology', 'Professional Development', 'HR / Bargaining Units', 'Policy / Governance / Liability', 'Finances / Resources'  ];
 
 // Guidance Types
 Schemas.guidance_types = ['Assumptions', 'Actions', 'Resources', 'Questions', 'Considerations', 'Goals'];

@@ -11,11 +11,11 @@ export default sampleplanitems_data = [
 	item:{text:'dummy1 plan item'}
     },
     {
-	unitIds: ['PPE/Equipment'],  // converted to Ids in fixtures
+	unitIds: ['PPE / Equipment'],  // converted to Ids in fixtures
 	ownerId: 'dummy2',   // converted to Ids in fixtures
 	assignedToIds: ['dummy1', 'dummy2'],  // converted to Ids in fixtures
 	dueDate: Date.now(),
-	dimension: 'Policy/Governance/Liability',
+	dimension: 'Policy / Governance / Liability',
 	item:{text:'dummy2 plan item'}
     },
     {
@@ -23,7 +23,7 @@ export default sampleplanitems_data = [
 	ownerId: 'dummy3',   // converted to Ids in fixtures
 	assignedToIds: ['dummy1'],  // converted to Ids in fixtures
 	dueDate: Date.now(),
-	dimension: 'Finances/Resources',
+	dimension: 'Finances / Resources',
 	item:{text:'dummy3 plan item'}
     },
 ]

@@ -16,25 +16,18 @@
       margin-top: 30px;
       background-color: grey;
       border: 1px solid grey;
+      cursor:pointer;
       .header {
         position: relative;
-        padding: 20px;
         border-bottom: 1px solid grey;
-        .title {
-          text-align: center;
-          font-family: 'Roboto';
-          font-style: normal;
-          font-weight: normal;
-          font-size: 25px;
-          line-height: 28px;
-        }
-        .right {
-          position: absolute;
-          right: 15px;
-          img {
+	height: 30px;
+	.right {
+	  color:black;
+          .icon {
             cursor: pointer;
-            width: 18px;
-            margin-left: 10px;
+	    color:black !important;
+            //width: 18px;
+            //margin-left: 10px;
           }
         }
       }
@@ -42,6 +35,14 @@
     .content-wrapper {
       padding: 15px;
       background-color: white;
+      .title {
+          text-align: center;
+          font-family: 'Roboto';
+          font-style: normal;
+          font-weight: normal;
+          font-size: 25px;
+          line-height: 28px;
+      }
       .content {
         // padding: 15px;
       }

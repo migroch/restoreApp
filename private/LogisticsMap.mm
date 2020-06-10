@@ -3,80 +3,32 @@
     <node TEXT="**Logistics Map**" FOLDED="false" POSITION="right" ID="5eb4368be4a23beb34afd2dc" X_COGGLE_POSX="-14" X_COGGLE_POSY="21">
         <edge COLOR="#b4b4b4"/>
         <font NAME="Helvetica" SIZE="18"/>
-        <node TEXT="**Instructional Programs**" FOLDED="false" POSITION="left" ID="311e21797dd05e1cfc297dd7">
-            <edge COLOR="#67d7c4"/>
+        <node TEXT="**Student Support &amp; Family Engagement**" FOLDED="false" POSITION="left" ID="f353b987de3abc2f82eed9d6">
+            <edge COLOR="#0da7d3"/>
             <font NAME="Helvetica" SIZE="15"/>
-            <node TEXT="**Instructional Design**" FOLDED="false" POSITION="left" ID="49f2a7b1ceda79b64141ed6f">
-                <edge COLOR="#63d5c0"/>
+            <node TEXT="Basic Needs (Food, Housing, etc.)" FOLDED="false" POSITION="left" ID="84554e45683809fd34c30a40">
+                <edge COLOR="#0ca1c8"/>
                 <font NAME="Helvetica" SIZE="13"/>
-                <node TEXT="Distance/Blended Learning" FOLDED="false" POSITION="left" ID="cbff1f9142947bd76dd86afb">
-                    <edge COLOR="#5fd5bd"/>
-                    <font NAME="Helvetica" SIZE="12"/>
-                </node>
-                <node TEXT="Curriculum" FOLDED="false" POSITION="left" ID="d42a3c2897e6c2b2ffcceb7b">
-                    <edge COLOR="#5dd5bd"/>
-                    <font NAME="Helvetica" SIZE="12"/>
-                </node>
-                <node TEXT="Assessment / Grading / Testing" FOLDED="false" POSITION="left" ID="794be2e3e476808566f9037f">
-                    <edge COLOR="#65d9c1"/>
-                    <font NAME="Helvetica" SIZE="12"/>
-                </node>
-                <node TEXT="Field Trips / Work Based Learning" FOLDED="false" POSITION="left" ID="5f8b7be27ba5c9e0396a6668">
-                    <edge COLOR="#6ad6c0"/>
-                    <font NAME="Helvetica" SIZE="12"/>
-                </node>
             </node>
-            <node TEXT="**Special  Student Needs**" FOLDED="false" POSITION="left" ID="7dadcbe754864f2ec0d84324">
-                <edge COLOR="#68d8c3"/>
+            <node TEXT="Social Emotional Support" FOLDED="false" POSITION="left" ID="7a446542f131c1094238a1d3">
+                <edge COLOR="#0bb2dd"/>
                 <font NAME="Helvetica" SIZE="13"/>
-                <node TEXT="Special Education" FOLDED="false" POSITION="left" ID="0eeba1818b20d1ad924c0c1d">
-                    <edge COLOR="#66dac2"/>
-                    <font NAME="Helvetica" SIZE="12"/>
-                </node>
-                <node TEXT="English Learners" FOLDED="false" POSITION="left" ID="3ec1afc1dc296a26b6137468">
-                    <edge COLOR="#6cdac3"/>
-                    <font NAME="Helvetica" SIZE="12"/>
-                </node>
-                <node TEXT="504" FOLDED="false" POSITION="left" ID="d17d022a0b359b26d7609048">
-                    <edge COLOR="#6fd9c3"/>
-                    <font NAME="Helvetica" SIZE="12"/>
-                </node>
             </node>
-            <node TEXT="**Extra Curricular**" FOLDED="false" POSITION="left" ID="fb0b731bb3c398ba86c152c5">
-                <edge COLOR="#66d4c0"/>
+            <node TEXT="Outreach to Hard to Find Students" FOLDED="false" POSITION="left" ID="62d1256fbc72892de4aea4cf">
+                <edge COLOR="#0ea5cc"/>
                 <font NAME="Helvetica" SIZE="13"/>
-                <node TEXT="Before and After School" FOLDED="false" POSITION="left" ID="8ca4bb844340e02f461fa828">
-                    <edge COLOR="#65d5bf"/>
-                    <font NAME="Helvetica" SIZE="12"/>
-                </node>
             </node>
-            <node TEXT="**Structure**" FOLDED="false" POSITION="left" ID="a97e457ef94d7df887177c5b">
-                <edge COLOR="#68d6c2"/>
+            <node TEXT="Referrals to 3rd Party Service Providers" FOLDED="false" POSITION="left" ID="1d4ab3138aa10f117f6f8826">
+                <edge COLOR="#0ea7ce"/>
                 <font NAME="Helvetica" SIZE="13"/>
-                <node TEXT="Internet/Tech Access" FOLDED="false" POSITION="left" ID="befab8be31bc3c20a8929583">
-                    <edge COLOR="#62d2bc"/>
-                    <font NAME="Helvetica" SIZE="12"/>
-                </node>
-                <node TEXT="Master Scheduling / Teacher Schedules" FOLDED="false" POSITION="left" ID="bb0af9c06aedfc12bb8595ef">
-                    <edge COLOR="#6ed6c1"/>
-                    <font NAME="Helvetica" SIZE="12"/>
-                </node>
-                <node TEXT="Schedule" FOLDED="false" POSITION="left" ID="0179a30b41ad0b0d4e375184">
-                    <edge COLOR="#65d7c0"/>
-                    <font NAME="Helvetica" SIZE="12"/>
-                </node>
-                <node TEXT="Classroom Management" FOLDED="false" POSITION="left" ID="dbf4689cc3270e009fbe001b">
-                    <edge COLOR="#71d7c3"/>
-                    <font NAME="Helvetica" SIZE="12"/>
-                </node>
-                <node TEXT="Before/After School Programs" FOLDED="false" POSITION="left" ID="615f8874adb9c7c2dc9a288c">
-                    <edge COLOR="#60d2bc"/>
-                    <font NAME="Helvetica" SIZE="12"/>
-                </node>
-                <node TEXT="Academic Guidance" FOLDED="false" POSITION="left" ID="189058df2ce2c31aed577d14">
-                    <edge COLOR="#73d7c3"/>
-                    <font NAME="Helvetica" SIZE="12"/>
-                </node>
+            </node>
+            <node TEXT="Parent Social / Emotional Support" FOLDED="false" POSITION="left" ID="76643079db7658f5e23363fd">
+                <edge COLOR="#0bb2dd"/>
+                <font NAME="Helvetica" SIZE="13"/>
+            </node>
+            <node TEXT="Parent Input / Decision-making" FOLDED="false" POSITION="left" ID="7da6946fba8904c35b20cc37">
+                <edge COLOR="#10b0da"/>
+                <font NAME="Helvetica" SIZE="13"/>
             </node>
         </node>
         <node TEXT="**Health &amp; Safety / Operations**" FOLDED="false" POSITION="right" ID="5b56638a3934dd86f9cdeed0">
@@ -94,10 +46,10 @@
                     <font NAME="Helvetica" SIZE="12"/>
                 </node>
             </node>
-            <node TEXT="**Sanitizing/ Disinfecting**" FOLDED="false" POSITION="right" ID="bab8665f8f387093b6374ede">
+            <node TEXT="**Sanitizing / Disinfecting**" FOLDED="false" POSITION="right" ID="bab8665f8f387093b6374ede">
                 <edge COLOR="#ffa12c"/>
                 <font NAME="Helvetica" SIZE="13"/>
-                <node TEXT="PPE/Equipment" FOLDED="false" POSITION="right" ID="8158812d21ba82b86534b25d">
+                <node TEXT="PPE / Equipment" FOLDED="false" POSITION="right" ID="8158812d21ba82b86534b25d">
                     <edge COLOR="#ff9c28"/>
                     <font NAME="Helvetica" SIZE="12"/>
                 </node>
@@ -223,32 +175,80 @@
                 </node>
             </node>
         </node>
-        <node TEXT="**Student Support &amp; Family Engagement**" FOLDED="false" POSITION="left" ID="f353b987de3abc2f82eed9d6">
-            <edge COLOR="#0da7d3"/>
+        <node TEXT="**Instructional Programs**" FOLDED="false" POSITION="left" ID="311e21797dd05e1cfc297dd7">
+            <edge COLOR="#67d7c4"/>
             <font NAME="Helvetica" SIZE="15"/>
-            <node TEXT="Basic Needs (Food, Housing, etc.)" FOLDED="false" POSITION="left" ID="84554e45683809fd34c30a40">
-                <edge COLOR="#0ca1c8"/>
+            <node TEXT="**Instructional Design**" FOLDED="false" POSITION="left" ID="49f2a7b1ceda79b64141ed6f">
+                <edge COLOR="#63d5c0"/>
                 <font NAME="Helvetica" SIZE="13"/>
+                <node TEXT="Distance / Blended Learning" FOLDED="false" POSITION="left" ID="cbff1f9142947bd76dd86afb">
+                    <edge COLOR="#5fd5bd"/>
+                    <font NAME="Helvetica" SIZE="12"/>
+                </node>
+                <node TEXT="Curriculum" FOLDED="false" POSITION="left" ID="d42a3c2897e6c2b2ffcceb7b">
+                    <edge COLOR="#5dd5bd"/>
+                    <font NAME="Helvetica" SIZE="12"/>
+                </node>
+                <node TEXT="Assessment / Grading / Testing" FOLDED="false" POSITION="left" ID="794be2e3e476808566f9037f">
+                    <edge COLOR="#65d9c1"/>
+                    <font NAME="Helvetica" SIZE="12"/>
+                </node>
+                <node TEXT="Field Trips / Work Based Learning" FOLDED="false" POSITION="left" ID="5f8b7be27ba5c9e0396a6668">
+                    <edge COLOR="#6ad6c0"/>
+                    <font NAME="Helvetica" SIZE="12"/>
+                </node>
             </node>
-            <node TEXT="Social Emotional Support" FOLDED="false" POSITION="left" ID="7a446542f131c1094238a1d3">
-                <edge COLOR="#0bb2dd"/>
+            <node TEXT="**Special  Student Needs**" FOLDED="false" POSITION="left" ID="7dadcbe754864f2ec0d84324">
+                <edge COLOR="#68d8c3"/>
                 <font NAME="Helvetica" SIZE="13"/>
+                <node TEXT="Special Education" FOLDED="false" POSITION="left" ID="0eeba1818b20d1ad924c0c1d">
+                    <edge COLOR="#66dac2"/>
+                    <font NAME="Helvetica" SIZE="12"/>
+                </node>
+                <node TEXT="English Learners" FOLDED="false" POSITION="left" ID="3ec1afc1dc296a26b6137468">
+                    <edge COLOR="#6cdac3"/>
+                    <font NAME="Helvetica" SIZE="12"/>
+                </node>
+                <node TEXT="504" FOLDED="false" POSITION="left" ID="d17d022a0b359b26d7609048">
+                    <edge COLOR="#6fd9c3"/>
+                    <font NAME="Helvetica" SIZE="12"/>
+                </node>
             </node>
-            <node TEXT="Outreach to Hard to Find Students" FOLDED="false" POSITION="left" ID="62d1256fbc72892de4aea4cf">
-                <edge COLOR="#0ea5cc"/>
+            <node TEXT="**Extra Curricular**" FOLDED="false" POSITION="left" ID="fb0b731bb3c398ba86c152c5">
+                <edge COLOR="#66d4c0"/>
                 <font NAME="Helvetica" SIZE="13"/>
+                <node TEXT="Before and After School" FOLDED="false" POSITION="left" ID="8ca4bb844340e02f461fa828">
+                    <edge COLOR="#65d5bf"/>
+                    <font NAME="Helvetica" SIZE="12"/>
+                </node>
             </node>
-            <node TEXT="Referrals to 3rd Party Service Providers" FOLDED="false" POSITION="left" ID="1d4ab3138aa10f117f6f8826">
-                <edge COLOR="#0ea7ce"/>
+            <node TEXT="**Structure**" FOLDED="false" POSITION="left" ID="a97e457ef94d7df887177c5b">
+                <edge COLOR="#68d6c2"/>
                 <font NAME="Helvetica" SIZE="13"/>
-            </node>
-            <node TEXT="Parent Social/Emotional Support" FOLDED="false" POSITION="left" ID="76643079db7658f5e23363fd">
-                <edge COLOR="#0bb2dd"/>
-                <font NAME="Helvetica" SIZE="13"/>
-            </node>
-            <node TEXT="Parent Input / Decision-making" FOLDED="false" POSITION="left" ID="7da6946fba8904c35b20cc37">
-                <edge COLOR="#10b0da"/>
-                <font NAME="Helvetica" SIZE="13"/>
+                <node TEXT="Internet / Tech Access" FOLDED="false" POSITION="left" ID="befab8be31bc3c20a8929583">
+                    <edge COLOR="#62d2bc"/>
+                    <font NAME="Helvetica" SIZE="12"/>
+                </node>
+                <node TEXT="Master Scheduling / Teacher Schedules" FOLDED="false" POSITION="left" ID="bb0af9c06aedfc12bb8595ef">
+                    <edge COLOR="#6ed6c1"/>
+                    <font NAME="Helvetica" SIZE="12"/>
+                </node>
+                <node TEXT="Schedule" FOLDED="false" POSITION="left" ID="0179a30b41ad0b0d4e375184">
+                    <edge COLOR="#65d7c0"/>
+                    <font NAME="Helvetica" SIZE="12"/>
+                </node>
+                <node TEXT="Classroom Management" FOLDED="false" POSITION="left" ID="dbf4689cc3270e009fbe001b">
+                    <edge COLOR="#71d7c3"/>
+                    <font NAME="Helvetica" SIZE="12"/>
+                </node>
+                <node TEXT="Before/After School Programs" FOLDED="false" POSITION="left" ID="615f8874adb9c7c2dc9a288c">
+                    <edge COLOR="#60d2bc"/>
+                    <font NAME="Helvetica" SIZE="12"/>
+                </node>
+                <node TEXT="Academic Guidance" FOLDED="false" POSITION="left" ID="189058df2ce2c31aed577d14">
+                    <edge COLOR="#73d7c3"/>
+                    <font NAME="Helvetica" SIZE="12"/>
+                </node>
             </node>
         </node>
     </node>
@@ -260,28 +260,28 @@
         <edge COLOR="#b4b4b4"/>
         <font NAME="Helvetica" SIZE="8"/>
     </x-coggle-rootnode>
-    <x-coggle-rootnode TEXT="Finances / Resources" FOLDED="false" POSITION="right" ID="612c54c0cfd5744daae0469f" X_COGGLE_POSX="444" X_COGGLE_POSY="274">
-        <edge COLOR="#272727"/>
+    <x-coggle-rootnode TEXT="HR / Bargaining Units" FOLDED="false" POSITION="right" ID="7611bf75d445bac3fc29afd4" X_COGGLE_POSX="-162" X_COGGLE_POSY="274">
+        <edge COLOR="#e23e2b"/>
         <font NAME="Helvetica" SIZE="16"/>
     </x-coggle-rootnode>
-    <x-coggle-rootnode TEXT="Policy/Governance/Liability" FOLDED="false" POSITION="right" ID="3e0544c9d2f72314a24077f4" X_COGGLE_POSX="244" X_COGGLE_POSY="274">
+    <x-coggle-rootnode TEXT="Policy / Governance / Liability" FOLDED="false" POSITION="right" ID="3e0544c9d2f72314a24077f4" X_COGGLE_POSX="244" X_COGGLE_POSY="274">
         <edge COLOR="#a65427"/>
         <font NAME="Helvetica" SIZE="16"/>
     </x-coggle-rootnode>
-    <x-coggle-rootnode TEXT="Professional Development" FOLDED="false" POSITION="right" ID="aee5f7fc5c0ba9465813a83f" X_COGGLE_POSX="31" X_COGGLE_POSY="274">
-        <edge COLOR="#075978"/>
+    <x-coggle-rootnode TEXT="Data / Technology" FOLDED="false" POSITION="right" ID="2e66c1f193bd3d185ee3a64d" X_COGGLE_POSX="-326" X_COGGLE_POSY="274">
+        <edge COLOR="#5f5f5f"/>
         <font NAME="Helvetica" SIZE="16"/>
     </x-coggle-rootnode>
     <x-coggle-rootnode TEXT="Communication" FOLDED="false" POSITION="right" ID="f81ded447ede1f97fc093f06" X_COGGLE_POSX="-469" X_COGGLE_POSY="274">
         <edge COLOR="#0a660d"/>
         <font NAME="Helvetica" SIZE="16"/>
     </x-coggle-rootnode>
-    <x-coggle-rootnode TEXT="HR/Bargaining Units" FOLDED="false" POSITION="right" ID="7611bf75d445bac3fc29afd4" X_COGGLE_POSX="-162" X_COGGLE_POSY="274">
-        <edge COLOR="#e23e2b"/>
+    <x-coggle-rootnode TEXT="Finances / Resources" FOLDED="false" POSITION="right" ID="612c54c0cfd5744daae0469f" X_COGGLE_POSX="444" X_COGGLE_POSY="274">
+        <edge COLOR="#272727"/>
         <font NAME="Helvetica" SIZE="16"/>
     </x-coggle-rootnode>
-    <x-coggle-rootnode TEXT="Data / Technology" FOLDED="false" POSITION="right" ID="2e66c1f193bd3d185ee3a64d" X_COGGLE_POSX="-326" X_COGGLE_POSY="274">
-        <edge COLOR="#5f5f5f"/>
+    <x-coggle-rootnode TEXT="Professional Development" FOLDED="false" POSITION="right" ID="aee5f7fc5c0ba9465813a83f" X_COGGLE_POSX="31" X_COGGLE_POSY="274">
+        <edge COLOR="#075978"/>
         <font NAME="Helvetica" SIZE="16"/>
     </x-coggle-rootnode>
     <x-coggle-rootnode TEXT="Updated 5/29/2020" FOLDED="false" POSITION="right" ID="20a4c2124b56a5205562080c" X_COGGLE_POSX="483" X_COGGLE_POSY="302">

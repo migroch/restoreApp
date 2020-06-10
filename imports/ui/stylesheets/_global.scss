@@ -6,17 +6,19 @@ $navbar-default-bg: $body-bg;
 //$primary: #00a6a3 !default;
 //$primary: #005d80;
 //$info: #00a6a3;
-$primary: #2176BB;
-$info: #2AAAE1;
+$primary:#2176BB;
+$info:  #2AAAE1;
+$success: #00a6a3;
+$danger:  #FF9263 ;  
 $brand-primary: $primary;
 $brand-info: $info;
-$link-color:  $primary;
-$link-active-color: $info;
-$link-hover-color:   $link-active-color;
+$link-color:  $info;
+$link-active-color: $primary;
+$link-hover-color:   $primary;
 $link-hover-decoration: none;
 $navbar-default-link-color: $link-color;
 $navbar-default-link-active-color: $link-active-color;
-$navbar-default-link-hover-color: $link-active-color;
+$navbar-default-link-hover-color: $link-hover-color;
 $tooltip-bg: $link-active-color;
 
 body {

@@ -66,7 +66,7 @@ class Nav extends Component {
 	<div>
 	  <nav className="navbar navbar-expand-lg navbar-light  fixed-top" style={{backgroundColor: '#F2F2F2'}}>
 	    {/*Logo & Brand*/}
-	    <a  className="navbar-brand" href="#">
+	    <a  className="navbar-brand" href="/">
 	      <img className=" " style={styles.logoStyle} alt="Santa Cruz COE RESTORE Logo" src="Restore_logo.png"/>
 	      {/* <div className="d-inline-block text-center align-middle pl-2">
 	      <h5 className="m-0" style={{color:'#2176BB'}}>RESTORE</h5>
@@ -112,8 +112,8 @@ class Nav extends Component {
 	  CustomLink = (<a href={item.externalLink} id={item.key+'Link'} className={"nav-link "} target="_blank">{item.title}</a>)
 	}
 	else {
-    // Link = (<a href={"#"+item.key} id={item.key+'Link'} className={"nav-link "+active}  onClick={this.handleLinkClick}>{item.title}</a>)
-    CustomLink = (<Link to={item.route} id={item.key+'Link'} className={"nav-link "+active}>{item.title}</Link>)
+	  // Link = (<a href={"#"+item.key} id={item.key+'Link'} className={"nav-link "+active}  onClick={this.handleLinkClick}>{item.title}</a>)
+	  CustomLink = (<Link to={item.route} id={item.key+'Link'} className={"nav-link "+active}>{item.title}</Link>)
 	}
 	return(
 	  <li key={index} className="nav-item">
@@ -233,7 +233,7 @@ class Nav extends Component {
 
       let navheight = $(".navbar").outerHeight();
       $("body").css("padding-top", navheight);
-      this.activateScrollSpy();
+      //this.activateScrollSpy();
       window.dispatchEvent(new Event('resize')); 
 
       $('[data-toggle="tooltip"]').tooltip();

@@ -13,6 +13,11 @@ Meteor.publish(null, function(){
     }
 });
 
+// All user data
+Meteor.publish("allUserData", function () {
+    return Meteor.users.find({});
+});
+
 // Roles
 Meteor.publish(null, function () {
   if (this.userId) {
@@ -62,6 +67,4 @@ Meteor.publish("menuitems", function(){
     return menuitems.find({});
 });
 
-Meteor.publish("allUserData", function () {
-    return Meteor.users.find({});
-});
+
