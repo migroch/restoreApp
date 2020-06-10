@@ -11,7 +11,7 @@ export default addCollectionLinks = function(){
     plans.addLinks({
 	'planItems': {
 	    type: 'many',
-	    collection: 'planitems',
+	    collection: planitems,
 	    field: 'planItemIds',
 	}
     });

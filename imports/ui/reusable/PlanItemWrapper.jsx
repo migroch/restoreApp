@@ -15,7 +15,6 @@ const PlanItemWrapper = ({id, editable, planId}) => {
 
   const [editMode, setEditMode] = useState(false)
   const removePlanItem = ()=> {
-    console.log("Xxxxxx")
     Meteor.call('planItem.remove', {planId, planItemId:id}, (err, res) => {
       if (err) {
        alert(err);
