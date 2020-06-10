@@ -10,7 +10,7 @@ const PlanItemList =({data, editable, planId})=> {
   const [addPlanItem, setAddPlanItem] = useState(false)
   return (
     <>
-      { data.map(id=><PlanItemWrapper id={id} planId={planId} editable={editable} key={"planItem"+id}/>) }
+      { data.map(item=><PlanItemWrapper id={item._id} planId={planId} editable={editable} key={"planItem"+item._id}/>) }
       { addPlanItem && 
         <div class="plan-item-wrapper">
           <PlanItemEdit id={undefined} planId={planId} finishAddItem={()=>setAddPlanItem(false)}/>

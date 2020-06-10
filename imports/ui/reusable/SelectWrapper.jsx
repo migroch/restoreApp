@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Select, Input } from 'antd/dist/antd.min.js';
-//import { AudioOutlined } from '@ant-design/icons';
+import { Meteor } from 'meteor/meteor';
+import { withTracker } from 'meteor/react-meteor-data';
 import  Schemas from '../../api/schemas';
-import { planitems, categories, subcategories, units } from '../../api/collections';
+import { categories, subcategories, units } from '../../api/collections';
 
 const { Search } = Input;
 const { Option } = Select;
+const dimensions =  Schemas.dimensions;
+const scenarios =  Schemas.scenarios;
 
 //TODO: Wrap over Tracker to subscribe to collections. Then get values of filters from the collections and schemas,
 //            then iterate over filters to create <Select> components 
@@ -30,11 +33,20 @@ const { Option } = Select;
 
 categories_data = ['Instructional Programs', 'Health & Safety/Operations', 'Student Support & Family Engagement']
 
-onChangeCategory = (value) => {
-  console.log(`selected ${value}`);
-}
 
-const SelectWrapper = () => {
+const SelectWrapper = ({isLoading, data, onChangeQuery}) => {
+  if (isLoading) return null
+  const { categories_total, subcategories_total, units_total } = data
+  const [query, setQuery] = useState({})
+
+  onChange = (item, value) => {
+    setQuery({...query, [item]: value})
+  }
+
+  useEffect(() => {
+    onChangeQuery(query)
+  }, [query]);
+
   return (
     <div>
       <Search
@@ -46,85 +58,85 @@ const SelectWrapper = () => {
   
       <Select
         showSearch
-        style={{ width: 150 }}
-        placeholder="Categories"
+        style={{ width: 250 }}
+        placeholder="Category"
         optionFilterProp="children"
-        onChange={onChangeCategory}
+        onChange={value=>onChange("category", value)}
         filterOption={(input, option) =>
           option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
         }
       >
         {
-          categories_data.map((item, index)=>(
-            <Option key={index} value={item.id}>{item.name}</Option>
+          categories_total.map((item, index)=>(
+            <Option key={index} value={item.name}>{item.name}</Option>
           ))
         }
       </Select>
       <Select
         showSearch
-        style={{ width: 150 }}
-        placeholder="Subcategories"
+        style={{ width: 250 }}
+        placeholder="Subcategory"
         optionFilterProp="children"
-        onChange={onChangeCategory}
+        onChange={value=>onChange("subcategory", value)}
         filterOption={(input, option) =>
           option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
         }
       >
         {
-          categories_data.map((item, index)=>(
-            <Option key={index} value={item.id}>{item.name}</Option>
+          subcategories_total.map((item, index)=>(
+            <Option key={index} value={item.name}>{item.name}</Option>
           ))
         }
       </Select>
       <Select
         showSearch
-        style={{ width: 150 }}
-        placeholder="Dimensions"
+        style={{ width: 250 }}
+        placeholder="Unit"
         optionFilterProp="children"
-        onChange={onChangeCategory}
+        onChange={value=>onChange("unit", value)}
         filterOption={(input, option) =>
           option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
         }
       >
         {
-          categories_data.map((item, index)=>(
-            <Option key={index}  value={item.id}>{item.name}</Option>
+          units_total.map((item, index)=>(
+            <Option key={index} value={item.name}>{item.name}</Option>
+          ))
+        }
+      </Select>      
+      <Select
+        showSearch
+        style={{ width: 250 }}
+        placeholder="Senario"
+        optionFilterProp="children"
+        onChange={value=>onChange("scenario", value)}
+        filterOption={(input, option) =>
+          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+        }
+      >
+        {
+          scenarios.map((item, index)=>(
+            <Option key={index}  value={item}>{item}</Option>
           ))
         }
       </Select>
       <Select
         showSearch
-        style={{ width: 150 }}
-        placeholder="Senarios"
+        style={{ width: 250 }}
+        placeholder="Dimension"
         optionFilterProp="children"
-        onChange={onChangeCategory}
+        onChange={value=>onChange("dimension", value)}
         filterOption={(input, option) =>
           option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
         }
       >
         {
-          categories_data.map((item, index)=>(
-            <Option key={index} value={item.id}>{item.name}</Option>
+          dimensions.map((item, index)=>(
+            <Option key={index} value={item}>{item}</Option>
           ))
         }
       </Select>
-      <Select
-        showSearch
-        style={{ width: 150 }}
-        placeholder="Countries"
-        optionFilterProp="children"
-        onChange={onChangeCategory}
-        filterOption={(input, option) =>
-          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-        }
-      >
-        {
-          categories_data.map((item, index)=>(
-            <Option key={index} value={item.id}>{item.name}</Option>
-          ))
-        }
-      </Select>
-      <Select
+      {/* <Select
         showSearch
         style={{ width: 150 }}
         placeholder="Districts"
@@ -155,10 +167,35 @@ const SelectWrapper = () => {
             <Option key={index} value={item.id}>{item.name}</Option>
           ))
         }
-      </Select>                        
+      </Select>                         */}
     </div>
     </div>
   )
 }
 
-export default SelectWrapper
+export default withTracker(() => {
+  const handles = [
+    Meteor.subscribe('plans'),
+    Meteor.subscribe('planitems'),
+    Meteor.subscribe('categories'),
+    Meteor.subscribe('subcategories'),
+    Meteor.subscribe('units'),
+  ];
+
+  const isLoading = handles.some(handle => !handle.ready());
+  if(isLoading){
+    return {
+      data: null,
+      isLoading: true
+    };
+  }
+
+  const categories_total = categories.find({}).fetch()
+  const subcategories_total = subcategories.find({}).fetch()
+  const units_total = units.find({}).fetch()
+  const data = { categories_total, subcategories_total, units_total }
+  return {
+    data,
+    isLoading: false
+  };
+})(SelectWrapper);

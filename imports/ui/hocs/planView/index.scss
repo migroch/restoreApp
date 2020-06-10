@@ -62,18 +62,19 @@
     .label_1 {
       display: flex;
       margin-top: 5px;
+      align-items: center;
     }
     .tags-wrapper {
       display: flex;
       margin-left: 10px;
       .custom-tag {
         border: 1px solid black;
-        width: 30px;
         border-radius: 6px;
         margin-right: 3px;
         opacity: 0.6;
         background-color: gray;
         text-align: center;
+        padding: 5px;
       }
     }    
   }

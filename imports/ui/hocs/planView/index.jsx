@@ -7,6 +7,8 @@ import  Schemas from '../../../api/schemas';
 import PlanItemList from '../../reusable/PlanItemList';
 import { Input, Select, Button } from 'antd/dist/antd.min.js';
 import { useHistory } from "react-router-dom";
+import { uniq, isEmpty } from 'lodash'
+import { plansQuery, plansQueryWithFilter } from '../../../api/queries'
 import './index.scss';
 
 const { Option } = Select;
@@ -19,8 +21,18 @@ const Tags = (data) => data.map(item => <div className="custom-tag" key={item+"t
    const [isDetailVisible, setIsDetailVisible] = useState(false)
    const [ title, setTitle ] = useState(data.title)
    const [ scenario, setScenario ] = useState(data.scenario)
-   const { planItemIds, _id } = data
+   const { planItems, _id } = data
    const id = _id
+
+   var plan_districts = []
+   planItems.map(item => {
+     const { assignedTo } = item
+    //  const item_schools = assignedTo.map(user=>user.school)
+     const item_districts = assignedTo.map(user=>user.district)
+     plan_districts.push(...item_districts)
+   })  
+   plan_districts = uniq(plan_districts)
+
    const colors = {
    "High Restrictions": "red",
    "Medium Restrictions": "yellow",
@@ -52,34 +64,33 @@ const Tags = (data) => data.map(item => <div className="custom-tag" key={item+"t
    <div className="content">
    <div className="label_1">
    Districts: 
-   {/* <div className="tags-wrapper">
-   {Tags(districts)}
-   </div> */}
-
-          </div>
-          <div className="label_1">
-            Schools
-            {/* <div className="tags-wrapper">
-            {Tags(schools)}
-            </div> */}
-          </div>
+   <div className="tags-wrapper">
+   {Tags(plan_districts)}
+   </div>
+  </div>
+  <div className="label_1">
+    Schools
+    {/* <div className="tags-wrapper">
+    {Tags(schools)}
+    </div> */}
+  </div>
 </div>
 <div className="plan-item-list" style={{display: isDetailVisible ? "block" : "none"}}>
-  <PlanItemList data={planItemIds} editable={false}/>
+  <PlanItemList data={planItems} editable={false}/>
 </div>
 </div>
 </div>
 )
 }
 
-PlansListView = ({initial_plans, isLoading})=>{
+PlansListView = ({plans_data, isLoading})=>{
   if (isLoading) return null
-  const [plans, setPlans] = useState(initial_plans)
+  // const [plans, setPlans] = useState(plans_data)
     return (
       <div className="plans-wrapper">
-	{
-	  initial_plans.map((plan)=><PlanWrapper  data={plan} key={"plan"+plan._id} />)
-	}
+  {
+    plans_data.map((plan)=><PlanWrapper  data={plan} key={"plan"+plan._id} />)
+  }
       </div>
     )
 }
@@ -89,6 +100,7 @@ PlansListView = withTracker(({search}) => {
     Meteor.subscribe('planitems'),
     Meteor.subscribe('plans'),
   ];
+
   const isLoading = handles.some(handle => !handle.ready());
   if(isLoading){
     return {
@@ -96,19 +108,25 @@ PlansListView = withTracker(({search}) => {
       isLoading: true
     };
   }
+  const plansQuery_Clone = plansQueryWithFilter.clone(search);
+  plansQuery_Clone.subscribe();
+  let plans_data = plansQuery_Clone.fetch()
+  plans_data = plans_data.filter(plan=>!isEmpty(plan.planItems))
+
   return {
-    initial_plans: plans.find({}).fetch(),
+    plans_data,
     isLoading: false
   };
 })(PlansListView);
 
 PlanView = () => {
   const [searchQuery, setSearchQuery] = useState({})
-    const history = useHistory();
+  const history = useHistory();
+  const setQuery = (query) => setSearchQuery(query)
   return (
     <div className="plan-view container">
       {/* set searchquery in selectwrapper */}
-      <SelectWrapper />    
+      <SelectWrapper onChangeQuery={setQuery}/>    
       <PlansListView search={searchQuery} />
       <div className="add-btn">
         <img src="icons/add.png" onClick={()=>history.push(`/plan-editor`)}/>
