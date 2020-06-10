@@ -3,13 +3,19 @@
 
 import React, { Component } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
-import {mapnodes} from '../../api/collections.js'
+import {mapnodes, categories } from '../../api/collections.js'
+import Schemas from '../../api/schemas.js'
+import { Tag, Divider } from 'antd/dist/antd.min.js';
 import * as d3 from "d3";
 
-const Categories =  ['Health & Safety / Operations', 'Instructional Programs',  'Student Support & Family Engagement']
-const Colors = ['#FF9263','#00a6a3','#2AAAE1'] 
-//const textColors =  ['#C06D4A','#006765','#196181'] 
-const LeftCategories = ['Instructional Programs',  'Student Support & Family Engagement']
+
+const catColors = {'Health & Safety / Operations':'#FF9263', 'Instructional Programs':'#00a6a3',  'Student Support & Family Engagement':'#2AAAE1'}
+//const Colors = ['#FF9263','#00a6a3','#2AAAE1'] ;
+const LeftCategories = ['Instructional Programs',  'Student Support & Family Engagement'];
+const Dimensions = Schemas.dimensions;
+//const dimColors = ["#ff595e","#087e8b","#ffca3a","#8ac926","#1982c4","#6a4c93"]
+const dimColors = ["magenta","volcano","orange","blue","geekblue","purple"]
+
 
 class Map extends Component {
   constructor(props) {
@@ -23,8 +29,8 @@ class Map extends Component {
 
   render(){
 
-    const { user, loading, mapnodesExists, mapnodes } = this.props;
-
+    const { user, loading, mapnodesExists, mapnodes } = this.props;  
+    
     if(loading){
       return(
         <div className="d-flex justify-content-center text-primary">
@@ -35,12 +41,32 @@ class Map extends Component {
       )
     }else{
       return(
-	<div id="Map" className="scrollspy">
-	  <div id="mapcanvas" className="">
-	  </div>
+	<div id="Map">
+	  <div id="mapcanvas" className=""></div>
+	  {this.Dimensions()}
 	</div>
       );
     }    
+  }
+
+  Dimensions(){
+    return(
+      <div id="dimensions" className="container-fluid mb-3">
+	<div className="row justify-content-center">
+	  {
+	    Dimensions.map((dim, index) => {
+	      return(
+		<div key={index} className="col-md-auto d.flex mr-1 ml-1 p-0">
+		  <div className="m-auto text-center">
+		    <Tag color={dimColors[index]}><p className="m-1">{dim}</p></Tag>
+		  </div>
+		</div>
+	      )
+	    })
+	  }
+	</div>
+      </div>
+    )
   }
 
   drawMap(){ 
@@ -48,12 +74,13 @@ class Map extends Component {
     let nodes_data = this.props.mapnodes[0];
     
     let  width = this.state.width,
-	 height =this.state.height,
+	 height =this.state.height - $('#dimensions').outerHeight(true),
 	 treeWidth = 0.3*width,
 	 treeHeight = 0.95*height,
 	 shiftdx = 0.025*width,
 	 shiftdy = 0.025*height,
 	 //dendradius = width / 2, // radius of dendrogram
+	 treeOpacity = 0.7,
          noderadius = 12; // radius of nodes
     
 
@@ -97,8 +124,8 @@ class Map extends Component {
     let selectColor = (d) =>{
       let node =  d.target ?  d.target :  d;
       let anames = node.ancestors().map( a => a.data.name);
-      let index = Categories.findIndex( cat => anames.includes(cat) );
-      return Colors[index];
+      let category = Object.keys(catColors).find( cat => anames.includes(cat) );
+      return catColors[category];
     }
 
     let nodeSize = (d) =>{
@@ -123,7 +150,7 @@ class Map extends Component {
 		    .attr("fill", "none")
 		    .attr("stroke", d => selectColor(d))
 		    .attr("stroke-width", d=> nodeSize(d))
-		    .attr("stroke-opacity", '0.6');	    	    
+		    .attr("stroke-opacity", treeOpacity);	    	    
     
     // Add  nodes.
     const node = svg.selectAll("g")
