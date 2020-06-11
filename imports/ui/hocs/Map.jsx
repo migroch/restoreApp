@@ -57,8 +57,8 @@ class Map extends Component {
 	    Dimensions.map((dim, index) => {
 	      return(
 		<div key={index} className="col-md-auto d.flex mr-1 ml-1 p-0">
-		  <div className="m-auto text-center">
-		    <Tag color={dimColors[index]}><p className="m-1">{dim}</p></Tag>
+		  <div className="m-auto text-center"  onClick={this.handleDimensionClick}>
+		    <Tag style={{"cursor":"pointer"}} color={dimColors[index]}><p className="m-1">{dim}</p></Tag>
 		  </div>
 		</div>
 	      )
@@ -102,16 +102,6 @@ class Map extends Component {
     // Create a tree layout and pass our nodes_data to it
     //const tree = d3.tree().size([treeHeight, treeWidth]);
     const tree = d3.cluster().size([treeHeight, treeWidth]);
-    
-    tree(rootLeft);
-    tree(rootRight);
-    //rootLeft.x = rootRight.x; rootLeft.y = rootRight.y;
-    //let root = rootRight.copy();
-    rootRight.x = rootLeft.x; rootRight.y = rootLeft.y;
-    let root = rootLeft.copy();
-    tree(root);
-    //root.children = rootRight.children.concat(rootLeft.children);
-    root.children = rootLeft.children.concat(rootRight.children);
 
     let flip = (d) => {
       let anames = d.ancestors().map( a => a.data.name);
@@ -133,7 +123,17 @@ class Map extends Component {
       let size = noderadius - 0.25*noderadius*node.depth;
       return size;
     }
-   
+    
+    tree(rootLeft);
+    tree(rootRight);
+    //rootLeft.x = rootRight.x; rootLeft.y = rootRight.y;
+    //let root = rootRight.copy();
+    rootRight.x = rootLeft.x; rootRight.y = rootLeft.y;
+    let root = rootLeft.copy();
+    tree(root);
+    //root.children = rootRight.children.concat(rootLeft.children);
+    root.children = rootLeft.children.concat(rootRight.children);
+
     // Link generator
     const linksGenerator = d3.linkHorizontal()
 			     .x(function(d) {
@@ -195,81 +195,89 @@ class Map extends Component {
 
     // Add circles
     node.filter(d => (!d.children)).append("circle")
-      		     .attr("fill", "#fff")
-      		     .attr("r", d => nodeSize(d))
-		     .attr("stroke", d => selectColor(d))
-		     .attr("stroke-width", "2px")	    
-
-      // Add text background
-      node.filter(d => (d.depth > 0)).append("text")
-
-
-      // Add Black Text
-      node.filter(d => (d.depth > 0)).append("text")
-		     .attr("dx", function(d) {
-		       let f = flip(d);
-		       let dx = d.children ? 0 : f*8;
-		       if (d.depth == 1)  dx = f*-50;
-		       return dx;
-		     })
-		     .attr("dy",  function(d) {
-		       let  dy =  d.depth > 0 ? -15 : 3;
-		       dy = d.children ? dy : 3;	 
-		       return dy;
-		     })
-    		     .attr("font-family", "Helvetica")
-    		     .attr("font-size", d => {
-		       let fs = 17 - d.depth
-		       return fs;
-		     })
-		     //.attr("font-weight", 'bold' )
-		     .attr("text-anchor", function(d) {
-		       if (flip(d) == 1) {
-			 return d.children ? "middle" : "start";
-		       } else {
-			 return d.children ? "middle" : "end";
-		       };
-		     })
-		     //.attr("fill", d => selectColor(d))
-		     .attr("fill", 'black')
-		     .text(function(d) {
-		       return d.data.name;
-		     });      
-      // Add Colored Text
-      node.filter(d => (d.depth > 0)).append("text")
-		     .attr("dx", function(d) {
-		       let f = flip(d);
-		       let dx = d.children ? 0 : f*8;
-		       if (d.depth == 1)  dx = f*-50;
-		       return dx;
-		     })
-		     .attr("dy",  function(d) {
-		       let  dy =  d.depth > 0 ? -15 : 3;
-		       dy = d.children ? dy : 3;	 
-		       return dy;
-		     })
-    		     .attr("font-family", "Helvetica")
-    		     .attr("font-size", d => {
-		       let fs = 17 - d.depth
-		       return fs;
-		     })
-	             //.attr("font-weight", 'bold' )
-		     .attr("text-anchor", function(d) {
-		       if (flip(d) == 1) {
-			 return d.children ? "middle" : "start";
-		       } else {
-			 return d.children ? "middle" : "end";
-		       };
-		     })
-		     .attr("fill", d => selectColor(d))
-		     .attr("fill-opacity", '0.5')
-		     .text(function(d) {
-		       return d.data.name;
-		     });
+      	.attr("fill", "#fff")
+      	.attr("r", d => nodeSize(d))
+	.attr("stroke", d => selectColor(d))
+	.attr("stroke-width", "2px")
+	.attr("cursor", "pointer")
+	.on('click', this.handleUnitClick);
     
-
+      // Add Black Text
+    node.filter(d => (d.depth > 0)).append("text")
+	.attr("dx", function(d) {
+	  let f = flip(d);
+	  let dx = d.children ? 0 : f*8;
+	  if (d.depth == 1)  dx = f*-50;
+	  return dx;
+	})
+	.attr("dy",  function(d) {
+	  let  dy =  d.depth > 0 ? -15 : 3;
+	  dy = d.children ? dy : 3;	 
+	  return dy;
+	})
+    	.attr("font-family", "Helvetica")
+    	.attr("font-size", d => {
+	  let fs = 17 - d.depth
+	  return fs;
+	})
+      //.attr("font-weight", 'bold' )
+	.attr("text-anchor", function(d) {
+	  if (flip(d) == 1) {
+	    return d.children ? "middle" : "start";
+	  } else {
+	    return d.children ? "middle" : "end";
+	  };
+	})
+      //.attr("fill", d => selectColor(d))
+	.attr("fill", 'black')
+	.text(function(d) {
+	  return d.data.name;
+	});      
+    // Add Colored Text
+    node.filter(d => (d.depth > 0)).append("text")
+	.attr("dx", function(d) {
+	  let f = flip(d);
+	  let dx = d.children ? 0 : f*8;
+	  if (d.depth == 1)  dx = f*-50;
+	  return dx;
+	})
+	.attr("dy",  function(d) {
+	  let  dy =  d.depth > 0 ? -15 : 3;
+	  dy = d.children ? dy : 3;	 
+	  return dy;
+	})
+    	.attr("font-family", "Helvetica")
+    	.attr("font-size", d => {
+	  let fs = 17 - d.depth
+	  return fs;
+	})
+      //.attr("font-weight", 'bold' )
+	.attr("text-anchor", function(d) {
+	  if (flip(d) == 1) {
+	    return d.children ? "middle" : "start";
+	  } else {
+	    return d.children ? "middle" : "end";
+	  };
+	})
+	.attr("fill", d => selectColor(d))
+	.attr("fill-opacity", '0.5')
+	.text(function(d) {
+	  return d.data.name;
+	})
+	.attr("cursor", "pointer")
+	.on('click', this.handleUnitClick);
   }
 
+  handleUnitClick(d){
+    console.log(d.data.name);
+  }
+
+  handleDimensionClick(e){
+    let target = e.target;
+    let dimension = target.innerHTML;
+    console.log(dimension);
+  }
+  
   redrawMap(){
     $("#svgMap").remove();
     this.drawMap();   

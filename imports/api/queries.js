@@ -1,6 +1,7 @@
-
+// queries.js
+// grapher queries
 import { plans, planitems, guidanceitems, categories, subcategories, units } from './collections.js';
-import addCollectionLinks from './collection-links'
+import addCollectionLinks from './collection-links';
 
 addCollectionLinks();
 
@@ -33,28 +34,28 @@ export const plansQuery = plans.createQuery({
 export const plansQueryWithFilter = plans.createQuery({
   $filter({filters, options, params}) {
     if (params.id) filters._id = params.id;
-    if (params.scenario) filters.scenario = params.scenario
+      if (params.scenario) filters.scenario = params.scenario;
   },
   title: 1,
   scenario: 1,
   planItems: {
     $filter({filters, params}) {
-      if (params.dimension)  filters.dimension = params.dimension
+	if (params.dimension)  filters.dimension = params.dimension;
     },
     dimension: 1,
     units: {
       $filter({filters, params}) {
-        if (params.unit)  filters.name = params.unit
+          if (params.unit)  filters.name = params.unit;
       },
       name: 1,
       subcategory: {
         $filter({filters, params}) {
-          if (params.subcategory)  filters.name = params.subcategory
+            if (params.subcategory)  filters.name = params.subcategory;
         },
         name: 1,
         category: {
           $filter({filters, params}) {
-            if (params.category)  filters.name = params.category
+              if (params.category)  filters.name = params.category;
           },
           name: 1
         }

@@ -20,7 +20,7 @@ import {Edit3} from 'styled-icons/feather/Edit3';
 
 const { Option } = Select;
 const scenarios = Schemas.scenarios
-const Tags = (data) => data.map(item => <div className="custom-tag" key={item+"tag"}>{item}</div>)
+const Tags = (data) => data.map(item => <div className="" key={item+"tag"}><p className="m-0"><small>{item}</small></p></div>)
 
 const PlanWrapper = ({data}) => {
   const history = useHistory();
@@ -40,20 +40,20 @@ const PlanWrapper = ({data}) => {
     const { assignedTo } = item
     //  const item_schools = assignedTo.map(user=>user.school)
     const item_districts = assignedTo.map(user=>user.district)
-    plan_districts.push(...item_districts)
+      plan_districts.push(...item_districts)
   })  
-  plan_districts = uniq(plan_districts)
+    plan_districts = uniq(plan_districts)
 
-  const deletePlanWithId = ()=>{
-    Meteor.call('plans.remove', id, (err, res) => {
-if (err) {
-  alert(err);
-} else {
-  history.push('/plan-viewer')
-}
-    })
-
-  }
+    const deletePlanWithId = ()=>{
+      Meteor.call('plans.remove', id, (err, res) => {
+	if (err) {
+	  alert(err);
+	} else {
+	  history.push('/plan-viewer')
+	}
+      })
+    }
+  
   const plan_bg = bgs[scenario]
   return (
     
@@ -82,7 +82,8 @@ if (err) {
     <div className="row">
 
       <div className="col-sm label_1 d-flex flex-column text-center">
-  <h6>Units</h6>
+	<h6>Units</h6>
+	
   <p><small>
     <Breadcrumb separator=">">
       <Breadcrumb.Item>Category</Breadcrumb.Item>
@@ -105,7 +106,7 @@ if (err) {
 
       <div className="col-sm label_1  d-flex flex-column text-center">
   <h6>Districts </h6>
-  <div className="tags-wrapper">
+  <div className="d-flex flex-column">
   {Tags(plan_districts)}
   </div>
       </div>
@@ -128,9 +129,9 @@ if (err) {
 }
 
 PlansListView = ({plans_data, isLoading})=>{
-  if (isLoading) return null
+  if (isLoading) return null;
   // const [plans, setPlans] = useState(plans_data)
-    return (
+  return (
       <div className="plans-wrapper">
   {
     plans_data.map((plan)=><PlanWrapper  data={plan} key={"plan"+plan._id} />)

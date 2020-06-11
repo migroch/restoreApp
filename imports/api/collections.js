@@ -34,6 +34,20 @@ let menuitems = new Mongo.Collection('menuitems');
 menuitems.schema = Schemas.menuitems;
 menuitems.attachSchema(Schemas.menuitems);
 
+// Helpers
+
+planitems.helpers({
+    // unit names
+    unitNames(){
+	return this.unitIds.map(uid => units.findOne({_id:uid}).name);
+    },
+    // ownerName
+    ownerName(){
+	return Meteor.users.findOne({_id:this.ownerId}).name;
+    },
+});
+
+   
 
 
 export { plans, planitems, guidanceitems, categories, subcategories, units, mapnodes, menuitems};
