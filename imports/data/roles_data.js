@@ -72,7 +72,7 @@ export default  roles_data =  {
 	domains: ['sccs.net']
     },
     'SCCOE':{
-	displayName: 'Santa Cruz County Office of Education',
+	displayName: 'Santa Cruz COE',
 	emails:['miguel@scitecha.com'],
 	domains: ['santacruzcoe.org']
     },

@@ -34,20 +34,70 @@ let menuitems = new Mongo.Collection('menuitems');
 menuitems.schema = Schemas.menuitems;
 menuitems.attachSchema(Schemas.menuitems);
 
-// Helpers
+// Add helper functions to collections
 
+// planitems helpers
 planitems.helpers({
     // unit names
     unitNames(){
-	return this.unitIds.map(uid => units.findOne({_id:uid}).name);
+	return  this.units.map(u => u.name);
     },
-    // ownerName
+    // districts
+    districts(){
+	let districts = [];
+	districts.concat(this.assignedToIds.map(id => Meteor.users.findOne({_id:id}).district ));
+	districts.push( Meteor.users.findOne({_id:this.ownerId}).district);
+	return districts;
+    },
+    // schools
+    schools(){
+	let schools = [];
+	schools.concat(this.assignedToIds.map(id => Meteor.users.findOne({_id:id}).shools));
+	schools.push( Meteor.users.findOne({_id:this.ownerId}).schools);
+	return schools;
+    },
+    // owner name
     ownerName(){
-	return Meteor.users.findOne({_id:this.ownerId}).name;
+	return Meteor.users.findOne({_id:this.ownerId}).profile.name;
+    },
+    // assignedTo names
+    assignedToNames(){
+	return this.assignedToIds.map(id => Meteor.users.findOne({_id:id}).profile.name );
+    }
+});
+
+// plans helpers
+plans.helpers({
+    // unit names
+    unitNames(){
+	return this.planItems.map(pi => pi.unitNames()).flat();
+    },
+    // unit ids
+    unitIds(){
+	return this.planItems.map(pi => pi.unitIds).flat();
+    },
+    // dimensions
+    dimensions(){
+	return this.planItems.map(pi => pi.dimension);
+    },
+    // districts
+    districts(){
+	return this.planItems.map(pi => pi.districts()).flat();
+    },
+    // schools
+    schools(){
+	return this.planItems.map(pi => pi.schools()).flat().flat();
+    },
+    // user names
+    userNames(){
+	return this.planItems.map(pi=> [ pi.ownerName() ].concat( pi.assignedToNames() )).flat();
+    },
+     // user Ids
+    userIds(){
+	return this.planItems.map(pi=> [pi.ownerId].concat(pi.assignedToIds)).flat();
     },
 });
 
-   
 
 
 export { plans, planitems, guidanceitems, categories, subcategories, units, mapnodes, menuitems};

@@ -34,7 +34,11 @@ Accounts.onCreateUser((options, user)=>{
     }
 
     // Set schools (will have to be added by user at account creation)
-    user.schools = []; // Array of objects with form [{name:schoolname, type:schooltype}]
+    // Array of objects with form [{name:schoolname, type:schooltype}]
+    if (email == 'dummy1@pvusd.net') user.schools = [{name:"Watsonville High", type:"High School"}];
+    if (email == 'dummy2@santacruzcoe.org') user.schools = [{name:"Special Ed", type:"Special Ed Program"}];
+    if (email == 'dummy3@scottsvalleyusd.org') user.schools = [{name:"Scotts Valley High School", type:"High School"}];
+    
 
     let roles = Object.keys(roles_data).filter((role)=>{
 	let check = roles_data[role].emails.includes(email) || roles_data[role].domains.includes(email.split('@')[1]) ;

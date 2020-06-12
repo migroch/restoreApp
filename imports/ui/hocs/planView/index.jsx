@@ -12,6 +12,7 @@ import { plansQuery, plansQueryWithFilter } from '../../../api/queries'
 import queryString from 'query-string';
 import './index.scss';
 
+import { Input, Select, Button, Tooltip, Breadcrumb } from 'antd/dist/antd.min.js';
 import styled from 'styled-components';
 import {MoreHorizontal} from 'styled-icons/feather/MoreHorizontal';
 import {Copy} from 'styled-icons/feather/Copy';
@@ -23,124 +24,141 @@ const { Option } = Select;
 const scenarios = Schemas.scenarios
 const Tags = (data) => data.map(item => <div className="" key={item+"tag"}><p className="m-0"><small>{item}</small></p></div>)
 
+// Plan    
 const PlanWrapper = ({data}) => {
   const history = useHistory();
-  const [isDetailVisible, setIsDetailVisible] = useState(false)
-  const [ title, setTitle ] = useState(data.title)
-  const [ scenario, setScenario ] = useState(data.scenario)
-  const { planItems, _id } = data
-  const id = _id
+  const [isDetailVisible, setIsDetailVisible] = useState(false);
+  const [ title, setTitle ] = useState(data.title);
+  const [ scenario, setScenario ] = useState(data.scenario);
+  const { planItems, _id } = data;
+  const id = _id;
   const bgs = {
     "High Restrictions": "bg-danger",
     "Medium Restrictions": "bg-warning",
     "Low Restrictions": "bg-success"
   }
-  
-  var plan_districts = []
-  planItems.map(item => {
-    const { assignedTo } = item
-    //  const item_schools = assignedTo.map(user=>user.school)
-    const item_districts = assignedTo.map(user=>user.district)
-      plan_districts.push(...item_districts)
-  })  
-    plan_districts = uniq(plan_districts)
 
-    const deletePlanWithId = ()=>{
-      Meteor.call('plans.remove', id, (err, res) => {
-	if (err) {
-	  alert(err);
-	} else {
-	  history.push('/plan-viewer')
-	}
-      })
-    }
+
+//  console.log(data.dimensions());
+//  console.log(data.districts());
+//  console.log(data.schools());
+//  console.log(data.userNames());
+    
+  let plan_units = uniq(data.planItems.map( pi => pi.units ).flat());
+  let plan_dimensions = uniq(data.dimensions());
+  let plan_districts = uniq(data.districts()) ;
+  let plan_schools = uniq(data.schools().map(s => s.name));
+  let plan_users = uniq(data.userNames());
+
+  const deletePlanWithId = ()=>{
+    Meteor.call('plans.remove', id, (err, res) => {
+      if (err) {
+	alert(err);
+      } else {
+	history.push('/plan-viewer')
+      }
+    })
+  }
   
   const plan_bg = bgs[scenario]
   return (
     
     <div className="plan-wrapper rounded-top" onClick={()=>setIsDetailVisible(!isDetailVisible)}>         
 
-<div className={"header d-flex " + plan_bg} >
-  <p className="mr-auto mt-auto mb-auto ml-2">{scenario}</p>
-  <div className="right ml-auto mb-auto mt-auto p-1" >
-    <Tooltip  placement="bottom" title="Edit">
-      <span className="icon mr-2 ml-2" onClick={()=>history.push(`/plan-editor/${id}`)}><Edit3  size="20" /> </span>
-    </Tooltip >
-    <Tooltip  placement="bottom" title="Copy">
-      <span className="icon mr-2 ml-2"><Copy  size="20" /></span>
-    </Tooltip >
-      <Tooltip  placement="bottom" title="Delete">
-  <span className="icon mr-2 ml-2" onClick={deletePlanWithId}><Delete size="20" /></span>
-      </Tooltip >
-  </div>
-</div>
-
-<div className="content-wrapper">
-  <div className="content">
-
-    <div className="text-center"><h4>{ title }</h4></div>
-
-    <div className="row">
-
-      <div className="col-sm label_1 d-flex flex-column text-center">
-	<h6>Units</h6>
-	
-  <p><small>
-    <Breadcrumb separator=">">
-      <Breadcrumb.Item>Category</Breadcrumb.Item>
-      <Breadcrumb.Item>Subcategory</Breadcrumb.Item>
-      <Breadcrumb.Item>Unit</Breadcrumb.Item>
-    </Breadcrumb>
-  </small></p>
-  
-  {/* <div className="tags-wrapper">
-  {Tags(districts)}
-  </div> */}
+      <div className={"header d-flex " + plan_bg} >
+	<p className="mr-auto mt-auto mb-auto ml-2">{scenario}</p>
+	<div className="right ml-auto mb-auto mt-auto p-1" >
+	  <Tooltip  placement="bottom" title="Edit">
+	    <span className="icon mr-2 ml-2" onClick={()=>history.push(`/plan-editor/${id}`)}><Edit3  size="20" /> </span>
+	  </Tooltip >
+	  <Tooltip  placement="bottom" title="Copy">
+	    <span className="icon mr-2 ml-2"><Copy  size="20" /></span>
+	  </Tooltip >
+	  <Tooltip  placement="bottom" title="Delete">
+	    <span className="icon mr-2 ml-2" onClick={deletePlanWithId}><Delete size="20" /></span>
+	  </Tooltip >
+	</div>
       </div>
 
-      <div className="col-sm label_1 d-flex flex-column text-center">
-  <h6>Dimensions</h6>
-  {/* <div className="tags-wrapper">
-  {Tags(districts)}
-  </div> */}
-      </div>
+      <div className="content-wrapper">
+	<div className="content">
 
-      <div className="col-sm label_1  d-flex flex-column text-center">
-  <h6>Districts </h6>
-  <div className="d-flex flex-column">
-  {Tags(plan_districts)}
-  </div>
-      </div>
-      
-            <div className="col-sm label_1  d-flex flex-column text-center">
-  <h6>Schools</h6>
-  {/* <div className="tags-wrapper">
-  {Tags(schools)}
-  </div> */}
+	  <div className="text-center"><h4>{ title }</h4></div>
+
+	  <div className="row">
+
+
+	    <div className="col-md-auto label_1 d-flex flex-column text-center">
+	      <h6>Map Location</h6>
+	      {
+		plan_units.map( (u, index) => {
+		  if (u && u.subcategory && u.subcategory.category){
+		    return(
+		      <div key={index}>
+			<Breadcrumb separator=">" style={{'fontSize':'smaller'}}>
+			  <Breadcrumb.Item>{u.subcategory.category.name}</Breadcrumb.Item>
+			  <Breadcrumb.Item>{u.subcategory.name}</Breadcrumb.Item>
+			  <Breadcrumb.Item>{u.name}</Breadcrumb.Item>
+			</Breadcrumb>
+		      </div>
+		    )
+		  }
+		})
+	      }
+	    </div>
+
+	    <div className="col-md-auto label_1 d-flex flex-column text-center">
+	      <h6>Dimensions</h6>
+	      <div className="d-flex flex-column">
+		{Tags(plan_dimensions)}
+	      </div>
+	    </div>
+
+	    <div className="col-md-auto label_1  d-flex flex-column text-center">
+	      <h6>Districts </h6>
+	      <div className="d-flex flex-column">
+		{Tags(plan_districts)}
+	      </div>
+	    </div>
+
+	    <div className="col-md-auto label_1  d-flex flex-column text-center">
+	      <h6>Schools</h6>
+	      <div className="d-flex flex-column">
+		{Tags(plan_schools)}
+	      </div>
+	    </div>
+	    
+            <div className="col-md-auto label_1  d-flex flex-column text-center">
+	      <h6>Users</h6>
+	      <div className="d-flex flex-column">
+		{Tags(plan_users)}
+	      </div>
             </div>
 
-    </div>
-  </div>
-  <div className="plan-item-list" style={{display: isDetailVisible ? "block" : "none"}}>
-    <PlanItemList data={planItems} editable={false}/>
-  </div>
-</div>
+	  </div>
+	</div>
+	<div className="plan-item-list" style={{display: isDetailVisible ? "block" : "none"}}>
+	  <PlanItemList data={planItems} editable={false}/>
+	</div>
+      </div>
     </div>
   )
 }
 
+// List of Plans
 PlansListView = ({plans_data, isLoading})=>{
   if (isLoading) return null;
   // const [plans, setPlans] = useState(plans_data)
   return (
-      <div className="plans-wrapper">
-  {
-    plans_data.map((plan)=><PlanWrapper  data={plan} key={"plan"+plan._id} />)
-  }
-      </div>
-    )
+    <div className="plans-wrapper">
+      {
+	plans_data.map((plan)=><PlanWrapper  data={plan} key={"plan"+plan._id} />)
+      }
+    </div>
+  )
 }
 
+// List of Plans data layer
 PlansListView = withTracker(({search}) => {
   const handles = [
     Meteor.subscribe('planitems'),
@@ -154,8 +172,10 @@ PlansListView = withTracker(({search}) => {
       isLoading: true
     };
   }
+  
   const plansQuery_Clone = plansQueryWithFilter.clone(search);
   plansQuery_Clone.subscribe();
+  
   let plans_data = plansQuery_Clone.fetch()
   plans_data = plans_data.filter(plan=>!isEmpty(plan.planItems))
 
@@ -165,6 +185,7 @@ PlansListView = withTracker(({search}) => {
   };
 })(PlansListView);
 
+// Plan Viewer Container
 PlanView = () => {
   
   const history = useHistory();

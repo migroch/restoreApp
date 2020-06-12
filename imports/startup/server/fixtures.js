@@ -26,7 +26,8 @@ Meteor.startup(() => {
 	    Accounts.createUser({
 		email: dummy.email,
 		password: dummy.password,
-		profile:{name: dummy.name}
+		profile:{name: dummy.name},
+		schools: dummy.schools,
 	    });
 	}
     });
