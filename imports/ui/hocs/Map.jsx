@@ -134,6 +134,12 @@ class Map extends Component {
     //root.children = rootRight.children.concat(rootLeft.children);
     root.children = rootLeft.children.concat(rootRight.children);
 
+    root.descendants().forEach((d, i) => {
+      d.id = i;
+      d._children = d.children;
+      //if (d.depth && d.data.name.length !== 7) d.children = null;
+    });
+
     // Link generator
     const linksGenerator = d3.linkHorizontal()
 			     .x(function(d) {
@@ -159,7 +165,9 @@ class Map extends Component {
 		    .attr("class", "node")
 		    .attr("transform", function(d) {
 		      return "translate(" + (flip(d)*d.y + 0.5*width) + "," + d.x + ")";
-		    });
+		    })
+		    .attr("cursor", "pointer")
+		    .on('click', this.handleNodeClick);
                    //.attr("transform", function(d) { return "rotate(" + (d.x - 90) + ")translate(" + d.y + ")"; })
     
     // Add triangles/arrows
@@ -198,9 +206,7 @@ class Map extends Component {
       	.attr("fill", "#fff")
       	.attr("r", d => nodeSize(d))
 	.attr("stroke", d => selectColor(d))
-	.attr("stroke-width", "2px")
-	.attr("cursor", "pointer")
-	.on('click', this.handleUnitClick);
+	.attr("stroke-width", "2px");
     
       // Add Black Text
     node.filter(d => (d.depth > 0)).append("text")
@@ -263,13 +269,11 @@ class Map extends Component {
 	.attr("fill-opacity", '0.5')
 	.text(function(d) {
 	  return d.data.name;
-	})
-	.attr("cursor", "pointer")
-	.on('click', this.handleUnitClick);
+	});
   }
 
-  handleUnitClick(d){
-    console.log(d.data.name);
+  handleNodeClick(d){
+    if (d.children) {this.toggleNode(d)} else {console.log(d.data.name)};
   }
 
   handleDimensionClick(e){

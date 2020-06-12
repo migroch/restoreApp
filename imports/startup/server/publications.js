@@ -5,16 +5,16 @@ import { Meteor } from 'meteor/meteor';
 import { plans, planitems, guidanceitems, categories, subcategories, units, mapnodes, menuitems} from '../../api/collections.js';
 
 // User custom top level fields
-Meteor.publish(null, function(){
-    if (this.userId) {
-	return Meteor.users.find({_id: this.userId}, {fields: {email: 1, verified_email: 1, county: 1, district: 1, schools: 1} });   
-    } else {
-	return this.ready();
-    }
-});
+// Meteor.publish(null, function(){
+//     if (this.userId) {
+// 	return Meteor.users.find({_id: this.userId}, {fields: {email: 1, verified_email: 1, county: 1, district: 1, schools: 1,} });   
+//     } else {
+// 	return this.ready();
+//     }
+// });
 
 // All user data
-Meteor.publish("allUserData", function () {
+Meteor.publish(null, function () {
     return Meteor.users.find({});
 });
 
