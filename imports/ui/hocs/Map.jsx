@@ -2,12 +2,13 @@
 // Logistic Map component
 
 import React, { Component } from 'react';
+// import { withRouter } from 'react-router-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 import {mapnodes, categories } from '../../api/collections.js'
 import Schemas from '../../api/schemas.js'
 import { Tag, Divider } from 'antd/dist/antd.min.js';
 import * as d3 from "d3";
-
+import queryString from 'query-string';
 
 const catColors = {'Health & Safety / Operations':'#FF9263', 'Instructional Programs':'#00a6a3',  'Student Support & Family Engagement':'#2AAAE1'}
 //const Colors = ['#FF9263','#00a6a3','#2AAAE1'] ;
@@ -67,8 +68,8 @@ class Map extends Component {
 	</div>
       </div>
     )
-  }
-
+	}
+	
   drawMap(){ 
     
     let nodes_data = this.props.mapnodes[0];
@@ -91,8 +92,7 @@ class Map extends Component {
 		  .append("g")
 		  .attr("transform", "translate("+shiftdx+","+shiftdy+")");
 
-    //console.log(nodes_data);
-    let LeftNodes = {...nodes_data}; LeftNodes.children = nodes_data.children.filter(child => LeftCategories.includes(child.name) );
+		let LeftNodes = {...nodes_data}; LeftNodes.children = nodes_data.children.filter(child => LeftCategories.includes(child.name) );
     let RightNodes = {...nodes_data}; RightNodes.children = nodes_data.children.filter(child => !LeftCategories.includes(child.name) );
     
     //let root = d3.hierarchy(nodes_data);
@@ -268,14 +268,23 @@ class Map extends Component {
 	.on('click', this.handleUnitClick);
   }
 
-  handleUnitClick(d){
-    console.log(d.data.name);
+  handleUnitClick = value => {
+		const depths = ['category', 'subcategory', 'unit']
+		const item = depths[value.depth-1]
+		this.props.history.push({
+			pathname: '/plan-viewer',
+			search: `?${queryString.stringify({[item]: value.data.name})}`
+		})
+
   }
 
-  handleDimensionClick(e){
+  handleDimensionClick = e => {
     let target = e.target;
     let dimension = target.innerHTML;
-    console.log(dimension);
+		this.props.history.push({
+			pathname: '/plan-viewer',
+			search: `?${queryString.stringify({dimension})}`
+		})
   }
   
   redrawMap(){

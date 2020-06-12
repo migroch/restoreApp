@@ -6,9 +6,10 @@ import { planitems, plans } from '../../../api/collections';
 import  Schemas from '../../../api/schemas';
 import PlanItemList from '../../reusable/PlanItemList';
 import { Input, Select, Button, Tooltip, Breadcrumb } from 'antd/dist/antd.min.js';
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { uniq, isEmpty } from 'lodash'
 import { plansQuery, plansQueryWithFilter } from '../../../api/queries'
+import queryString from 'query-string';
 import './index.scss';
 
 import styled from 'styled-components';
@@ -165,13 +166,18 @@ PlansListView = withTracker(({search}) => {
 })(PlansListView);
 
 PlanView = () => {
-  const [searchQuery, setSearchQuery] = useState({})
+  
   const history = useHistory();
+  const location = useLocation();
+  const initial_query = queryString.parse(location.search)
+  console.log("location.search", location.search)
+  const [searchQuery, setSearchQuery] = useState(initial_query)
   const setQuery = (query) => setSearchQuery(query)
+  
   return (
     <div className="plan-view container">
       {/* set searchquery in selectwrapper */}
-      <SelectWrapper onChangeQuery={setQuery}/>    
+      <SelectWrapper onChangeQuery={setQuery} value={initial_query}/>    
       <PlansListView search={searchQuery} />
       <div className="add-btn">
         <img src="icons/add.png" onClick={()=>history.push(`/plan-editor`)}/>

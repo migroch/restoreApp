@@ -34,12 +34,13 @@ const scenarios =  Schemas.scenarios;
 categories_data = ['Instructional Programs', 'Health & Safety/Operations', 'Student Support & Family Engagement']
 
 
-const SelectWrapper = ({isLoading, data, onChangeQuery}) => {
+const SelectWrapper = ({isLoading, data, onChangeQuery, value}) => {
   if (isLoading) return null
   const { categories_total, subcategories_total, units_total } = data
-  const [query, setQuery] = useState({})
+  const [query, setQuery] = useState(value)
 
   onChange = (item, value) => {
+    if (value==="All") value = undefined
     setQuery({...query, [item]: value})
   }
 
@@ -61,15 +62,23 @@ const SelectWrapper = ({isLoading, data, onChangeQuery}) => {
         style={{ width: 250 }}
         placeholder="Category"
         optionFilterProp="children"
+        defaultValue={query.category || "All"}
         onChange={value=>onChange("category", value)}
         filterOption={(input, option) =>
           option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
         }
       >
         {
-          categories_total.map((item, index)=>(
-            <Option key={index} value={item.name}>{item.name}</Option>
-          ))
+          categories_total.map((item, index)=>{
+            if ((categories_total.length - 1) === index)
+              return (
+                <>
+                <Option key={"category"+index} value={item.name}>{item.name}</Option>
+                <Option key={"category_all"} value={"All"}>All</Option>
+                </>
+              )
+            return (<Option key={"category"+index} value={item.name}>{item.name}</Option>)
+          })
         }
       </Select>
       <Select
@@ -77,64 +86,97 @@ const SelectWrapper = ({isLoading, data, onChangeQuery}) => {
         style={{ width: 250 }}
         placeholder="Subcategory"
         optionFilterProp="children"
+        defaultValue={query.subcategory || "All"}
         onChange={value=>onChange("subcategory", value)}
         filterOption={(input, option) =>
           option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
         }
       >
         {
-          subcategories_total.map((item, index)=>(
-            <Option key={index} value={item.name}>{item.name}</Option>
-          ))
-        }
+          subcategories_total.map((item, index)=>{
+            if ((subcategories_total.length - 1) === index)
+              return (
+                <>
+                <Option key={"subCategory"+index} value={item.name}>{item.name}</Option>
+                <Option key={"subCategory_all"} value={"All"}>All</Option>
+                </>
+              )
+            return (<Option key={"subCategory"+index} value={item.name}>{item.name}</Option>)
+          })
+        }        
       </Select>
       <Select
         showSearch
         style={{ width: 250 }}
         placeholder="Unit"
         optionFilterProp="children"
+        defaultValue={query.unit || "All"}
         onChange={value=>onChange("unit", value)}
         filterOption={(input, option) =>
           option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
         }
       >
         {
-          units_total.map((item, index)=>(
-            <Option key={index} value={item.name}>{item.name}</Option>
-          ))
-        }
+          units_total.map((item, index)=>{
+            if ((units_total.length - 1) === index)
+              return (
+                <>
+                <Option key={"unit"+index} value={item.name}>{item.name}</Option>
+                <Option key={"unit_all"} value={"All"}>All</Option>
+                </>
+              )
+            return (<Option key={"unit"+index} value={item.name}>{item.name}</Option>)
+          })
+        }           
       </Select>      
       <Select
         showSearch
         style={{ width: 250 }}
-        placeholder="Senario"
+        placeholder="Scenario"
         optionFilterProp="children"
+        defaultValue={query.scenario || "All"}
         onChange={value=>onChange("scenario", value)}
         filterOption={(input, option) =>
           option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
         }
       >
         {
-          scenarios.map((item, index)=>(
-            <Option key={index}  value={item}>{item}</Option>
-          ))
-        }
+          scenarios.map((item, index)=>{
+            if ((scenarios.length - 1) === index)
+              return (
+                <>
+                <Option key={"scenario"+index} value={item}>{item}</Option>
+                <Option key={"scenario_all"} value={"All"}>All</Option>
+                </>
+              )
+            return (<Option key={"scenario"+index} value={item}>{item}</Option>)
+          })
+        }   
       </Select>
       <Select
         showSearch
         style={{ width: 250 }}
+        defaultValue={value.dimension?value.dimension:"All"}
         placeholder="Dimension"
         optionFilterProp="children"
+        defaultValue={query.dimension || "All"}
         onChange={value=>onChange("dimension", value)}
         filterOption={(input, option) =>
           option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
         }
       >
         {
-          dimensions.map((item, index)=>(
-            <Option key={index} value={item}>{item}</Option>
-          ))
-        }
+          dimensions.map((item, index)=>{
+            if ((dimensions.length - 1) === index)
+              return (
+                <>
+                <Option key={"dimension"+index} value={item}>{item}</Option>
+                <Option key={"dimension_all"} value={"All"}>All</Option>
+                </>
+              )
+            return (<Option key={"dimension"+index} value={item}>{item}</Option>)
+          })
+        } 
       </Select>
       {/* <Select
         showSearch
