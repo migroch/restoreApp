@@ -68,7 +68,7 @@ class Map extends Component {
 	</div>
       </div>
     )
-	}
+  }
 	
   drawMap(){ 
     
@@ -92,7 +92,7 @@ class Map extends Component {
 		  .append("g")
 		  .attr("transform", "translate("+shiftdx+","+shiftdy+")");
 
-		let LeftNodes = {...nodes_data}; LeftNodes.children = nodes_data.children.filter(child => LeftCategories.includes(child.name) );
+    let LeftNodes = {...nodes_data}; LeftNodes.children = nodes_data.children.filter(child => LeftCategories.includes(child.name) );
     let RightNodes = {...nodes_data}; RightNodes.children = nodes_data.children.filter(child => !LeftCategories.includes(child.name) );
     
     //let root = d3.hierarchy(nodes_data);
@@ -272,7 +272,7 @@ class Map extends Component {
 	});
   }
 
-  handleUnitClick = value => {
+  handleNodeClick = value => {
 		const depths = ['category', 'subcategory', 'unit']
 		const item = depths[value.depth-1]
 		this.props.history.push({

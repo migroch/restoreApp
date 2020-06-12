@@ -5,7 +5,6 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { planitems, plans } from '../../../api/collections';
 import  Schemas from '../../../api/schemas';
 import PlanItemList from '../../reusable/PlanItemList';
-import { Input, Select, Button, Tooltip, Breadcrumb } from 'antd/dist/antd.min.js';
 import { useHistory, useLocation } from "react-router-dom";
 import { uniq, isEmpty } from 'lodash'
 import { plansQuery, plansQueryWithFilter } from '../../../api/queries'
@@ -38,12 +37,6 @@ const PlanWrapper = ({data}) => {
     "Low Restrictions": "bg-success"
   }
 
-
-//  console.log(data.dimensions());
-//  console.log(data.districts());
-//  console.log(data.schools());
-//  console.log(data.userNames());
-    
   let plan_units = uniq(data.planItems.map( pi => pi.units ).flat());
   let plan_dimensions = uniq(data.dimensions());
   let plan_districts = uniq(data.districts()) ;
