@@ -1,201 +1,213 @@
-import React, { Component } from "react";
-import { withTracker } from 'meteor/react-meteor-data';
-import { guidanceitems} from "../../api/collections.js";
+import React, { Component, useState } from "react";
+import { withTracker } from "meteor/react-meteor-data";
+import { guidanceitems } from "../../api/collections.js";
+import Pagination from "./Pagination.jsx";
 
 class GuidanceItems extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      currentPage: 1,
+      guidanceItemsPerPage: 10,
+    };
   }
 
-  makeGuidanceItems(guidanceitems){
-    return(
-      guidanceitems.slice(0, 3).map( (gitem, index) =>{
-	return(
-	  <div key={index} className="card-body">
-	    <p>
-	      {gitem.type} <br />
-	      {gitem.source} <br />
-	      {gitem.location_in_source} <br />
-	      {gitem.item.text} <br />
-	      {gitem.unitIds} <br />
-	      {gitem.dimensions} <br />
-	    </p>
-	  </div>
-	)
-      }));
+  makeGuidanceItems(guidance) {
+    return guidance.slice(0, this.state.guidanceItemsPerPage).map((gitem, index) => {
+        return (
+          <div key={index} className="card-body">
+            <p>
+              {gitem.type} <br />
+              {gitem.source} <br />
+              {gitem.location_in_source} <br />
+              {gitem.item.text} <br />
+              {gitem.unitIds} <br />
+              {gitem.dimensions} <br />
+            </p>
+          </div>
+        );
+      });
   }
-  
+
   render() {
-    
     const { loading, guidanceitemsExists, guidanceitems } = this.props;
-    
-    if(loading){
-      return(
+
+    if (loading) {
+      return (
         <div className="d-flex justify-content-center text-primary">
           <div className="spinner-border" role="status">
             <span className="sr-only">Loading...</span>
           </div>
         </div>
-      )
-    }else{
+      );
+    } else {
+      const indexOfLastGuidanceItem = this.state.currentPage * this.state.guidanceItemsPerPage;
+      const indexOfFirstGuidanceItems = indexOfLastGuidanceItem - this.state.guidanceItemsPerPage;
+      const currentGuidanceItems = guidanceitems.slice(indexOfFirstGuidanceItems, indexOfLastGuidanceItem);
+      const guidanceItems = this.makeGuidanceItems(currentGuidanceItems);
+      const paginate = (pageNumber) => this.setState({ currentPage: pageNumber });
 
-      const guidanceItems = this.makeGuidanceItems(guidanceitems) ;
-      
       return (
-	<div>
+        <div>
           <div className="accordion" id="accordionExample">
             <div className="card">
               <div className="card-header" id="headingOne">
-		<h5 className="mb-0">
+                <h5 className="mb-0">
                   <button
-                      className="btn btn-link"
-                      type="button"
-                      data-toggle="collapse"
-                      data-target="#collapseOne"
-                      aria-expanded="true"
-                      aria-controls="collapseOne"
+                    className="btn btn-link"
+                    type="button"
+                    data-toggle="collapse"
+                    data-target="#collapseOne"
+                    aria-expanded="true"
+                    aria-controls="collapseOne"
                   >
                     Guidance Items
                   </button>
-		</h5>
+                </h5>
               </div>
               <div
-		  id="collapseOne"
-		  className="collapse show"
-		  aria-labelledby="headingOne"
-		  data-parent="#accordionExample"
+                id="collapseOne"
+                className="collapse show"
+                aria-labelledby="headingOne"
+                data-parent="#accordionExample"
               >
-		<div className="dropdown container">
+                <div className="dropdown container">
                   <div className="row">
                     <div className="col">
                       <button
-			  className="btn btn-secondary dropdown-toggle"
-			  type="button"
-			  id="dropdownMenuButton"
-			  data-toggle="dropdown"
-			  aria-haspopup="true"
-			  aria-expanded="false"
+                        className="btn btn-secondary dropdown-toggle"
+                        type="button"
+                        id="dropdownMenuButton"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
                       >
-			Types
+                        Types
                       </button>
                       <div
-			  className="dropdown-menu"
-			  aria-labelledby="dropdownMenuButton"
+                        className="dropdown-menu"
+                        aria-labelledby="dropdownMenuButton"
                       >
-			<a className="dropdown-item" href="#">
-                          Test 01
-			</a>
+                        <a className="dropdown-item">
+                          Actions
+                        </a>
                       </div>
                     </div>
                     <div className="col">
                       <button
-			  className="btn btn-secondary dropdown-toggle"
-			  type="button"
-			  id="dropdownMenuButton"
-			  data-toggle="dropdown"
-			  aria-haspopup="true"
-			  aria-expanded="false"
+                        className="btn btn-secondary dropdown-toggle"
+                        type="button"
+                        id="dropdownMenuButton"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
                       >
-			Sources
+                        Sources
                       </button>
                       <div
-			  className="dropdown-menu"
-			  aria-labelledby="dropdownMenuButton"
+                        className="dropdown-menu"
+                        aria-labelledby="dropdownMenuButton"
                       >
-			<a className="dropdown-item" href="#">
+                        <a className="dropdown-item" href="#">
                           Test 02
-			</a>
+                        </a>
                       </div>
                     </div>
                     <div className="col">
                       <button
-			  className="btn btn-secondary dropdown-toggle"
-			  type="button"
-			  id="dropdownMenuButton"
-			  data-toggle="dropdown"
-			  aria-haspopup="true"
-			  aria-expanded="false"
+                        className="btn btn-secondary dropdown-toggle"
+                        type="button"
+                        id="dropdownMenuButton"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
                       >
-			Categories
+                        Categories
                       </button>
                       <div
-			  className="dropdown-menu"
-			  aria-labelledby="dropdownMenuButton"
+                        className="dropdown-menu"
+                        aria-labelledby="dropdownMenuButton"
                       >
-			<a className="dropdown-item" href="#">
+                        <a className="dropdown-item" href="#">
                           Test 03
-			</a>
+                        </a>
                       </div>
                     </div>
                     <div className="col">
                       <button
-			  className="btn btn-secondary dropdown-toggle"
-			  type="button"
-			  id="dropdownMenuButton"
-			  data-toggle="dropdown"
-			  aria-haspopup="true"
-			  aria-expanded="false"
+                        className="btn btn-secondary dropdown-toggle"
+                        type="button"
+                        id="dropdownMenuButton"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
                       >
-			Subcategories
+                        Subcategories
                       </button>
                       <div
-			  className="dropdown-menu"
-			  aria-labelledby="dropdownMenuButton"
+                        className="dropdown-menu"
+                        aria-labelledby="dropdownMenuButton"
                       >
-			<a className="dropdown-item" href="#">
+                        <a className="dropdown-item" href="#">
                           Test 04
-			</a>
+                        </a>
                       </div>
                     </div>
                     <div className="col">
                       <button
-			  className="btn btn-secondary dropdown-toggle"
-			  type="button"
-			  id="dropdownMenuButton"
-			  data-toggle="dropdown"
-			  aria-haspopup="true"
-			  aria-expanded="false"
+                        className="btn btn-secondary dropdown-toggle"
+                        type="button"
+                        id="dropdownMenuButton"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
                       >
-			Dimensions
+                        Dimensions
                       </button>
                       <div
-			  className="dropdown-menu"
-			  aria-labelledby="dropdownMenuButton"
+                        className="dropdown-menu"
+                        aria-labelledby="dropdownMenuButton"
                       >
-			<a className="dropdown-item" href="#">
+                        <a className="dropdown-item" href="#">
                           Test 05
-			</a>
+                        </a>
                       </div>
                     </div>
                   </div>
-		</div>
+                </div>
 
-		{/*GuidanceItems*/}
+                {/*GuidanceItems*/}
 
-		{guidanceItems}
-	
+                {guidanceItems}
+
+                <Pagination
+                  guidanceItemsPerPage={this.state.guidanceItemsPerPage}
+                  totalGuidanceItems={guidanceitems.length}
+                  paginate={paginate}
+                  currentPage={this.state.currentPage}
+                />
               </div>
             </div>
           </div>
-	</div>
+        </div>
       );
     }
   }
 }
 
-
-GuidanceItems = withTracker(()=>{
+GuidanceItems = withTracker(() => {
   //const user = Meteor.user();
-  const guidanceitemsHandle = Meteor.subscribe('guidanceitems');
+  const guidanceitemsHandle = Meteor.subscribe("guidanceitems");
   const loading = !guidanceitemsHandle.ready();
-  const guidanceitems_fetch = guidanceitems.find({}, { sort: { createdAt: -1 } }).fetch();
+  const guidanceitems_fetch = guidanceitems
+    .find({}, { sort: { createdAt: -1 } })
+    .fetch();
   const guidanceitemsExists = !loading && !!guidanceitems;
   return {
     //user,
     loading,
-    guidanceitemsExists,   
-    guidanceitems: guidanceitemsExists ? guidanceitems_fetch : {}
+    guidanceitemsExists,
+    guidanceitems: guidanceitemsExists ? guidanceitems_fetch : {},
   };
 })(GuidanceItems);
 
