@@ -45,15 +45,17 @@ planitems.helpers({
     // districts
     districts(){
 	let districts = [];
-	districts.concat(this.assignedToIds.map(id => Meteor.users.findOne({_id:id}).district ));
-	districts.push( Meteor.users.findOne({_id:this.ownerId}).district);
+	// districts.concat(this.assignedToIds.map(id => Meteor.users.findOne({_id:id}).district ));
+    // districts.push( Meteor.users.findOne({_id:this.ownerId}).district);
+    districts = this.assignedTo.map(item=>item.district).flat()
+    if (this.owner) districts.push( this.owner.district);
 	return districts;
     },
     // schools
     schools(){
 	let schools = [];
-	schools.concat(this.assignedToIds.map(id => Meteor.users.findOne({_id:id}).shools));
-	schools.push( Meteor.users.findOne({_id:this.ownerId}).schools);
+	schools.concat(this.assignedToIds.map(id => Meteor.users.findOne({_id:id}).schools));
+    schools.push( Meteor.users.findOne({_id:this.ownerId}).schools);
 	return schools;
     },
     // owner name
