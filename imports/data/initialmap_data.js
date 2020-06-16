@@ -12,7 +12,6 @@ const mapnodes_data = convertFreemindNodes(data_json);
 const categories_data = [];
 const subcategories_data = [];
 const units_data = [];
-console.log("RRRR", mapnodes_data)
 mapnodes_data.children.forEach( (child) =>{
     let category = child.name;
     categories_data.push({name: category});

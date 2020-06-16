@@ -24,7 +24,7 @@ const scenarios = Schemas.scenarios
 const Tags = (data) => data.map(item => <div className="" key={item+"tag"}><p className="m-0"><small>{item}</small></p></div>)
 
 // Plan    
-const PlanWrapper = ({data}) => {
+let PlanWrapper = ({data}) => {
   const history = useHistory();
   const [isDetailVisible, setIsDetailVisible] = useState(false);
   const [ title, setTitle ] = useState(data.title);
@@ -137,15 +137,24 @@ const PlanWrapper = ({data}) => {
     </div>
   )
 }
-
+// List of Plans data layer
+PlanWrapper = withTracker(({id}) => {
+  const plansQuery_Clone = plansQueryWithFilter.clone({id});
+  plansQuery_Clone.subscribe();
+  let data = plansQuery_Clone.fetchOne()
+  return {
+    data,
+    isLoading: false
+  };
+})(PlanWrapper);
 // List of Plans
-PlansListView = ({plans_data, isLoading})=>{
+PlansListView = ({plans_data, plan_ids, isLoading})=>{
   if (isLoading) return null;
   // const [plans, setPlans] = useState(plans_data)
   return (
     <div className="plans-wrapper">
       {
-	plans_data.map((plan)=><PlanWrapper  data={plan} key={"plan"+plan._id} />)
+	plan_ids.map((id)=><PlanWrapper  id={id} key={"plan"+id} />)
       }
     </div>
   )
@@ -170,10 +179,31 @@ PlansListView = withTracker(({search}) => {
   plansQuery_Clone.subscribe();
   
   let plans_data = plansQuery_Clone.fetch()
-  plans_data = plans_data.filter(plan=>!isEmpty(plan.planItems))
 
+  //filtering plans_data
+  plans_data = plans_data.filter(plan=>{
+    //in case planItems is empty
+    if (isEmpty(plan.planItems)) return false
+    //in case unit & subcategory & category undefined
+    let plan_units = uniq(plan.planItems.map( pi => pi.units ).flat());
+    let flag = false
+    plan_units.every( u => {
+      if (u && u.subcategory && u.subcategory.category) {
+        flag = true
+        return false
+      }
+      return true
+    })
+    //in case districts is empty
+    let plan_districts = plan.districts()
+    flag = flag && !isEmpty(plan_districts)
+    return flag
+  })
+  // filtered plan ids
+  const plan_ids = plans_data.map(plan=>plan._id)
   return {
     plans_data,
+    plan_ids,
     isLoading: false
   };
 })(PlansListView);
@@ -184,7 +214,6 @@ PlanView = () => {
   const history = useHistory();
   const location = useLocation();
   const initial_query = queryString.parse(location.search)
-  console.log("location.search", location.search)
   const [searchQuery, setSearchQuery] = useState(initial_query)
   const setQuery = (query) => setSearchQuery(query)
   

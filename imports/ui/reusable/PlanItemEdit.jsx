@@ -172,7 +172,7 @@ export default withTracker(({id}) => {
     Meteor.subscribe('categories'),
     Meteor.subscribe('subcategories'),
     Meteor.subscribe('units'),
-    Meteor.subscribe('allUserData'),
+    // Meteor.subscribe('allUserData'),
 
   ];
   const isLoading = handles.some(handle => !handle.ready());

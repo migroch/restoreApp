@@ -3,8 +3,9 @@ import { Select, Input } from 'antd/dist/antd.min.js';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import  Schemas from '../../api/schemas';
-import { categories, subcategories, units } from '../../api/collections';
-
+import {plans, categories, subcategories, units } from '../../api/collections';
+import { uniq } from 'lodash'
+import { plansQueryWithFilter } from '../../api/queries'
 const { Search } = Input;
 const { Option } = Select;
 const dimensions =  Schemas.dimensions;
@@ -36,7 +37,7 @@ categories_data = ['Instructional Programs', 'Health & Safety/Operations', 'Stud
 
 const SelectWrapper = ({isLoading, data, onChangeQuery, value}) => {
   if (isLoading) return null
-  const { categories_total, subcategories_total, units_total } = data
+  const { categories_total, subcategories_total, units_total, districts_total, schools_total } = data
   const [query, setQuery] = useState(value)
 
   onChange = (item, value) => {
@@ -178,38 +179,56 @@ const SelectWrapper = ({isLoading, data, onChangeQuery, value}) => {
           })
         } 
       </Select>
-      {/* <Select
-        showSearch
-        style={{ width: 150 }}
-        placeholder="Districts"
-        optionFilterProp="children"
-        onChange={onChangeCategory}
-        filterOption={(input, option) =>
-          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-        }
-      >
-        {
-          categories_data.map((item, index)=>(
-            <Option key={index} value={item.id}>{item.name}</Option>
-          ))
-        }
-      </Select>         
       <Select
         showSearch
-        style={{ width: 150 }}
-        placeholder="Schools"
+        style={{ width: 250 }}
+        defaultValue={value.district?value.district:"All"}
+        placeholder="District"
         optionFilterProp="children"
-        onChange={onChangeCategory}
+        defaultValue={query.district || "All"}
+        onChange={value=>onChange("district", value)}
         filterOption={(input, option) =>
           option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
         }
       >
         {
-          categories_data.map((item, index)=>(
-            <Option key={index} value={item.id}>{item.name}</Option>
-          ))
+          districts_total.map((item, index)=>{
+            if ((districts_total.length - 1) === index)
+              return (
+                <>
+                <Option key={"district"+index} value={item}>{item}</Option>
+                <Option key={"district_all"} value={"All"}>All</Option>
+                </>
+              )
+            return (<Option key={"district"+index} value={item}>{item}</Option>)
+          })
+        } 
+      </Select>      
+      <Select
+        showSearch
+        style={{ width: 250 }}
+        defaultValue={value.school?value.school:"All"}
+        placeholder="School"
+        optionFilterProp="children"
+        defaultValue={query.school || "All"}
+        onChange={value=>onChange("school", value)}
+        filterOption={(input, option) =>
+          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
         }
-      </Select>                         */}
+      >
+        {
+          schools_total.map((item, index)=>{
+            if ((school.length - 1) === index)
+              return (
+                <>
+                <Option key={"school"+index} value={item}>{item}</Option>
+                <Option key={"school_all"} value={"All"}>All</Option>
+                </>
+              )
+            return (<Option key={"school"+index} value={item}>{item}</Option>)
+          })
+        } 
+      </Select>                      
     </div>
     </div>
   )
@@ -231,11 +250,15 @@ export default withTracker(() => {
       isLoading: true
     };
   }
-
+  const plansQuery_Clone = plansQueryWithFilter.clone({});
+  plansQuery_Clone.subscribe();
+  let plans_total = plansQuery_Clone.fetch()
+  const districts_total = uniq(plans_total.map(plan=>plan.districts()).flat())
+  const schools_total = uniq(plans_total.map(plan=>plan.schools()).flat())
   const categories_total = categories.find({}).fetch()
   const subcategories_total = subcategories.find({}).fetch()
   const units_total = units.find({}).fetch()
-  const data = { categories_total, subcategories_total, units_total }
+  const data = { categories_total, subcategories_total, units_total, schools_total, districts_total }
   return {
     data,
     isLoading: false
