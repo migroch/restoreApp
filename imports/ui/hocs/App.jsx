@@ -24,6 +24,7 @@ const App = () => (
         <Route exact path="/plan-viewer" component={PlanView}/>
         <Route exact path="/plan-editor" component={PlanEdit}/>
         <Route exact path="/plan-editor/:id" component={PlanEdit}/>
+	<Route exact path="/guidance" component={GuidanceItems}/>
         <Redirect to="/map" from="/"/>
       </Switch>
     </div>

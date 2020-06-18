@@ -45,26 +45,38 @@ planitems.helpers({
     // districts
     districts(){
 	let districts = [];
-	// districts.concat(this.assignedToIds.map(id => Meteor.users.findOne({_id:id}).district ));
-    // districts.push( Meteor.users.findOne({_id:this.ownerId}).district);
-    districts = this.assignedTo.map(item=>item.district).flat()
-    if (this.owner) districts.push( this.owner.district);
+	//districts.concat(this.assignedToIds.map(id => Meteor.users.findOne({_id:id}).district ));
+	//districts.push( Meteor.users.findOne({_id:this.ownerId}).district);
+	if (this.assignedTo) districts = this.assignedTo.map(user=>user.district).flat();
+	if (this.owner) districts.push( this.owner.district);
 	return districts;
     },
     // schools
     schools(){
 	let schools = [];
-	schools.concat(this.assignedToIds.map(id => Meteor.users.findOne({_id:id}).schools));
-    schools.push( Meteor.users.findOne({_id:this.ownerId}).schools);
-	return schools;
+	//schools.concat(this.assignedToIds.map(id => Meteor.users.findOne({_id:id}).schools));
+	//schools.push( Meteor.users.findOne({_id:this.ownerId}).schools);
+	if (this.assignedTo) schools = this.assignedTo.map(user=>user.schools);
+	if (this.owner) schools.push( this.owner.schools);
+	return schools.flat();
+    },
+    // shcool names
+    schoolNames(){
+	return this.schools().map(s => s.name);
     },
     // owner name
     ownerName(){
-	return Meteor.users.findOne({_id:this.ownerId}).profile.name;
+	let name;
+	if (this.owner) name = this.owner.profile.name;
+	return name;
+	//return Meteor.users.findOne({_id:this.ownerId}).profile.name;
     },
     // assignedTo names
     assignedToNames(){
-	return this.assignedToIds.map(id => Meteor.users.findOne({_id:id}).profile.name );
+	let names = [];
+	// names = this.assignedToIds.map(id => Meteor.users.findOne({_id:id}).profile.name);
+	if (this.assignedTo) names = this.assignedTo.map(user => user.profile.name );
+	return names;
     }
 });
 
@@ -89,6 +101,10 @@ plans.helpers({
     // schools
     schools(){
 	return this.planItems.map(pi => pi.schools()).flat().flat();
+    },
+    // school names
+    schoolNames(){
+	return this.planItems.map(pi => pi.schoolNames()).flat();
     },
     // user names
     userNames(){
