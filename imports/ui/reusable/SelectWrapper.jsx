@@ -218,7 +218,7 @@ const SelectWrapper = ({isLoading, data, onChangeQuery, value}) => {
       >
         {
           schools_total.map((item, index)=>{
-            if ((school.length - 1) === index)
+            if ((schools_total.length - 1) === index)
               return (
                 <>
                 <Option key={"school"+index} value={item}>{item}</Option>
@@ -254,7 +254,7 @@ export default withTracker(() => {
   plansQuery_Clone.subscribe();
   let plans_total = plansQuery_Clone.fetch()
   const districts_total = uniq(plans_total.map(plan=>plan.districts()).flat())
-  const schools_total = uniq(plans_total.map(plan=>plan.schools()).flat())
+  const schools_total = uniq(plans_total.map(plan=>plan.schools()).flat().map(s=>s.name))
   const categories_total = categories.find({}).fetch()
   const subcategories_total = subcategories.find({}).fetch()
   const units_total = units.find({}).fetch()

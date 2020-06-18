@@ -100,7 +100,7 @@ export const plansQueryWithFilter = plans.createQuery({
 	owner: {
 		$filter({filters, params}) {
 			if (params.district)  filters.district = params.district;
-			// if (params.district)  filters.district = params.district;
+			if (params.school)  filters.schools = {$elemMatch: {name: params.school}} ;
 		},
 	    district: 1,
 	    county: 1,
@@ -112,7 +112,7 @@ export const plansQueryWithFilter = plans.createQuery({
 	assignedTo: {
 		$filter({filters, params}) {
 			if (params.district)  filters.district = params.district;
-			// if (params.district)  filters.district = params.district;
+			if (params.school)  filters.schools = {$elemMatch: {name: params.school}} ;
 		},
 	    district: 1,
 	    county: 1,

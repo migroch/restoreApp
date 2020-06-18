@@ -28,6 +28,10 @@ let units = new Mongo.Collection('units');
 units.schema = Schemas.units;
 units.attachSchema(Schemas.units);
 
+let schools = new Mongo.Collection('schools');
+schools.schema = Schemas.schools;
+schools.attachSchema(Schemas.schools);
+
 let mapnodes = new Mongo.Collection('mapnodes');
 
 let menuitems = new Mongo.Collection('menuitems');
@@ -54,10 +58,12 @@ planitems.helpers({
     // schools
     schools(){
 	let schools = [];
-	schools.concat(this.assignedToIds.map(id => Meteor.users.findOne({_id:id}).schools));
-    schools.push( Meteor.users.findOne({_id:this.ownerId}).schools);
+	// schools.concat(this.assignedToIds.map(id => Meteor.users.findOne({_id:id}).schools));
+    // schools.push( Meteor.users.findOne({_id:this.ownerId}).schools);
+    schools = this.assignedTo.map(item=>item.schools)
+    if (this.owner) schools.push( this.owner.schools);
 	return schools;
-    },
+    },  
     // owner name
     ownerName(){
 	return Meteor.users.findOne({_id:this.ownerId}).profile.name;
@@ -88,7 +94,7 @@ plans.helpers({
     },
     // schools
     schools(){
-	return this.planItems.map(pi => pi.schools()).flat().flat();
+	return this.planItems.map(pi => pi.schools().flat()).flat();
     },
     // user names
     userNames(){
@@ -102,4 +108,4 @@ plans.helpers({
 
 
 
-export { plans, planitems, guidanceitems, categories, subcategories, units, mapnodes, menuitems};
+export { plans, planitems, guidanceitems, categories, subcategories, units, mapnodes, menuitems, schools};
