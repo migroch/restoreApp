@@ -36,9 +36,9 @@ categories_data = ['Instructional Programs', 'Health & Safety/Operations', 'Stud
 
 
 const SelectWrapper = ({isLoading, data, onChangeQuery, value}) => {
-  if (isLoading) return null
-  const { categories_total, subcategories_total, units_total, districts_total, schools_total } = data
-  const [query, setQuery] = useState(value)
+  if (isLoading) return null;
+  const { categories_total, subcategories_total, units_total, districts_total, schools_total } = data;
+  const [query, setQuery] = useState(value);
 
   onChange = (item, value) => {
     if (value==="All") value = undefined
@@ -192,12 +192,13 @@ const SelectWrapper = ({isLoading, data, onChangeQuery, value}) => {
         }
       >
         {
+	 
           districts_total.map((item, index)=>{
-            if ((districts_total.length - 1) === index)
+            if ( index == 0)
               return (
                 <>
+		<Option key={"district_all"} value={"All"}>All</Option>
                 <Option key={"district"+index} value={item}>{item}</Option>
-                <Option key={"district_all"} value={"All"}>All</Option>
                 </>
               )
             return (<Option key={"district"+index} value={item}>{item}</Option>)
@@ -205,30 +206,31 @@ const SelectWrapper = ({isLoading, data, onChangeQuery, value}) => {
         } 
       </Select>      
       <Select
-        showSearch
-        style={{ width: 250 }}
-        defaultValue={value.school?value.school:"All"}
-        placeholder="School"
-        optionFilterProp="children"
-        defaultValue={query.school || "All"}
-        onChange={value=>onChange("school", value)}
-        filterOption={(input, option) =>
-          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-        }
+	  showSearch
+	  style={{ width: 250 }}
+	  defaultValue={value.school?value.school:"All"}
+	  placeholder="School"
+	  optionFilterProp="children"
+	  defaultValue={query.school || "All"}
+	  onChange={value=>onChange("school", value)}
+	  filterOption={(input, option) =>
+	    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+		       }
       >
-        {
-          schools_total.map((item, index)=>{
-            if ((schools_total.length - 1) === index)
-              return (
-                <>
-                <Option key={"school"+index} value={item}>{item}</Option>
-                <Option key={"school_all"} value={"All"}>All</Option>
-                </>
-              )
-            return (<Option key={"school"+index} value={item}>{item}</Option>)
-          })
-        } 
-      </Select>                      
+	{
+
+	    schools_total.map((item, index)=>{
+	      if (index == 0)
+		return (
+		  <>
+		  <Option key={"school_all"} value={"All"}>All</Option>
+		  <Option key={"school"+index} value={item}>{item}</Option>
+		  </>
+		)
+		return (<Option key={"school"+index} value={item}>{item}</Option>)
+	    })
+	} 
+      </Select>            
     </div>
     </div>
   )
@@ -254,7 +256,7 @@ export default withTracker(() => {
   plansQuery_Clone.subscribe();
   let plans_total = plansQuery_Clone.fetch()
   const districts_total = uniq(plans_total.map(plan=>plan.districts()).flat())
-  const schools_total = uniq(plans_total.map(plan=>plan.schools()).flat().map(s=>s.name))
+  const schools_total = uniq(plans_total.map(plan=>plan.schoolNames()).flat())
   const categories_total = categories.find({}).fetch()
   const subcategories_total = subcategories.find({}).fetch()
   const units_total = units.find({}).fetch()

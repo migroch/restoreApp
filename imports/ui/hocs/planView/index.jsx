@@ -194,7 +194,7 @@ PlansListView = withTracker(({search}) => {
       }
       return true
     })
-    //in case districts is empty
+    //in case districts and schools are empty
     let plan_districts = plan.districts()
     let plan_schools = plan.schools()
     flag = flag && !isEmpty(plan_districts) && !isEmpty(plan_schools)

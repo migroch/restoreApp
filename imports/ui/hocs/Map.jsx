@@ -386,7 +386,7 @@ class Map extends Component {
   }
 
   componentWillUnmount() {
-    //window.removeEventListener("resize", this.updateDimensions.bind(this));
+    window.removeEventListener("resize", this.updateDimensions.bind(this));
   }
 
 }
