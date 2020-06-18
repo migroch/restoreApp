@@ -3,6 +3,7 @@
 
 import { Mongo } from 'meteor/mongo';
 import Schemas from './schemas.js';
+import { Index, MongoDBEngine } from 'meteor/easy:search';
 
 let plans = new Mongo.Collection('plans');
 plans.schema = Schemas.plans;
@@ -121,5 +122,37 @@ plans.helpers({
 });
 
 
+const PlansIndex = new Index({
+    'collection': plans,
+    'fields': ['title', 'scenario'],
+    'engine': new MongoDBEngine({
+        'selector': function (searchObject, options, aggregation) {
+            const selector = this.defaultConfiguration().selector(searchObject, options, aggregation);
+            // console.log('default selector', selector); 
+            // console.log('search object', searchObject); 
+            // console.log('search object name: ', searchTerm)
+            return selector;
+        },
+        'fields': (searchObject, options) => ({
+            '_id': 1,
+        }),
+    }),
+    'permission': () => true,
+});
+const PlanItemsIndex = new Index({
+    'collection': planitems,
+    'fields': ['item.text', 'item.type', 'dimension'],
+    'engine': new MongoDBEngine({
+        'selector': function (searchObject, options, aggregation) {
+            const selector = this.defaultConfiguration().selector(searchObject, options, aggregation);
+            return selector;
+        },
+        'fields': (searchObject, options) => ({
+            '_id': 1,
+        }),
+    }),
+    'permission': () => true,
+});
 
-export { plans, planitems, guidanceitems, categories, subcategories, units, mapnodes, menuitems, schools};
+export { plans, planitems, guidanceitems, categories, subcategories, units, mapnodes, menuitems, schools, PlansIndex, PlanItemsIndex };
+

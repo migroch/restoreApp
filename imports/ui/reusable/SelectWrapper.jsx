@@ -11,30 +11,6 @@ const { Option } = Select;
 const dimensions =  Schemas.dimensions;
 const scenarios =  Schemas.scenarios;
 
-//TODO: Wrap over Tracker to subscribe to collections. Then get values of filters from the collections and schemas,
-//            then iterate over filters to create <Select> components 
-/* const scenarios = Schemas.scenarios;
-   const categories_f = categories.find({},{'name': 1}).fetch();
-   const subcategories_f =  subcategories.find({},{'name': 1}).fetch();
-   const units_f =  units.find({},{'name': 1}).fetch();
-   const dimensions =  Schemas.dimensions;
-   const districts =  [] // we need to get this from usersIds in planitems
-   const schools = [] // we'll have to  get this from userIds in planitems
-
-   const filters = [
-   {label:'Level of Restrictions',values: scenarios},
-   {label:'Categories',values: categories_f},
-   {label:'Subcategories',values: subcategories_f},
-   {label:'Units',values: units_f},
-   {label:'Dimensions',values: dimensions},
-   {label:'Districts',values: districts},
-   {label:'Shools',values: schools},
-   ] */
-
-
-categories_data = ['Instructional Programs', 'Health & Safety/Operations', 'Student Support & Family Engagement']
-
-
 const SelectWrapper = ({isLoading, data, onChangeQuery, value}) => {
   if (isLoading) return null;
   const { categories_total, subcategories_total, units_total, districts_total, schools_total } = data;
@@ -50,12 +26,6 @@ const SelectWrapper = ({isLoading, data, onChangeQuery, value}) => {
   }, [query]);
 
   return (
-    <div>
-      <Search
-        placeholder="Search"
-        onSearch={value => console.log(value)}
-        style={{ width: '100%' }}
-      />          
     <div className="select-wrapper">
   
       <Select
@@ -231,8 +201,7 @@ const SelectWrapper = ({isLoading, data, onChangeQuery, value}) => {
 	    })
 	} 
       </Select>            
-    </div>
-    </div>
+  </div>
   )
 }
 
