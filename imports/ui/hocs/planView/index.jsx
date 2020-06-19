@@ -151,7 +151,7 @@ PlanWrapper = withTracker(({id}) => {
   };
 })(PlanWrapper);
 // List of Plans
-PlansListView = ({plans_data, plan_ids, isLoading})=>{
+PlansListView = ({plan_ids, isLoading})=>{
   if (isLoading) return null;
   // const [plans, setPlans] = useState(plans_data)
   return (
@@ -188,11 +188,18 @@ PlansListView = withTracker(({searchquery, searchbar}) => {
   const planIdswithSearchBar = uniq([...plan_ids_index_1, ...plan_ids_index_2])
 
   //-------2.search with select filter--------
+
   const plansQuery_Clone = plansQueryWithFilter.clone(searchquery);
   plansQuery_Clone.subscribe();
   let plans_data = plansQuery_Clone.fetch()
-
+  // in case search based on scenario, it doesn't matter the planitems are empty
+  let isOnlyScenarioSearch = true
+  for(var key in searchquery) {
+    if (key != 'scenario')
+    isOnlyScenarioSearch = isOnlyScenarioSearch & (!searchquery[key]);
+  }
   //filtering plans_data
+  if (!isOnlyScenarioSearch)
   plans_data = plans_data.filter(plan=>{
     //in case planItems is empty
     if (isEmpty(plan.planItems)) return false
@@ -217,7 +224,6 @@ PlansListView = withTracker(({searchquery, searchbar}) => {
   //------3.intersection of two result from filter and searchbar-------
   const plan_ids = intersection(planIdswithSearchBar, planIdswithFilter)
   return {
-    plans_data,
     plan_ids,
     isLoading: false
   };
@@ -234,12 +240,11 @@ PlanView = () => {
   const setQuery = (query) => setSearchQuery(query)
 
   const [searchbar, setSearchbar] = useState('')
-  const searchWithSearchbar = v => setSearchbar(v)
 
   return (
     <div className="plan-view container-fluid px-5">
       {/* set searchquery in selectwrapper */}
-      <SearchWrapper onSearchWithSearchbar={searchWithSearchbar}/>
+      <SearchWrapper onChangeSearchbar={v => setSearchbar(v)}/>
       <SelectWrapper onChangeQuery={setQuery} value={initial_query}/>    
       <PlansListView searchquery={searchQuery} searchbar={searchbar}/>
       <Tooltip  placement="top" title="Add Plan">

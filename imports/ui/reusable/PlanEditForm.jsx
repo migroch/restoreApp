@@ -15,18 +15,20 @@ const tailLayout = {
 
 const scenarios = Schemas.scenarios;
 
-const PlanEditComponent = ({id, data}) => {
+const PlanEditComponent = ({id, data, onCreatedPlan}) => {
   const history = useHistory()
   const { title, scenario, planItemIds } = data
   const onFinish = plan => {
     const { title, scenario } = plan
       
     if (!id) //in case of adding new plan
-      Meteor.call('plans.add', { title, scenario, planItemIds }, (err, res) => {
+      Meteor.call('plans.add', { title, scenario, planItemIds:[] }, (err, res) => {
         if (err) {
           alert(err);
         } else {
-          history.push('/plan-viewer')
+          
+          onCreatedPlan(res)
+          history.push(`/plan-editor/${res}`)
         }
       })
     else // in case of updating the plan

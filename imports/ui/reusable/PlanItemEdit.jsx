@@ -110,7 +110,7 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
         <Form.Item
           label="Owner"
           name="ownerId"
-          rules={[{ required: true, message: 'Please input Dimension!' }]}
+          rules={[{ required: true, message: 'Please input Owner!' }]}
         >
           <Select disabled={disabled}>
             { users.map((user, index)=><Option key={"owner"+user.id} value={user.id}>{user.name}</Option>) }
@@ -119,7 +119,7 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
         <Form.Item
           label="Assigned To"
           name="assignedToIds"
-          // rules={[{ required: true, message: 'Please input Dimension!' }]}
+          rules={[{ required: true, message: 'Please input AssignedTo!' }]}
         >
           <Select
             mode="tags"

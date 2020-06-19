@@ -17,28 +17,23 @@ const scenarios = Schemas.scenarios;
 
 const PlanEdit = ({ isLoading, data, id }) => {
   if (isLoading) return null
-  if (!id) console.log("PlanEdit: new plan edit now")
-
+  const [planId, setPlanId] = useState(id)
   const history = useHistory();
   const [isEditable, setIsEditable] = useState(true)
   const { planItems } = data
-  const colors = {
-    "High Restrictions": "red",
-    "Medium Restrictions": "yellow",
-    "Low Restrictions": "green"
-  }
-
   return (
     <>
       {/* <GuidanceItems /> */}
       <div className="plan-edit container">
       	<div className="content-wrapper">
           <div className="plan-edit-form">
-            <PlanEditForm data={data} id={id}/>
+            <PlanEditForm data={data} id={planId} onCreatedPlan={id=>setPlanId(id)}/>
           </div>
-          <div className="plan-item-list">
-            <PlanItemList data={planItems} planId={id} editable={true}/>
+{         
+          planId &&<div className="plan-item-list">
+            <PlanItemList data={planItems} planId={planId} editable={isEditable}/>
           </div>
+}
       	</div>
       </div>
     </>

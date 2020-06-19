@@ -38,7 +38,8 @@ Meteor.methods({
 		plans.remove(id);
 	},
 	'plans.add'(arg) {
-		plans.insert(arg);
+		const newPlan = plans.insert(arg);
+		return newPlan
 	},
 	'plans.update'(arg) {
 		const { id, title, scenario } = arg;

@@ -58,7 +58,7 @@ class GuidanceItems extends Component {
                     type="button"
                     data-toggle="collapse"
                     data-target="#collapseOne"
-                    aria-expanded="true"
+                    aria-expanded="false"
                     aria-controls="collapseOne"
                   >
                     Guidance Items
