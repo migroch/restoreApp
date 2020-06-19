@@ -18,6 +18,8 @@ import {Copy} from 'styled-icons/feather/Copy';
 //import {DeleteOutline} from 'styled-icons/material/DeleteOutline';
 import {Delete} from "styled-icons/feather/Delete";
 import {Edit3} from 'styled-icons/feather/Edit3';
+import {AddCircleOutline} from '@styled-icons/material/AddCircleOutline';
+import {DocumentAdd} from '@styled-icons/typicons/DocumentAdd' ;
 
 const { Option } = Select;
 const scenarios = Schemas.scenarios
@@ -218,13 +220,13 @@ PlanView = () => {
   const setQuery = (query) => setSearchQuery(query)
   
   return (
-    <div className="plan-view container">
+    <div className="plan-view container-fluid px-5">
       {/* set searchquery in selectwrapper */}
       <SelectWrapper onChangeQuery={setQuery} value={initial_query}/>    
       <PlansListView search={searchQuery} />
-      <div className="add-btn">
-        <img src="icons/add.png" onClick={()=>history.push(`/plan-editor`)}/>
-      </div>  
+      <Tooltip  placement="top" title="Add Plan">
+	<span className="add-btn" onClick={()=>history.push(`/plan-editor`)}><AddCircleOutline size="70" /></span>
+      </Tooltip >
     </div>
   )
 }

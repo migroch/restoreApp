@@ -20,7 +20,7 @@ class Footer extends Component {
 
   render() {
     return (
-      <div className="container-fluid bg-primary text-center text-white" >
+      <div className="container-fluid bg-primary text-center text-white mt-3" >
 	<p className="pt-3 m-0">Santa Cruz County Office of Education | 400 Encinal Street, Santa Cruz, CA 95060</p>
 	<p className="pb-3 m-0"><a className="text-white" href="mailto:data@santacruzcoe.org">data@santacruzcoe.org</a></p>
       </div>

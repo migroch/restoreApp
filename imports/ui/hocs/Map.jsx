@@ -32,6 +32,7 @@ class Map extends Component {
 
     this.handleNodeClick = this.handleNodeClick.bind(this);
     this.handleDimensionClick = this.handleDimensionClick.bind(this);
+    this.updateDimensions = this.updateDimensions.bind(this);
   }
 
   render(){
@@ -253,7 +254,7 @@ class Map extends Component {
 	       return  ('M ' + dy +' '+ dx + ' l '+size+' '+size+' l '+ -2*size+' 0 z');
 	     })
 	     .attr("transform", function(d) { return "rotate(" + (flip(d)*90) + ")"; })
-      	     .attr("fill", "#fff");
+      	     .attr("fill", d => selectColor(d));
 
     // Add circles
     nodeEnter.filter(d => (!d._children)).append("circle")
@@ -377,7 +378,7 @@ class Map extends Component {
 
   componentDidMount(){
     this.updateDimensions();
-    window.addEventListener("resize", this.updateDimensions.bind(this));
+    window.addEventListener("resize", this.updateDimensions);
     if (!this.props.loading) this.drawMap();
   }
 
@@ -386,7 +387,7 @@ class Map extends Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener("resize", this.updateDimensions.bind(this));
+    window.removeEventListener("resize", this.updateDimensions);
   }
 
 }
