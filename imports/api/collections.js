@@ -121,7 +121,23 @@ plans.helpers({
     },
 });
 
+// subcategories helpers
+subcategories.helpers({
+    categoryName() {
+        return categories.findOne(this.categoryId).name
+    },
+})
+// units helpers
+units.helpers({
+    subcategoryName() {
+        return subcategories.findOne(this.subcategoryId).name
+    },
+    categoryName() {
+        return subcategories.findOne(this.subcategoryId).categoryName()
+    }
+})
 
+// indexing for search bar
 const PlansIndex = new Index({
     'collection': plans,
     'fields': ['title', 'scenario'],

@@ -4,7 +4,7 @@ import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import  Schemas from '../../api/schemas';
 import {plans, categories, subcategories, units } from '../../api/collections';
-import { uniq } from 'lodash'
+import { uniq, isEmpty } from 'lodash'
 import { plansQueryWithFilter } from '../../api/queries'
 const { Search } = Input;
 const { Option } = Select;
@@ -12,7 +12,7 @@ const dimensions =  Schemas.dimensions;
 const scenarios =  Schemas.scenarios;
 
 
-const SelectWrapper = ({isLoading, data, onChangeQuery, value}) => {
+const SelectWrapper = ({isLoading, data, onChangeQuery, value, valueforMapLocation}) => {
   if (isLoading) return null;
   const { units_total, districts_total, schools_total } = data;
   const [query, setQuery] = useState(value);
@@ -20,6 +20,14 @@ const SelectWrapper = ({isLoading, data, onChangeQuery, value}) => {
   onChange = (item, value) => {
     if (value==="All") value = undefined
     setQuery({...query, [item]: value})
+    if (item == "ALLMAPLOCATION")
+      setQuery({...query, category: undefined, subcategory: undefined, unit: undefined})
+    if (item=="unit")
+      setQuery({...query, category: undefined, subcategory: undefined, unit: value})
+    if (item=="subcategory")
+      setQuery({...query, category: undefined, subcategory: value, unit: undefined})
+    if (item=="category")
+      setQuery({...query, category: value, subcategory: undefined, unit: undefined})
   }
 
   useEffect(() => {
@@ -28,16 +36,16 @@ const SelectWrapper = ({isLoading, data, onChangeQuery, value}) => {
 
   let mapOptions = []
   units_total.forEach(u =>{
-    let subcategory = u.subcategory.name;
-    let category = u.subcategory.category.name;
+    let subcategory = u.subcategoryName();
+    let category = u.categoryName();
     let categoryOpt = mapOptions.filter(c => c.value == category)[0]
     if (categoryOpt){
       let subcategoryOpt = categoryOpt.children.filter(s => s.value==subcategory)[0];
       if (subcategoryOpt){
-	let unames = subcategoryOpt.children.map(c => c.value);
-	if (!unames.includes(u.name)) subcategoryOpt.children.push({label:u.name, value:u.name});
+        let unames = subcategoryOpt.children.map(c => c.value);
+        if (!unames.includes(u.name)) subcategoryOpt.children.push({label:u.name, value:u.name});
       } else {
-	categoryOpt.children.push({label:subcategory, value:subcategory, children: [{label:u.name, value:u.name}]});
+        categoryOpt.children.push({label:subcategory, value:subcategory, children: [{label:u.name, value:u.name}]});
       }
     } else {
       mapOptions.push({label:category, value:category, children:[
@@ -67,10 +75,13 @@ const SelectWrapper = ({isLoading, data, onChangeQuery, value}) => {
 	      changeOnSelect={true}
 	      expandTrigger="hover"
 	      options={mapOptions}
-	      defaultValue={ []}
+	      defaultValue={valueforMapLocation}
 	      onChange={(values) => {
-		  let fnames = ["category", "subcategory", "unit"];
-		  fnames.forEach((fname, index) => onChange(fname, values[index]));
+          if (isEmpty(values)) onChange("ALLMAPLOCATION", null)
+          else {
+            let fnames = ["category", "subcategory", "unit"];
+            onChange(fnames[values.length-1], values[values.length-1])
+          }
 		}}
 	      filterOption = {(input, option) =>  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0   }
 	  />
@@ -114,7 +125,7 @@ const SelectWrapper = ({isLoading, data, onChangeQuery, value}) => {
   )
 }
 
-export default withTracker(() => {
+export default withTracker(({value}) => {
   const handles = [
     Meteor.subscribe('plans'),
     Meteor.subscribe('planitems'),
@@ -130,17 +141,39 @@ export default withTracker(() => {
       isLoading: true
     };
   }
+  let valueforMapLocation = []
+  if (value.unit) {
+    const unit = units.findOne({name:value.unit})
+    valueforMapLocation = [
+      unit.categoryName(),
+      unit.subcategoryName(),
+      unit.name,
+    ]
+  }
+
+  if (value.subcategory) {
+    const subcategory = subcategories.findOne({name:value.subcategory})
+    valueforMapLocation = [
+      subcategory.categoryName(),
+      subcategory.name,
+    ]
+  }
+
+  if (value.category) {
+    valueforMapLocation = [value.category]
+  }
+
   const plansQuery_Clone = plansQueryWithFilter.clone({});
   plansQuery_Clone.subscribe();
   let plans_total = plansQuery_Clone.fetch();
   const districts_total = uniq(plans_total.map(plan=>plan.districts()).flat());
   const schools_total = uniq(plans_total.map(plan=>plan.schoolNames()).flat());
-  const units_total  = plans_total.map(p => p.planItems.map(pi => pi.units).flat()).flat();    
-  const categories_total = categories.find({}).fetch().map(c => c.name);
-  const subcategories_total = subcategories.find({}).fetch().map(s => s.name);
-    const data = { units_total, schools_total, districts_total };
+  // const units_total  = plans_total.map(p => p.planItems.map(pi => pi.units).flat()).flat();    
+  const units_total  = units.find({}).fetch();
+  const data = { units_total, schools_total, districts_total };
   return {
     data,
+    valueforMapLocation,
     isLoading: false
   };
 })(SelectWrapper);

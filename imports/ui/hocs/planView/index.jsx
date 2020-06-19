@@ -188,7 +188,6 @@ PlansListView = withTracker(({searchquery, searchbar}) => {
   const planIdswithSearchBar = uniq([...plan_ids_index_1, ...plan_ids_index_2])
 
   //-------2.search with select filter--------
-
   const plansQuery_Clone = plansQueryWithFilter.clone(searchquery);
   plansQuery_Clone.subscribe();
   let plans_data = plansQuery_Clone.fetch()
