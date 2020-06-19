@@ -3,6 +3,7 @@
 
 import { Mongo } from 'meteor/mongo';
 import Schemas from './schemas.js';
+import { Index, MongoDBEngine } from 'meteor/easy:search';
 
 let plans = new Mongo.Collection('plans');
 plans.schema = Schemas.plans;
@@ -27,6 +28,10 @@ subcategories.attachSchema(Schemas.subcategories);
 let units = new Mongo.Collection('units');
 units.schema = Schemas.units;
 units.attachSchema(Schemas.units);
+
+let schools = new Mongo.Collection('schools');
+schools.schema = Schemas.schools;
+schools.attachSchema(Schemas.schools);
 
 let mapnodes = new Mongo.Collection('mapnodes');
 
@@ -100,7 +105,7 @@ plans.helpers({
     },
     // schools
     schools(){
-	return this.planItems.map(pi => pi.schools()).flat().flat();
+	return this.planItems.map(pi => pi.schools().flat()).flat();
     },
     // school names
     schoolNames(){
@@ -117,5 +122,37 @@ plans.helpers({
 });
 
 
+const PlansIndex = new Index({
+    'collection': plans,
+    'fields': ['title', 'scenario'],
+    'engine': new MongoDBEngine({
+        'selector': function (searchObject, options, aggregation) {
+            const selector = this.defaultConfiguration().selector(searchObject, options, aggregation);
+            // console.log('default selector', selector); 
+            // console.log('search object', searchObject); 
+            // console.log('search object name: ', searchTerm)
+            return selector;
+        },
+        'fields': (searchObject, options) => ({
+            '_id': 1,
+        }),
+    }),
+    'permission': () => true,
+});
+const PlanItemsIndex = new Index({
+    'collection': planitems,
+    'fields': ['item.text', 'item.type', 'dimension'],
+    'engine': new MongoDBEngine({
+        'selector': function (searchObject, options, aggregation) {
+            const selector = this.defaultConfiguration().selector(searchObject, options, aggregation);
+            return selector;
+        },
+        'fields': (searchObject, options) => ({
+            '_id': 1,
+        }),
+    }),
+    'permission': () => true,
+});
 
-export { plans, planitems, guidanceitems, categories, subcategories, units, mapnodes, menuitems};
+export { plans, planitems, guidanceitems, categories, subcategories, units, mapnodes, menuitems, schools, PlansIndex, PlanItemsIndex };
+

@@ -56,14 +56,6 @@ const SelectWrapper = ({isLoading, data, onChangeQuery, value}) => {
   return (
     <div>
 
-
-      <Search
-          placeholder="Search"
-          onSearch={value => console.log(value)}
-          style={{ width: '100%' }}
-      />          
-
-
       <div className="select-wrapper row">
 	<div  className="col col-md-4">
 	  <p className="m-0"><small>Map Location</small></p>

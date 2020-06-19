@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Meteor } from 'meteor/meteor';
 import SelectWrapper from '../../reusable/SelectWrapper';
+import SearchWrapper from '../../reusable/SearchWrapper';
 import { withTracker } from 'meteor/react-meteor-data';
-import { planitems, plans } from '../../../api/collections';
+import { planitems, plans, PlansIndex, PlanItemsIndex } from '../../../api/collections';
 import  Schemas from '../../../api/schemas';
 import PlanItemList from '../../reusable/PlanItemList';
 import { useHistory, useLocation } from "react-router-dom";
-import { uniq, isEmpty } from 'lodash'
+import { uniq, isEmpty, intersection } from 'lodash'
 import { plansQuery, plansQueryWithFilter } from '../../../api/queries'
 import queryString from 'query-string';
 import './index.scss';
@@ -163,7 +164,7 @@ PlansListView = ({plans_data, plan_ids, isLoading})=>{
 }
 
 // List of Plans data layer
-PlansListView = withTracker(({search}) => {
+PlansListView = withTracker(({searchquery, searchbar}) => {
   const handles = [
     Meteor.subscribe('planitems'),
     Meteor.subscribe('plans'),
@@ -177,9 +178,18 @@ PlansListView = withTracker(({search}) => {
     };
   }
   
-  const plansQuery_Clone = plansQueryWithFilter.clone(search);
+  //-------1.search with searchbar----------
+  // search in planitems (item, dimension)
+  const planItem_ids = PlanItemsIndex.search(searchbar).fetch().map(pi=>pi.__originalId)
+  // get plan_ids from planitem_ids
+  const plan_ids_index_1 = planItem_ids.map(pi_id=>plans.find({planItemIds: { $elemMatch: {$eq:pi_id}} }).fetch().map(p=>p._id)).flat()
+  // search in plan (title, scenario)
+  const plan_ids_index_2 = PlansIndex.search(searchbar).fetch().map(p=>p.__originalId)
+  const planIdswithSearchBar = uniq([...plan_ids_index_1, ...plan_ids_index_2])
+
+  //-------2.search with select filter--------
+  const plansQuery_Clone = plansQueryWithFilter.clone(searchquery);
   plansQuery_Clone.subscribe();
-  
   let plans_data = plansQuery_Clone.fetch()
 
   //filtering plans_data
@@ -196,13 +206,16 @@ PlansListView = withTracker(({search}) => {
       }
       return true
     })
-    //in case districts is empty
+    //in case districts and schools are empty
     let plan_districts = plan.districts()
-    flag = flag && !isEmpty(plan_districts)
+    let plan_schools = plan.schools()
+    flag = flag && !isEmpty(plan_districts) && !isEmpty(plan_schools)
     return flag
   })
   // filtered plan ids
-  const plan_ids = plans_data.map(plan=>plan._id)
+  const planIdswithFilter = plans_data.map(plan=>plan._id)
+  //------3.intersection of two result from filter and searchbar-------
+  const plan_ids = intersection(planIdswithSearchBar, planIdswithFilter)
   return {
     plans_data,
     plan_ids,
@@ -216,14 +229,19 @@ PlanView = () => {
   const history = useHistory();
   const location = useLocation();
   const initial_query = queryString.parse(location.search)
+  
   const [searchQuery, setSearchQuery] = useState(initial_query)
   const setQuery = (query) => setSearchQuery(query)
-  
+
+  const [searchbar, setSearchbar] = useState('')
+  const searchWithSearchbar = v => setSearchbar(v)
+
   return (
     <div className="plan-view container-fluid px-5">
       {/* set searchquery in selectwrapper */}
+      <SearchWrapper onSearchWithSearchbar={searchWithSearchbar}/>
       <SelectWrapper onChangeQuery={setQuery} value={initial_query}/>    
-      <PlansListView search={searchQuery} />
+      <PlansListView searchquery={searchQuery} searchbar={searchbar}/>
       <Tooltip  placement="top" title="Add Plan">
 	<span className="add-btn" onClick={()=>history.push(`/plan-editor`)}><AddCircleOutline size="70" /></span>
       </Tooltip >
