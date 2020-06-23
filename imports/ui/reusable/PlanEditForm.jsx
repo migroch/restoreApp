@@ -78,7 +78,7 @@ const PlanEditComponent = ({id, data, onCreatedPlan}) => {
       </Form.Item>
 
       <Form.Item {...tailLayout}>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" style={{backgroundColor: '#2176BB' }}>
           Save
         </Button>
         <Button type="cancel" style={{marginLeft: 50}} onClick={()=>history.push('/plan-viewer')}>

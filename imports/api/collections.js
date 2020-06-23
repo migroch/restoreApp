@@ -124,18 +124,21 @@ plans.helpers({
 // subcategories helpers
 subcategories.helpers({
     categoryName() {
-        return categories.findOne(this.categoryId).name
+	if (this.categoryId) return categories.findOne({_id : this.categoryId}).name;
+	return undefined;
     },
-})
+});
 // units helpers
 units.helpers({
     subcategoryName() {
-        return subcategories.findOne(this.subcategoryId).name
+	if (this.subcategoryId)  return subcategories.findOne({_id: this.subcategoryId}).name;
+	return undefined;
     },
     categoryName() {
-        return subcategories.findOne(this.subcategoryId).categoryName()
-    }
-})
+        if (this.subcategoryId) return subcategories.findOne({_id: this.subcategoryId}).categoryName();
+	return undefined;
+    },    
+});
 
 // indexing for search bar
 const PlansIndex = new Index({

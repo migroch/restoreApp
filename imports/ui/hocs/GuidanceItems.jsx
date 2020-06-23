@@ -1,7 +1,13 @@
 import React, { Component, useState } from "react";
 import { withTracker } from "meteor/react-meteor-data";
-import { guidanceitems } from "../../api/collections.js";
+import Schemas from '../../api/schemas.js'
+import { guidanceitems, units, subcategories, categories } from "../../api/collections.js";
 import Pagination from "./Pagination.jsx";
+import { Input, Select, Button, Tooltip, Breadcrumb,  Tag } from 'antd/dist/antd.min.js';
+
+const Dimensions = Schemas.dimensions;
+const dimColors = ["magenta","volcano","orange","blue","geekblue","purple"];
+
 
 class GuidanceItems extends Component {
   constructor(props) {
@@ -12,27 +18,84 @@ class GuidanceItems extends Component {
     };
   }
 
-  makeGuidanceItems(guidance) {
-    return guidance.slice(0, this.state.guidanceItemsPerPage).map((gitem, index) => {
+  makeGuidanceItems(guidance_items) {
+    return(
+      //    guidance_items.slice(0, this.state.guidanceItemsPerPage).map((gitem, index) => {
+      guidance_items.map((gitem, index) => {
+	let units_initem =  units.find({_id:{$in:gitem.unitIds}}).fetch();
+	let subcategories_initem = subcategories.find({_id:{$in:gitem.unitIds}}).fetch();
         return (
           <div key={index} className="card-body">
-            <p>
-              {gitem.type} <br />
-              {gitem.source} <br />
-              {gitem.location_in_source} <br />
-              {gitem.item.text} <br />
-              {gitem.unitIds} <br />
-              {gitem.dimensions} <br />
-            </p>
+	    
+	    <div className="row">
+	      <div className="col-md-6">
+		{
+		  units_initem.map( (u, index) => {
+		    let subcategory = subcategories.findOne(u.subcategoryId);
+		    if (u && u.subcategoryName() && subcategory.categoryName()){
+		      return(
+			<div key={index}>
+			  <Breadcrumb separator=">" style={{}}>
+			    <Breadcrumb.Item>{subcategory.categoryName()}</Breadcrumb.Item>
+			    <Breadcrumb.Item>{u.subcategoryName()}</Breadcrumb.Item>
+			    <Breadcrumb.Item>{u.name}</Breadcrumb.Item>
+			  </Breadcrumb>
+			</div>
+		      )
+		    }
+		  })
+		}
+		{
+		  subcategories_initem.map( (s, index) => {
+		    if (s && s.categoryName()){
+		      return(
+			<div key={index}>
+			  <Breadcrumb separator=">" style={{}}>
+			    <Breadcrumb.Item>{s.categoryName()}</Breadcrumb.Item>
+			    <Breadcrumb.Item>{s.name}</Breadcrumb.Item>
+			  </Breadcrumb>
+			</div>
+		      )
+		    }
+		  })
+		}			  
+	      </div>
+	      
+	      <div className="col-md-6">
+		{
+		  gitem.dimensions.map((d,index)=>{
+		    if(d){
+		      let color = dimColors[Dimensions.findIndex(D => D==d)];
+		      return(
+			<Tag key={index} color={color}>{d}</Tag>
+		      )
+		    }
+		  })
+		}
+	      </div>
+	    </div>
+	    
+	    <div className="row mt-2">
+	      <div className="col-md-auto">
+		<p><strong>Type:</strong> {gitem.type}</p>
+	      </div>
+	      <div className="col-md-auto">
+		<p><strong>Source:</strong> {gitem.source} ( {gitem.location_in_source} ) </p>
+	      </div>
+	      <div className="col-md-auto">
+		<p>{gitem.item.text}</p>
+	      </div>
+	    </div>
+	    
           </div>
-        );
-      });
+        )
+      })
+    )
   }
 
   render() {
-    const { loading, guidanceitemsExists, guidanceitems } = this.props;
 
-    if (loading) {
+    if (this.props.isLoading) {
       return (
         <div className="d-flex justify-content-center text-primary">
           <div className="spinner-border" role="status">
@@ -41,9 +104,11 @@ class GuidanceItems extends Component {
         </div>
       );
     } else {
+      const { guidanceitems_fetch, units_fetch, subcategories_fetch } = this.props.data;
       const indexOfLastGuidanceItem = this.state.currentPage * this.state.guidanceItemsPerPage;
       const indexOfFirstGuidanceItems = indexOfLastGuidanceItem - this.state.guidanceItemsPerPage;
-      const currentGuidanceItems = guidanceitems.slice(indexOfFirstGuidanceItems, indexOfLastGuidanceItem);
+      //const currentGuidanceItems = guidanceitems_fetch.slice(indexOfFirstGuidanceItems, indexOfLastGuidanceItem);
+      const currentGuidanceItems = guidanceitems_fetch;
       const guidanceItems = this.makeGuidanceItems(currentGuidanceItems);
       const paginate = (pageNumber) => this.setState({ currentPage: pageNumber });
 
@@ -54,142 +119,39 @@ class GuidanceItems extends Component {
               <div className="card-header" id="headingOne">
                 <h5 className="mb-0">
                   <button
-                    className="btn btn-link"
-                    type="button"
-                    data-toggle="collapse"
-                    data-target="#collapseOne"
-                    aria-expanded="false"
-                    aria-controls="collapseOne"
+                      className="btn btn-link"
+                      type="button"
+                      data-toggle="collapse"
+                      data-target="#collapseOne"
+                      aria-expanded="false"
+                      aria-controls="collapseOne"
                   >
                     Guidance Items
                   </button>
                 </h5>
               </div>
               <div
-                id="collapseOne"
-                className="collapse show"
-                aria-labelledby="headingOne"
-                data-parent="#accordionExample"
+                  id="collapseOne"
+                  className="collapse show"
+                  aria-labelledby="headingOne"
+                  data-parent="#accordionExample"
               >
                 <div className="dropdown container">
-                  <div className="row">
-                    <div className="col">
-                      <button
-                        className="btn btn-secondary dropdown-toggle"
-                        type="button"
-                        id="dropdownMenuButton"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        Types
-                      </button>
-                      <div
-                        className="dropdown-menu"
-                        aria-labelledby="dropdownMenuButton"
-                      >
-                        <a className="dropdown-item">
-                          Actions
-                        </a>
-                      </div>
-                    </div>
-                    <div className="col">
-                      <button
-                        className="btn btn-secondary dropdown-toggle"
-                        type="button"
-                        id="dropdownMenuButton"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        Sources
-                      </button>
-                      <div
-                        className="dropdown-menu"
-                        aria-labelledby="dropdownMenuButton"
-                      >
-                        <a className="dropdown-item" href="#">
-                          Test 02
-                        </a>
-                      </div>
-                    </div>
-                    <div className="col">
-                      <button
-                        className="btn btn-secondary dropdown-toggle"
-                        type="button"
-                        id="dropdownMenuButton"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        Categories
-                      </button>
-                      <div
-                        className="dropdown-menu"
-                        aria-labelledby="dropdownMenuButton"
-                      >
-                        <a className="dropdown-item" href="#">
-                          Test 03
-                        </a>
-                      </div>
-                    </div>
-                    <div className="col">
-                      <button
-                        className="btn btn-secondary dropdown-toggle"
-                        type="button"
-                        id="dropdownMenuButton"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        Subcategories
-                      </button>
-                      <div
-                        className="dropdown-menu"
-                        aria-labelledby="dropdownMenuButton"
-                      >
-                        <a className="dropdown-item" href="#">
-                          Test 04
-                        </a>
-                      </div>
-                    </div>
-                    <div className="col">
-                      <button
-                        className="btn btn-secondary dropdown-toggle"
-                        type="button"
-                        id="dropdownMenuButton"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        Dimensions
-                      </button>
-                      <div
-                        className="dropdown-menu"
-                        aria-labelledby="dropdownMenuButton"
-                      >
-                        <a className="dropdown-item" href="#">
-                          Test 05
-                        </a>
-                      </div>
-                    </div>
-                  </div>
+		  {/*GuidanceItems*/}
+		  {guidanceItems}
                 </div>
+              </div>
 
-                {/*GuidanceItems*/}
-
-                {guidanceItems}
-
-                <Pagination
+              <Pagination
                   guidanceItemsPerPage={this.state.guidanceItemsPerPage}
                   totalGuidanceItems={guidanceitems.length}
                   paginate={paginate}
                   currentPage={this.state.currentPage}
-                />
-              </div>
+              />
             </div>
           </div>
         </div>
+	
       );
     }
   }
@@ -197,17 +159,26 @@ class GuidanceItems extends Component {
 
 GuidanceItems = withTracker(() => {
   //const user = Meteor.user();
-  const guidanceitemsHandle = Meteor.subscribe("guidanceitems");
-  const loading = !guidanceitemsHandle.ready();
-  const guidanceitems_fetch = guidanceitems
-    .find({}, { sort: { createdAt: -1 } })
-    .fetch();
-  const guidanceitemsExists = !loading && !!guidanceitems;
+  const handles = [
+    Meteor.subscribe("guidanceitems"),
+    Meteor.subscribe('categories'),
+    Meteor.subscribe('subcategories'),
+    Meteor.subscribe('units'),
+  ]
+  const isLoading = handles.some(handle => !handle.ready());
+  if(isLoading){
+    return {
+      data: null,
+      isLoading: true
+    };
+  }
+  const guidanceitems_fetch = guidanceitems.find({}).fetch();
+  const units_fetch = units.find({}).fetch();
+  const subcategories_fetch = units.find({}).fetch();
+  const data = {guidanceitems_fetch, units_fetch, subcategories_fetch}
   return {
-    //user,
-    loading,
-    guidanceitemsExists,
-    guidanceitems: guidanceitemsExists ? guidanceitems_fetch : {},
+    data,
+    isLoading: false
   };
 })(GuidanceItems);
 

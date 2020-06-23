@@ -18,7 +18,7 @@ const PlanItemList =({data, editable, planId})=> {
         </div>
       }
       { editable&&
-        <div className="add-btn" style={{height:30}} onClick={()=>setAddPlanItem(true)} >
+        <div className="add-btn" style={{height:30, color:"#2AAAE1", cursor:'pointer'}} onClick={()=>setAddPlanItem(true)} >
           <PlusButton />
         </div>  
       }

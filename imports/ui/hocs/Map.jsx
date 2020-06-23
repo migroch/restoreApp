@@ -254,7 +254,9 @@ class Map extends Component {
 	       return  ('M ' + dy +' '+ dx + ' l '+size+' '+size+' l '+ -2*size+' 0 z');
 	     })
 	     .attr("transform", function(d) { return "rotate(" + (flip(d)*90) + ")"; })
-      	     .attr("fill", d => selectColor(d));
+      	     .attr("fill", d => selectColor(d))
+	     .attr("stroke", 'white')
+	     .attr("stroke-width", "2px");
 
     // Add circles
     nodeEnter.filter(d => (!d._children)).append("circle")

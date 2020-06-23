@@ -100,16 +100,23 @@ Meteor.startup(() => {
 	gitem.unitIds = [];
 	let unit = units.findOne({name: gitem_d.Subcategory});
 	if (unit) gitem.unitIds.push(unit._id);
-	unit = subcategories.findOne({name: gitem_d.Subcategory2});
+	unit = units.findOne({name: gitem_d['Subcategory 2']});
 	if (unit) gitem.unitIds.push(unit._id);
-	
-	gitem.dimensions = [ gitem_d.Dimension, gitem_d.Dimension2];
-
-	if (gitem.unitIds.length){
-	    guidanceitems.update({'item.text': gitem.item.text}, {$setOnInsert: gitem}, {upsert: true});
+	unit = subcategories.findOne({name: gitem_d.Subcategory});
+	if (unit) gitem.unitIds.push(unit._id);
+	unit = subcategories.findOne({name: gitem_d['Subcategory 2']});
+	if (unit) gitem.unitIds.push(unit._id);
+	gitem.dimensions = [ gitem_d.Dimension, gitem_d['Dimension 2']];
+	if (gitem.unitIds.length &&  gitem_d.Dimension){
+	    try {
+		guidanceitems.update({'item.text': gitem.item.text}, {$setOnInsert: gitem}, {upsert: true});
+	    } catch(err) {
+		console.log('Guidance Item validation error');
+		console.log(gitem);
+	    }
 	} 
-	
     });
     
 });
+
 

@@ -14,7 +14,7 @@ const scenarios =  Schemas.scenarios;
 
 const SelectWrapper = ({isLoading, data, onChangeQuery, value, valueforMapLocation}) => {
   if (isLoading) return null;
-  const { units_total, districts_total, schools_total } = data;
+  const { units_total, subcategories_total, districts_total, schools_total } = data;
   const [query, setQuery] = useState(value);
   
   onChange = (item, value) => {
@@ -36,8 +36,8 @@ const SelectWrapper = ({isLoading, data, onChangeQuery, value, valueforMapLocati
 
   let mapOptions = []
   units_total.forEach(u =>{
-    let subcategory = u.subcategoryName();
-    let category = u.categoryName();
+    let subcategory = u.subcategoryName() || u.subcategory.name;
+    let category = u.categoryName() || u.subcategory.category.name;
     let categoryOpt = mapOptions.filter(c => c.value == category)[0]
     if (categoryOpt){
       let subcategoryOpt = categoryOpt.children.filter(s => s.value==subcategory)[0];
@@ -53,7 +53,19 @@ const SelectWrapper = ({isLoading, data, onChangeQuery, value, valueforMapLocati
       ]})
     }
   });
-
+  // Add subcategories withouth units
+  subcategories_total.forEach(s =>{
+    let subcategory = s.name;
+    let category = s.categoryName() || u.subcategory.category.name;
+    let categoryOpt = mapOptions.filter(c => c.value == category)[0]
+    if (categoryOpt){
+      let subcategoryOpt = categoryOpt.children.filter(s => s.value==subcategory)[0];
+      if (!subcategoryOpt) categoryOpt.children.push({label:subcategory, value:subcategory, children:[]})
+    } else {
+      mapOptions.push({label:category, value:category, children:[{label:subcategory, value:subcategory}]});
+    }
+  });
+  
   const filters = [
     {label:'Level of Restriction', options: scenarios, fname: "scenario"},
     {label:'Dimensions', options: dimensions , fname: "dimension"},
@@ -64,26 +76,25 @@ const SelectWrapper = ({isLoading, data, onChangeQuery, value, valueforMapLocati
   return (
     <div>
 
-      <div className="select-wrapper row">
+      <div className="select-wrapper row mt-2">
 	<div  className="col col-md-4">
 	  <p className="m-0"><small>Map Location</small></p>
 	  <Cascader
-	      showSearch
+	      showSearch={{	filter: (input, option) => option.map(o =>o.label).filter( o => o.toLowerCase().indexOf(input.toLowerCase()) >= 0 ).length }}
 	      style={{ width: '100%' }}
-	      placeholder="Map Location"
+	      placeholder="All"
 	      displayRender={label => label.join(' > ')}
 	      changeOnSelect={true}
 	      expandTrigger="hover"
 	      options={mapOptions}
 	      defaultValue={valueforMapLocation}
 	      onChange={(values) => {
-          if (isEmpty(values)) onChange("ALLMAPLOCATION", null)
-          else {
-            let fnames = ["category", "subcategory", "unit"];
-            onChange(fnames[values.length-1], values[values.length-1])
-          }
+		  if (isEmpty(values)) onChange("ALLMAPLOCATION", null)
+		    else {
+		      let fnames = ["category", "subcategory", "unit"];
+		      onChange(fnames[values.length-1], values[values.length-1])
+		    }
 		}}
-	      filterOption = {(input, option) =>  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0   }
 	  />
 	</div>
 	
@@ -97,9 +108,9 @@ const SelectWrapper = ({isLoading, data, onChangeQuery, value, valueforMapLocati
 		    allowClear
 		    showSearch
 		    style={{ width: '100%' }}
-		    placeholder={label}
+		    placeholder="All"
 		    optionFilterProp="children"
-		    defaultValue={query[fname] || "All"}
+		    defaultValue={query[fname]}
 		    onChange={value=>onChange(fname, value)}
 		    filterOption={(input, option) =>  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0   }
 		>
@@ -108,7 +119,6 @@ const SelectWrapper = ({isLoading, data, onChangeQuery, value, valueforMapLocati
 		      if (index == 0)
 			return (
 			  <React.Fragment key={index}>
-			    <Option value={"All"}>All</Option>
 			    <Option value={option}>{option}</Option>
 			  </React.Fragment>
 			)
@@ -168,9 +178,11 @@ export default withTracker(({value}) => {
   let plans_total = plansQuery_Clone.fetch();
   const districts_total = uniq(plans_total.map(plan=>plan.districts()).flat());
   const schools_total = uniq(plans_total.map(plan=>plan.schoolNames()).flat());
-  // const units_total  = plans_total.map(p => p.planItems.map(pi => pi.units).flat()).flat();    
+  //const units_total  = plans_total.map(p => p.planItems.map(pi => pi.units).flat()).flat();
+  //const subcategories_total = plans_total.map(p => p.planItems.map(pi => pi.subcategories).flat()).flat();
   const units_total  = units.find({}).fetch();
-  const data = { units_total, schools_total, districts_total };
+  const subcategories_total = subcategories.find({}).fetch();
+  const data = { units_total, subcategories_total, schools_total, districts_total };
   return {
     data,
     valueforMapLocation,

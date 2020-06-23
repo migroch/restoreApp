@@ -155,7 +155,7 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
           <ReactQuill/>
         </Form.Item>      
         <Form.Item style={{display:disabled?"none":"block"}}>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit"  style={{backgroundColor: '#2176BB' }}>
             Save
           </Button>
           <Button type="cancel" style={{marginLeft: 50}} onClick={ id ? disableEditMode : finishAddItem }>
