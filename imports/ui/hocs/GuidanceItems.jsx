@@ -126,7 +126,7 @@ class GuidanceItems extends Component {
                       aria-expanded="false"
                       aria-controls="collapseOne"
                   >
-                    Guidance Items
+                    Show Guidance Items
                   </button>
                 </h5>
               </div>
