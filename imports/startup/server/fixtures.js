@@ -107,7 +107,7 @@ Meteor.startup(() => {
 	unit = subcategories.findOne({name: gitem_d['Subcategory 2']});
 	if (unit) gitem.unitIds.push(unit._id);
 	gitem.dimensions = [ gitem_d.Dimension, gitem_d['Dimension 2']];
-	if (gitem.unitIds.length &&  gitem_d.Dimension){
+	if (gitem.unitIds.length){
 	    try {
 		guidanceitems.update({'item.text': gitem.item.text}, {$setOnInsert: gitem}, {upsert: true});
 	    } catch(err) {

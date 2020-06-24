@@ -2,40 +2,46 @@ import React, { Component, useState } from "react";
 import { withTracker } from "meteor/react-meteor-data";
 import Schemas from '../../api/schemas.js'
 import { guidanceitems, units, subcategories, categories } from "../../api/collections.js";
-import Pagination from "./Pagination.jsx";
-import { Input, Select, Button, Tooltip, Breadcrumb,  Tag } from 'antd/dist/antd.min.js';
+import InfiniteScroll from 'react-infinite-scroller';
+import { Input, Select, Button, Tooltip, Breadcrumb, Tag, Collapse, List} from 'antd/dist/antd.min.js';
+const { Panel } = Collapse;
 
 const Dimensions = Schemas.dimensions;
 const dimColors = ["magenta","volcano","orange","blue","geekblue","purple"];
+const catColors = {'Health & Safety / Operations':'#FF9263', 'Instructional Programs':'#00a6a3',  'Student Support & Family Engagement':'#2AAAE1'}
 
 
 class GuidanceItems extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentPage: 1,
-      guidanceItemsPerPage: 10,
+      loadedData: [],
+      loadingMore: false,
+      currentPage: 0,
+      ItemsPerPage: 10,
+      hasMore: true,
     };
+
+    this.loadMore = this.loadMore.bind(this);
   }
 
-  makeGuidanceItems(guidance_items) {
+  makeGuidanceItems() {
     return(
-      //    guidance_items.slice(0, this.state.guidanceItemsPerPage).map((gitem, index) => {
-      guidance_items.map((gitem, index) => {
-	let units_initem =  units.find({_id:{$in:gitem.unitIds}}).fetch();
-	let subcategories_initem = subcategories.find({_id:{$in:gitem.unitIds}}).fetch();
-        return (
-          <div key={index} className="card-body">
+      <List
+      dataSource={this.state.loadedData}
+      renderItem={gitem => (
+        <List.Item key={"gitem-"+gitem._id} className="bg-white">
+	  <div className="container-fluid" onClick={() => $("#gitemText-"+gitem._id).toggleClass('collapsed-gitem-text')}>
 	    
 	    <div className="row">
-	      <div className="col-md-6">
+	      <div className="col-md-auto">
 		{
-		  units_initem.map( (u, index) => {
+		  units.find({_id:{$in:gitem.unitIds}}).fetch().map( (u, index) => {
 		    let subcategory = subcategories.findOne(u.subcategoryId);
 		    if (u && u.subcategoryName() && subcategory.categoryName()){
 		      return(
-			<div key={index}>
-			  <Breadcrumb separator=">" style={{}}>
+			<div key={index} >
+			  <Breadcrumb separator=">" style={{color:catColors[subcategory.categoryName()]}}>
 			    <Breadcrumb.Item>{subcategory.categoryName()}</Breadcrumb.Item>
 			    <Breadcrumb.Item>{u.subcategoryName()}</Breadcrumb.Item>
 			    <Breadcrumb.Item>{u.name}</Breadcrumb.Item>
@@ -46,11 +52,11 @@ class GuidanceItems extends Component {
 		  })
 		}
 		{
-		  subcategories_initem.map( (s, index) => {
+		  subcategories.find({_id:{$in:gitem.unitIds}}).fetch().map( (s, index) => {
 		    if (s && s.categoryName()){
 		      return(
-			<div key={index}>
-			  <Breadcrumb separator=">" style={{}}>
+			<div key={index} >
+			  <Breadcrumb separator=">" style={{color:catColors[s.categoryName()]}}>
 			    <Breadcrumb.Item>{s.categoryName()}</Breadcrumb.Item>
 			    <Breadcrumb.Item>{s.name}</Breadcrumb.Item>
 			  </Breadcrumb>
@@ -61,7 +67,7 @@ class GuidanceItems extends Component {
 		}			  
 	      </div>
 	      
-	      <div className="col-md-6">
+	      <div className="col-md-auto">
 		{
 		  gitem.dimensions.map((d,index)=>{
 		    if(d){
@@ -82,15 +88,36 @@ class GuidanceItems extends Component {
 	      <div className="col-md-auto">
 		<p><strong>Source:</strong> {gitem.source} ( {gitem.location_in_source} ) </p>
 	      </div>
-	      <div className="col-md-auto">
-		<p>{gitem.item.text}</p>
-	      </div>
 	    </div>
-	    
+	    <div id={"gitemText-"+gitem._id} className="container-fluid collapsed-gitem-text">
+	      <p className="m-0">{gitem.item.text}</p>
+	    </div>
           </div>
-        )
-      })
+	  
+	</List.Item>
+      )}
+      >
+      </List>   
     )
+  }
+
+  loadMore(){
+    this.setState({loadingMore: true});
+    const fullData = this.props.data;
+    const currentPage = this.state.currentPage;
+    let indexOfLastItem = (currentPage + 1) * this.state.ItemsPerPage - 1;
+    if (indexOfLastItem > fullData.length -1){
+      indexOfLastItem =  fullData.length -1;
+      this.setState({hasMore: false});
+    }
+    const indexOfFirstItem = indexOfLastItem - this.state.ItemsPerPage;
+    const data = this.state.loadedData.concat(fullData.slice(indexOfFirstItem, indexOfLastItem));
+    this.setState({loadedData: data, loadingMore: false, currentPage: currentPage + 1 });
+
+  }
+
+  componentDidUpdate(){
+    if (!this.props.isLoading && !this.state.loadedData.length) this.loadMore();
   }
 
   render() {
@@ -104,54 +131,25 @@ class GuidanceItems extends Component {
         </div>
       );
     } else {
-      const { guidanceitems_fetch, units_fetch, subcategories_fetch } = this.props.data;
-      const indexOfLastGuidanceItem = this.state.currentPage * this.state.guidanceItemsPerPage;
-      const indexOfFirstGuidanceItems = indexOfLastGuidanceItem - this.state.guidanceItemsPerPage;
-      //const currentGuidanceItems = guidanceitems_fetch.slice(indexOfFirstGuidanceItems, indexOfLastGuidanceItem);
-      const currentGuidanceItems = guidanceitems_fetch;
-      const guidanceItems = this.makeGuidanceItems(currentGuidanceItems);
-      const paginate = (pageNumber) => this.setState({ currentPage: pageNumber });
-
+      
       return (
-        <div>
-          <div className="accordion" id="accordionExample">
-            <div className="card">
-              <div className="card-header" id="headingOne">
-                <h5 className="mb-0">
-                  <button
-                      className="btn btn-link"
-                      type="button"
-                      data-toggle="collapse"
-                      data-target="#collapseOne"
-                      aria-expanded="false"
-                      aria-controls="collapseOne"
-                  >
-                    Show Guidance Items
-                  </button>
-                </h5>
-              </div>
-              <div
-                  id="collapseOne"
-                  className="collapse show"
-                  aria-labelledby="headingOne"
-                  data-parent="#accordionExample"
-              >
-                <div className="dropdown container">
-		  {/*GuidanceItems*/}
-		  {guidanceItems}
-                </div>
-              </div>
+	<div className="container">
+	  {/* <Collapse bordered={false} expandIconPosition='right'>
+	  <Panel header="Guidance Items"> */}
 
-              <Pagination
-                  guidanceItemsPerPage={this.state.guidanceItemsPerPage}
-                  totalGuidanceItems={guidanceitems.length}
-                  paginate={paginate}
-                  currentPage={this.state.currentPage}
-              />
-            </div>
-          </div>
-        </div>
-	
+	  <InfiniteScroll
+	      initialLoad={false} 
+              pageStart={0}
+              loadMore={this.loadMore}
+              hasMore={this.state.hasMore}
+              useWindow={true}
+          >
+ 	    {this.makeGuidanceItems()} 
+          </InfiniteScroll>
+
+	  {/* </Panel>
+          </Collapse> */}
+	</div>
       );
     }
   }
@@ -173,9 +171,7 @@ GuidanceItems = withTracker(() => {
     };
   }
   const guidanceitems_fetch = guidanceitems.find({}).fetch();
-  const units_fetch = units.find({}).fetch();
-  const subcategories_fetch = units.find({}).fetch();
-  const data = {guidanceitems_fetch, units_fetch, subcategories_fetch}
+  const data = guidanceitems_fetch
   return {
     data,
     isLoading: false
