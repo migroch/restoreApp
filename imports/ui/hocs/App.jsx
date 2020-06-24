@@ -6,6 +6,7 @@ import PlanEdit from './planEditor';
 import PlanView from './planView';
 import GuidanceItems from './GuidanceItems'
 import Map from './Map';
+import Plan from './Plan';
 
 // Couldn't make it work this way, will try again. For now I inserted the GuidanceItems component into the PlanEditor component
 /* const PlanEditorWrapper = () =>(
@@ -21,9 +22,9 @@ const App = () => (
     <div className="app-body">
       <Switch>
         <Route exact path="/map" component={Map}/>
-        <Route exact path="/plan-viewer" component={PlanView}/>
-        <Route exact path="/plan-viewer/edit" component={PlanEdit}/>
-        <Route exact path="/plan-viewer/edit/:id" component={PlanEdit}/>
+        <Route exact path="/plan-viewer" component={Plan}/>
+        {/* <Route exact path="/plan-viewer/edit" component={Plan}/>
+        <Route exact path="/plan-viewer/edit/:id" component={Plan}/> */}
 	      <Route exact path="/guidance" component={GuidanceItems}/>
         <Redirect to="/map" from="/"/>
       </Switch>

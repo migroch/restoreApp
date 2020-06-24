@@ -43,7 +43,7 @@ const Tags = (data) =>{
 }
 
 // Plan    
-let PlanWrapper = ({data}) => {
+let PlanWrapper = ({data, editPlanWithID}) => {
   const history = useHistory();
   const [isDetailVisible, setIsDetailVisible] = useState(false);
   const [ title, setTitle ] = useState(data.title);
@@ -67,7 +67,7 @@ let PlanWrapper = ({data}) => {
       if (err) {
 	alert(err);
       } else {
-	history.push('/plan-viewer')
+	// history.push('/plan-viewer')
       }
     })
   }
@@ -82,7 +82,7 @@ let PlanWrapper = ({data}) => {
 	<p className="mr-auto mt-auto mb-auto ml-2">{scenario}</p>
 	<div className="right ml-auto mb-auto mt-auto p-1" >
 	  <Tooltip  placement="bottom" title="Edit">
-	    <span className="icon mr-2 ml-2" onClick={()=>history.push(`/plan-viewer/edit/${id}`)}><Edit3  size="20" /> </span>
+	    <span className="icon mr-2 ml-2" onClick={()=>editPlanWithID(id)}><Edit3  size="20" /> </span>
 	  </Tooltip >
 	  <Tooltip  placement="bottom" title="Copy">
 	    <span className="icon mr-2 ml-2"><Copy  size="20" /></span>
@@ -162,7 +162,7 @@ PlanWrapper = withTracker(({id}) => {
 })(PlanWrapper);
 
 // List of Plans
-PlansListView = ({plan_ids, isLoading})=>{
+PlansListView = ({plan_ids, isLoading, editPlanWithID})=>{
   if (isLoading) return null;
   // const [plans, setPlans] = useState(plans_data)
   return (
@@ -170,7 +170,7 @@ PlansListView = ({plan_ids, isLoading})=>{
       <List dataSource={plan_ids}
 	    renderItem={  id =>(
 		<List.Item key={"plan-"+id}>
-		  <PlanWrapper  id={id}  />
+		  <PlanWrapper  id={id}  editPlanWithID={editPlanWithID}/>
 		</List.Item>
 	      )}
       >
@@ -245,7 +245,7 @@ PlansListView = withTracker(({searchquery, searchbar}) => {
 })(PlansListView);
 
 // Plan Viewer Container
-PlanView = () => {
+PlanView = ({editPlanWithID, isPlanView}) => {
   
   const history = useHistory();
   const location = useLocation();
@@ -265,15 +265,15 @@ PlanView = () => {
 
       <div className="container-fluid text-center  mt-2">
 	<Tooltip  placement="bottom" title="Add New Plan">
-	  <span className="add-btn" onClick={()=>history.push(`/plan-editor`)}><PlusCircle size="40"  /></span>
+	  <span className="add-btn" onClick={()=>editPlanWithID(null)}><PlusCircle size="40"  /></span>
 	</Tooltip >
       </div>
-      
-      <PlansListView searchquery={searchQuery} searchbar={searchbar}/>
+      {isPlanView &&
+      <PlansListView searchquery={searchQuery} searchbar={searchbar} editPlanWithID={editPlanWithID}/>}
 
       <div className="container-fluid text-center mb-2">
 	<Tooltip  placement="top" title="Add New Plan">
-	  <span className="add-btn" onClick={()=>history.push(`/plan-viewer/edit`)}><PlusCircle size="40"  /></span>
+	  <span className="add-btn" onClick={()=>editPlanWithID(null)}><PlusCircle size="40"  /></span>
 	</Tooltip >
       </div>
       
