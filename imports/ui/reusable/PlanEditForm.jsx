@@ -6,18 +6,19 @@ import  Schemas from '../../api/schemas';
 import { planitems, categories, subcategories, units } from '../../api/collections';
 
 const layout = {
-  labelCol: { span: 2 },
-  wrapperCol: { span: 12 },
+  // labelCol: { span: 2 },
+  // wrapperCol: { span: 8 },
 };
-const tailLayout = {
-  wrapperCol: { offset: 2, span: 12 },
+const savelayout = {
+ wrapperCol: { offset: 20},
 };
 
 const scenarios = Schemas.scenarios;
 
 const PlanEditComponent = ({id, data, onCreatedPlan}) => {
+  
   const history = useHistory()
-  const { title, scenario, planItemIds } = data
+  let { title, scenario, planItemIds } = data
   const onFinish = plan => {
     const { title, scenario } = plan
       
@@ -28,35 +29,41 @@ const PlanEditComponent = ({id, data, onCreatedPlan}) => {
         } else {
           
           onCreatedPlan(res)
-          history.push(`/plan-editor/${res}`)
-        }
+          form.setFieldsValue({
+            title,
+            scenario
+          });
+       }
       })
     else // in case of updating the plan
       Meteor.call('plans.update', { id, title, scenario, planItemIds }, (err, res) => {
         if (err) {
           alert(err);
         } else {
-          history.push('/plan-viewer')
+          // history.push('/plan-viewer')
         }
       })
   };
-  const onFinishFailed = errorInfo => {
-    console.log('Failed:', errorInfo);
-  };
+  const [form] = Form.useForm();
+  form.setFieldsValue({
+    title,
+    scenario
+  });
   return (
     <Form
       {...layout}
+      // layout='inline'
+      form={form}
       name="Plan Edit"
       initialValues={{ title, scenario }}
       onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
     >
       <Form.Item
         label="Title"
         name="title"
         rules={[{ required: true, message: 'Please input title!' }]}
       >
-        <Input placeholder={title || "Title"} defaultValue={title}/>
+        <Input style={{width: 300}}/>
       </Form.Item>
 
       <Form.Item
@@ -65,9 +72,10 @@ const PlanEditComponent = ({id, data, onCreatedPlan}) => {
         rules={[{ required: true, message: 'Please input scenario!' }]}
       >
         <Select
-          placeholder={scenario || "Scenario"}
-          defaultValue={scenario}
-          // onChange={onChangeScenario}
+          // placeholder={scenario || "Scenario"}
+          // defaultValue={"High Restrictions"}
+          // value={"High Restrictions"}
+          style={{width: 200}}
         >
           {
             scenarios.map((item, index)=>(
@@ -77,13 +85,10 @@ const PlanEditComponent = ({id, data, onCreatedPlan}) => {
         </Select>
       </Form.Item>
 
-      <Form.Item {...tailLayout}>
+      <Form.Item {...savelayout}>
         <Button type="primary" htmlType="submit" style={{backgroundColor: '#2176BB' }}>
           Save
         </Button>
-        <Button type="cancel" style={{marginLeft: 50}} onClick={()=>history.push('/plan-viewer')}>
-          Cancel
-        </Button>        
       </Form.Item>
     </Form>
   );

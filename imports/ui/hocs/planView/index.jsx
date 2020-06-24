@@ -43,7 +43,7 @@ const Tags = (data) =>{
 }
 
 // Plan    
-let PlanWrapper = ({data}) => {
+let PlanWrapper = ({data, editPlanWithID}) => {
   if (!data) return(null);
   const history = useHistory();
   const [isDetailVisible, setIsDetailVisible] = useState(false);
@@ -96,7 +96,7 @@ let PlanWrapper = ({data}) => {
 	<p className="mr-auto mt-auto mb-auto ml-2">{scenario}</p>
 	<div className="right ml-auto mb-auto mt-auto p-1" >
 	  <Tooltip  placement="bottom" title="Edit">
-	    <span className="icon mr-2 ml-2" onClick={()=>history.push(`/plan-editor/${id}`)}><Edit3  size="20" /> </span>
+	    <span className="icon mr-2 ml-2" onClick={()=>editPlanWithID(id)}><Edit3  size="20" /> </span>
 	  </Tooltip >
 	  <Tooltip  placement="bottom" title="Copy">
 	    <span className="icon mr-2 ml-2" onClick={copyPlanWithId}><Copy  size="20" /></span>
@@ -176,7 +176,7 @@ PlanWrapper = withTracker(({id}) => {
 })(PlanWrapper);
 
 // List of Plans
-PlansListView = ({plan_ids, isLoading})=>{
+PlansListView = ({plan_ids, isLoading, editPlanWithID})=>{
   if (isLoading) return null;
   // const [plans, setPlans] = useState(plans_data)
   return (
@@ -184,7 +184,7 @@ PlansListView = ({plan_ids, isLoading})=>{
       <List dataSource={plan_ids}
 	    renderItem={  id =>(
 		<List.Item key={"plan-"+id}>
-		  <PlanWrapper  id={id}  />
+		  <PlanWrapper  id={id}  editPlanWithID={editPlanWithID}/>
 		</List.Item>
 	      )}
       >
@@ -271,7 +271,7 @@ const addNewPlan = ()=>{
 }
 
 // Plan Viewer Container
-PlanView = () => {
+PlanView = ({editPlanWithID, isPlanView}) => {
   
   const history = useHistory();
   const location = useLocation();
@@ -294,8 +294,8 @@ PlanView = () => {
 	  <span className="add-btn" onClick={addNewPlan}><PlusCircle size="40"  /></span>
 	</Tooltip >
       </div>
-      
-      <PlansListView searchquery={searchQuery} searchbar={searchbar}/>
+      {isPlanView &&
+      <PlansListView searchquery={searchQuery} searchbar={searchbar} editPlanWithID={editPlanWithID}/>}
 
       <div className="container-fluid text-center mb-2" onClick={()=>window.scrollTo(0,0)}>
 	  <Tooltip  placement="top" title="Add New Plan">
