@@ -105,7 +105,8 @@ class Nav extends Component {
   makeMenu(menuitems, pathname){
     return(
       menuitems.map( (item, index) =>{
-	let active = (item.route == pathname) ? 'active' : ''
+	let active = pathname.includes(item.route) ? 'active' : ''
+  // if (pathname.includes('plan-editor')&&(item.title=="Plan Viewer")) active = 'active'
 	let invisible = (index == 0) ? '' : 'invisible'
 	let CustomLink
 	if(item.externalLink){

@@ -6,11 +6,11 @@ import  Schemas from '../../api/schemas';
 import { planitems, categories, subcategories, units } from '../../api/collections';
 
 const layout = {
-  labelCol: { span: 2 },
-  wrapperCol: { span: 12 },
+  // labelCol: { span: 2 },
+  // wrapperCol: { span: 8 },
 };
-const tailLayout = {
-  wrapperCol: { offset: 2, span: 12 },
+const savelayout = {
+ wrapperCol: { offset: 20},
 };
 
 const scenarios = Schemas.scenarios;
@@ -28,7 +28,7 @@ const PlanEditComponent = ({id, data, onCreatedPlan}) => {
         } else {
           
           onCreatedPlan(res)
-          history.push(`/plan-editor/${res}`)
+          history.push(`/plan-viewer/edit/${res}`)
         }
       })
     else // in case of updating the plan
@@ -46,6 +46,7 @@ const PlanEditComponent = ({id, data, onCreatedPlan}) => {
   return (
     <Form
       {...layout}
+      layout='inline'
       name="Plan Edit"
       initialValues={{ title, scenario }}
       onFinish={onFinish}
@@ -56,7 +57,7 @@ const PlanEditComponent = ({id, data, onCreatedPlan}) => {
         name="title"
         rules={[{ required: true, message: 'Please input title!' }]}
       >
-        <Input placeholder={title || "Title"} defaultValue={title}/>
+        <Input placeholder={title || "Title"} defaultValue={title} style={{width: 300}}/>
       </Form.Item>
 
       <Form.Item
@@ -68,6 +69,7 @@ const PlanEditComponent = ({id, data, onCreatedPlan}) => {
           placeholder={scenario || "Scenario"}
           defaultValue={scenario}
           // onChange={onChangeScenario}
+          style={{width: 200}}
         >
           {
             scenarios.map((item, index)=>(
@@ -77,13 +79,10 @@ const PlanEditComponent = ({id, data, onCreatedPlan}) => {
         </Select>
       </Form.Item>
 
-      <Form.Item {...tailLayout}>
+      <Form.Item {...savelayout}>
         <Button type="primary" htmlType="submit" style={{backgroundColor: '#2176BB' }}>
           Save
         </Button>
-        <Button type="cancel" style={{marginLeft: 50}} onClick={()=>history.push('/plan-viewer')}>
-          Cancel
-        </Button>        
       </Form.Item>
     </Form>
   );

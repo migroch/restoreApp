@@ -8,17 +8,17 @@ const PlusButton = () => (
 )
 const PlanItemList =({data, editable, planId})=> {
   //data = planItemIds
-  const [addPlanItem, setAddPlanItem] = useState(isEmpty(data))
+  const [addPlanItemMode, setAddPlanItemMode] = useState(isEmpty(data))
   return (
     <>
       { data.map(item=><PlanItemWrapper id={item._id} planId={planId} editable={editable} key={"planItem"+item._id}/>) }
-      { addPlanItem && editable &&
+      { addPlanItemMode && editable &&
         <div className="plan-item-wrapper">
-          <PlanItemEdit id={undefined} planId={planId} finishAddItem={()=>setAddPlanItem(false)}/>
+          <PlanItemEdit id={undefined} planId={planId} finishAddItem={()=>setAddPlanItemMode(false)}/>
         </div>
       }
-      { editable&&
-        <div className="add-btn" style={{height:30, color:"#2AAAE1", cursor:'pointer'}} onClick={()=>setAddPlanItem(true)} >
+      { editable && !addPlanItemMode &&
+        <div className="add-btn" style={{height:30, color:"#2AAAE1", cursor:'pointer'}} onClick={()=>setAddPlanItemMode(true)} >
           <PlusButton />
         </div>  
       }

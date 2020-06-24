@@ -65,7 +65,7 @@ let PlanWrapper = ({data}) => {
 	<p className="mr-auto mt-auto mb-auto ml-2">{scenario}</p>
 	<div className="right ml-auto mb-auto mt-auto p-1" >
 	  <Tooltip  placement="bottom" title="Edit">
-	    <span className="icon mr-2 ml-2" onClick={()=>history.push(`/plan-editor/${id}`)}><Edit3  size="20" /> </span>
+	    <span className="icon mr-2 ml-2" onClick={()=>history.push(`/plan-viewer/edit/${id}`)}><Edit3  size="20" /> </span>
 	  </Tooltip >
 	  <Tooltip  placement="bottom" title="Copy">
 	    <span className="icon mr-2 ml-2"><Copy  size="20" /></span>
@@ -247,7 +247,7 @@ PlanView = () => {
       <SelectWrapper onChangeQuery={setQuery} value={initial_query}/>    
       <PlansListView searchquery={searchQuery} searchbar={searchbar}/>
       <Tooltip  placement="top" title="Add Plan">
-	<span className="add-btn" onClick={()=>history.push(`/plan-editor`)}><AddCircleOutline size="70" /></span>
+	<span className="add-btn" onClick={()=>history.push(`/plan-viewer/edit`)}><AddCircleOutline size="70" /></span>
       </Tooltip >
     </div>
   )

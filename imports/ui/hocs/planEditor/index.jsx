@@ -26,6 +26,9 @@ const PlanEdit = ({ isLoading, data, id }) => {
       {/* <GuidanceItems /> */}
       <div className="plan-edit container">
       	<div className="content-wrapper">
+          <div style={{marginLeft: 50}} onClick={()=>history.goBack()}>
+            Back
+          </div>  
           <div className="plan-edit-form">
             <PlanEditForm data={data} id={planId} onCreatedPlan={id=>setPlanId(id)}/>
           </div>
