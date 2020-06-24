@@ -12,19 +12,35 @@ import { plansQuery, plansQueryWithFilter } from '../../../api/queries'
 import queryString from 'query-string';
 import './index.scss';
 
-import { Input, Select, Button, Tooltip, Breadcrumb } from 'antd/dist/antd.min.js';
+import { Input, Select, Button, Tooltip, Breadcrumb, List, Tag } from 'antd/dist/antd.min.js';
+
 import styled from 'styled-components';
 import {MoreHorizontal} from 'styled-icons/feather/MoreHorizontal';
 import {Copy} from 'styled-icons/feather/Copy';
 //import {DeleteOutline} from 'styled-icons/material/DeleteOutline';
-import {Delete} from "styled-icons/feather/Delete";
+//import {Delete} from "styled-icons/feather/Delete";
+import {Trash} from "styled-icons/feather/Trash";
 import {Edit3} from 'styled-icons/feather/Edit3';
-import {AddCircleOutline} from '@styled-icons/material/AddCircleOutline';
-import {DocumentAdd} from '@styled-icons/typicons/DocumentAdd' ;
+import {PlusCircle} from 'styled-icons/feather/PlusCircle';
+import {FilePlus} from 'styled-icons/feather/FilePlus';
+
 
 const { Option } = Select;
 const scenarios = Schemas.scenarios
-const Tags = (data) => data.map(item => <div className="" key={item+"tag"}><p className="m-0"><small>{item}</small></p></div>)
+const Dimensions = Schemas.dimensions;
+const dimColors = ["magenta","volcano","orange","blue","geekblue","purple"];
+const catColors = {'Health & Safety / Operations':'#FF9263', 'Instructional Programs':'#00a6a3',  'Student Support & Family Engagement':'#2AAAE1'}
+
+const Tags = (data) =>{
+  return(
+    data.map( (item, index) => {
+      let color = dimColors[Dimensions.findIndex(D => D==item)];
+      return(
+	<Tag key={index} color={color}>{item}</Tag>
+      )
+    })
+  )
+}
 
 // Plan    
 let PlanWrapper = ({data}) => {
@@ -57,9 +73,10 @@ let PlanWrapper = ({data}) => {
   }
   
   const plan_bg = bgs[scenario]
+  
   return (
     
-    <div className="plan-wrapper rounded-top" onClick={()=>setIsDetailVisible(!isDetailVisible)}>         
+    <div className="plan-wrapper container-fluid rounded-top p-0" onClick={()=>setIsDetailVisible(!isDetailVisible)}>         
 
       <div className={"header d-flex " + plan_bg} >
 	<p className="mr-auto mt-auto mb-auto ml-2">{scenario}</p>
@@ -71,7 +88,7 @@ let PlanWrapper = ({data}) => {
 	    <span className="icon mr-2 ml-2"><Copy  size="20" /></span>
 	  </Tooltip >
 	  <Tooltip  placement="bottom" title="Delete">
-	    <span className="icon mr-2 ml-2" onClick={deletePlanWithId}><Delete size="20" /></span>
+	    <span className="icon mr-2 ml-2" onClick={deletePlanWithId}><Trash  size="20" /></span>
 	  </Tooltip >
 	</div>
       </div>
@@ -83,15 +100,14 @@ let PlanWrapper = ({data}) => {
 
 	  <div className="row">
 
-
-	    <div className="col-md-auto label_1 d-flex flex-column text-center">
-	      <h6>Map Location</h6>
+	    <div className="col-md-6 label_1 d-flex flex-column">
+                <h6 className="align-self-start">Map Location</h6>
 	      {
 		plan_units.map( (u, index) => {
 		  if (u && u.subcategory && u.subcategory.category){
 		    return(
-		      <div key={index}>
-			<Breadcrumb separator=">" style={{'fontSize':'smaller'}}>
+		      <div key={index} className="d-flex align-self-start" >
+			<Breadcrumb separator=">" style={{fontSize:'smaller', color:catColors[u.subcategory.category.name]}}>
 			  <Breadcrumb.Item>{u.subcategory.category.name}</Breadcrumb.Item>
 			  <Breadcrumb.Item>{u.subcategory.name}</Breadcrumb.Item>
 			  <Breadcrumb.Item>{u.name}</Breadcrumb.Item>
@@ -103,34 +119,27 @@ let PlanWrapper = ({data}) => {
 	      }
 	    </div>
 
-	    <div className="col-md-auto label_1 d-flex flex-column text-center">
+	    <div className="col-md-2 label_1 d-flex flex-column text-center">
 	      <h6>Dimensions</h6>
 	      <div className="d-flex flex-column">
 		{Tags(plan_dimensions)}
 	      </div>
 	    </div>
 
-	    <div className="col-md-auto label_1  d-flex flex-column text-center">
+	    <div className="col-md-2 label_1  d-flex flex-column text-center">
 	      <h6>Districts </h6>
 	      <div className="d-flex flex-column">
-		{Tags(plan_districts)}
+		{plan_districts.map((item, index) => <p className="m-0" key={index}><small>{item}</small></p>)}
 	      </div>
 	    </div>
 
-	    <div className="col-md-auto label_1  d-flex flex-column text-center">
+	    <div className="col-md-2 label_1  d-flex flex-column text-center">
 	      <h6>Schools</h6>
 	      <div className="d-flex flex-column">
-		{Tags(plan_schools)}
+		{plan_schools.map((item, index) => <p className="m-0" key={index}><small>{item}</small></p>)}
 	      </div>
 	    </div>
-	    
-            <div className="col-md-auto label_1  d-flex flex-column text-center">
-	      <h6>Users</h6>
-	      <div className="d-flex flex-column">
-		{Tags(plan_users)}
-	      </div>
-            </div>
-
+	             
 	  </div>
 	</div>
 	<div className="plan-item-list" style={{display: isDetailVisible ? "block" : "none"}}>
@@ -140,6 +149,7 @@ let PlanWrapper = ({data}) => {
     </div>
   )
 }
+
 // List of Plans data layer
 PlanWrapper = withTracker(({id}) => {
   const plansQuery_Clone = plansQueryWithFilter.clone({id});
@@ -150,15 +160,21 @@ PlanWrapper = withTracker(({id}) => {
     isLoading: false
   };
 })(PlanWrapper);
+
 // List of Plans
 PlansListView = ({plan_ids, isLoading})=>{
   if (isLoading) return null;
   // const [plans, setPlans] = useState(plans_data)
   return (
     <div className="plans-wrapper">
-      {
-	plan_ids.map((id)=><PlanWrapper  id={id} key={"plan"+id} />)
-      }
+      <List dataSource={plan_ids}
+	    renderItem={  id =>(
+		<List.Item key={"plan-"+id}>
+		  <PlanWrapper  id={id}  />
+		</List.Item>
+	      )}
+      >
+      </List>
     </div>
   )
 }
@@ -241,14 +257,26 @@ PlanView = () => {
   const [searchbar, setSearchbar] = useState('')
 
   return (
-    <div className="plan-view container-fluid px-5">
+    <div className="plan-view container-fluid ">
       {/* set searchquery in selectwrapper */}
+
       <SearchWrapper onChangeSearchbar={v => setSearchbar(v)}/>
-      <SelectWrapper onChangeQuery={setQuery} value={initial_query}/>    
+      <SelectWrapper onChangeQuery={setQuery} value={initial_query}/>
+
+      <div className="container-fluid text-center  mt-2">
+	<Tooltip  placement="bottom" title="Add New Plan">
+	  <span className="add-btn" onClick={()=>history.push(`/plan-editor`)}><PlusCircle size="40"  /></span>
+	</Tooltip >
+      </div>
+      
       <PlansListView searchquery={searchQuery} searchbar={searchbar}/>
-      <Tooltip  placement="top" title="Add Plan">
-	<span className="add-btn" onClick={()=>history.push(`/plan-viewer/edit`)}><AddCircleOutline size="70" /></span>
-      </Tooltip >
+
+      <div className="container-fluid text-center mb-2">
+	<Tooltip  placement="top" title="Add New Plan">
+	  <span className="add-btn" onClick={()=>history.push(`/plan-viewer/edit`)}><PlusCircle size="40"  /></span>
+	</Tooltip >
+      </div>
+      
     </div>
   )
 }
