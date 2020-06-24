@@ -65,7 +65,9 @@ Meteor.startup(() => {
 	});
 	planitem.unitIds = planitem.unitIds.map((unit)=>{
 	    return units.findOne({name: unit})._id;
-	}); 
+	});
+	planitem.createdtime = Date.now();
+	planitem.lastedittime = Date.now();
 	planitems.update({'item.text': planitem.item.text}, {$setOnInsert: planitem}, {upsert: true});
     });
 
@@ -75,17 +77,23 @@ Meteor.startup(() => {
 	{
 	    title: 'Sample Plan1',
 	    scenario: 'High Restrictions',
-	    planItemIds:[pitems[0]._id, pitems[1]._id,  pitems[2]._id] 
+	    planItemIds:[pitems[0]._id, pitems[1]._id,  pitems[2]._id],
+	    createdtime:  Date.now(),
+	    lastedittime:  Date.now(),
 	},
 	{
 	    title: 'Sample Plan2',
 	    scenario:  'Medium Restrictions',
-	    planItemIds:[pitems[0]._id,   pitems[2]._id] 
+	    planItemIds:[pitems[0]._id,   pitems[2]._id],
+	    createdtime:  Date.now(),
+	    lastedittime:  Date.now(),
 	},
 	{
 	    title: 'Sample Plan3',
 	    scenario: 'Low Restrictions',
-	    planItemIds:[ pitems[1]._id ]  
+	    planItemIds:[ pitems[1]._id ] ,
+	    createdtime:  Date.now(),
+	    lastedittime:  Date.now(),
 	},
     ];
     sampleplans.forEach((plan)=>{

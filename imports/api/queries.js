@@ -6,6 +6,9 @@ import addCollectionLinks from './collection-links';
 addCollectionLinks();
 
 export const plansQuery = plans.createQuery({
+     $options: {
+            sort: {_id: -1}
+     },
     title: 1,
     scenario: 1,
     planItems: {
@@ -47,12 +50,20 @@ export const plansQueryWithFilter = plans.createQuery({
 		if (params.id) filters._id = params.id;
 		if (params.scenario) filters.scenario = params.scenario;
 	},
+        $options: {
+            sort: {lastedittime: -1}
+        },
+        lastedittime: 1,
 	title: 1,
 	scenario: 1,
 	planItems: {
 		$filter({filters, params}) {
 			if (params.dimension)  filters.dimension = params.dimension;
 		},
+	       $options: {
+                      sort: {lastedittime: -1}
+                },
+                lastedittime: 1,
 		unitIds: 1,
 		ownerId: 1,
 		assignedToIds :1,

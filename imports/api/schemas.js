@@ -22,7 +22,9 @@ Schemas.plans = new SimpleSchema({
         allowedValues: Schemas.scenarios,
 	    label: 'Restriction level'
     },
-    planItemIds: [SimpleSchema.oneOf(String, SimpleSchema.Integer)]
+    planItemIds: [SimpleSchema.oneOf(String, SimpleSchema.Integer)],
+    createdtime: Date,
+    lastedittime: Date,
 });
 
 // Plan Items
@@ -39,7 +41,9 @@ Schemas.planitems = new SimpleSchema({
     },
     item: Object,
     'item.text': String,
-    'item.delta': {type: Object, optional: true}   // A Quill Delta Object https://quilljs.com/docs/delta/
+    'item.delta': {type: Object, optional: true},   // A Quill Delta Object https://quilljs.com/docs/delta/
+    createdtime: Date,
+    lastedittime: Date,
 });
 
 // Guidance Items
