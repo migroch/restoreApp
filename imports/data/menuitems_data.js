@@ -9,7 +9,7 @@ export default menuitems_data = [
     },
     {
 	key:'PlanViewer',
-	title:'Plans List',
+	title:'Plans',
 	route:'/plan-viewer',
     },
   //   {

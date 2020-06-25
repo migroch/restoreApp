@@ -89,6 +89,7 @@ class GuidanceItems extends Component {
 		<p><strong>Source:</strong> {gitem.source} ( {gitem.location_in_source} ) </p>
 	      </div>
 	    </div>
+			      
 	    <div id={"gitemText-"+gitem._id} className="container-fluid collapsed-gitem-text">
 	      <p className="m-0">{gitem.item.text}</p>
 	    </div>

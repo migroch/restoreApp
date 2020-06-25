@@ -71,18 +71,19 @@ Meteor.methods({
     },
     'planItem.update'({planItemId, planItem}) {
 	check(planItemId, Match.OneOf(String, Mongo.ObjectID));
+	planItem.lastedittime = Date.now();
 	planitems.update(planItemId, { $set: planItem });
     },
     'planItem.add'({planId, planItem}) {
 	check(planId, Match.OneOf(String, Mongo.ObjectID));
-
+	planItem.createdtime = Date.now();
+	planItem.lastedittime = Date.now();
 	planitems.insert(planItem, function(err, newPlanItem){
 	    const plan = plans.findOne(planId);
 	    let planItemIds = [...plan.planItemIds, newPlanItem];
 	    const lastedittime =  Date.now();
 	    plans.update(planId, { $set: { planItemIds, lastedittime } });
 	});		
-
     },
 });
 

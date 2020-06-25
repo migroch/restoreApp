@@ -3,7 +3,7 @@ import { Meteor } from 'meteor/meteor';
 import SelectWrapper from '../../reusable/SelectWrapper';
 import SearchWrapper from '../../reusable/SearchWrapper';
 import { withTracker } from 'meteor/react-meteor-data';
-import { planitems, plans, PlansIndex, PlanItemsIndex } from '../../../api/collections';
+import { subcategories, planitems, plans, PlansIndex, PlanItemsIndex } from '../../../api/collections';
 import  Schemas from '../../../api/schemas';
 import PlanItemList from '../../reusable/PlanItemList';
 import { useHistory, useLocation } from "react-router-dom";
@@ -58,6 +58,7 @@ let PlanWrapper = ({data, editPlanWithID}) => {
   }
 
   let plan_units = uniq(data.planItems.map( pi => pi.units ).flat());
+  let plan_unitIds = uniq(planItems.map(pi=>pi.unitIds).flat());
   let plan_dimensions = uniq(data.dimensions());
   let plan_districts = uniq(data.districts()) ;
   let plan_schools = uniq(data.schools().map(s => s.name));
@@ -131,6 +132,21 @@ let PlanWrapper = ({data, editPlanWithID}) => {
 		  }
 		})
 	      }
+	      {
+		plan_unitIds.map( (id, index) =>{
+		  let s = subcategories.findOne(id);
+		  if (s && s.categoryName()){
+		    return(
+		      <div key={index}  className="d-flex align-self-start" >
+			<Breadcrumb separator=">" style={{color:catColors[s.categoryName()]}}>
+			  <Breadcrumb.Item>{s.categoryName()}</Breadcrumb.Item>
+			  <Breadcrumb.Item>{s.name}</Breadcrumb.Item>
+			</Breadcrumb>
+		      </div>
+		    )
+		  }
+		})
+	      }
 	    </div>
 
 	    <div className="col-md-2 label_1 d-flex flex-column text-center">
@@ -196,6 +212,7 @@ PlansListView = ({plan_ids, isLoading, editPlanWithID})=>{
 // List of Plans data layer
 PlansListView = withTracker(({searchquery, searchbar}) => {
   const handles = [
+    Meteor.subscribe('subcategories'),
     Meteor.subscribe('planitems'),
     Meteor.subscribe('plans'),
   ];
@@ -261,7 +278,7 @@ PlansListView = withTracker(({searchquery, searchbar}) => {
 
 
 const addNewPlan = ()=>{ 
-  const newplan = Meteor.call('plans.add', {title: "NEW PLAN: please edit me", scenario:'High Restrictions', planItemIds:[]}, (err, res) => {
+  const newplan = Meteor.call('plans.add', {title: "NEW PLAN", scenario:'High Restrictions', planItemIds:[]}, (err, res) => {
     if (err) {
       alert(err);
     } else {

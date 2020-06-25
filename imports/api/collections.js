@@ -50,19 +50,31 @@ planitems.helpers({
     // districts
     districts(){
 	let districts = [];
-	//districts.concat(this.assignedToIds.map(id => Meteor.users.findOne({_id:id}).district ));
-	//districts.push( Meteor.users.findOne({_id:this.ownerId}).district);
-	if (this.assignedTo) districts = this.assignedTo.map(user=>user.district).flat();
-	if (this.owner) districts.push( this.owner.district);
+	if (this.assignedTo) {
+	    districts = this.assignedTo.map(user=>user.district);   
+	} else {
+	    districts = this.assignedToIds.map(id => Meteor.users.findOne({_id:id}).district);
+	}
+	if (this.owner) {
+	    districts.push( this.owner.district);
+	} else {
+	    districts.push( Meteor.users.findOne({_id:this.ownerId}).district);
+	}
 	return districts;
     },
     // schools
     schools(){
 	let schools = [];
-	//schools.concat(this.assignedToIds.map(id => Meteor.users.findOne({_id:id}).schools));
-	//schools.push( Meteor.users.findOne({_id:this.ownerId}).schools);
-	if (this.assignedTo) schools = this.assignedTo.map(user=>user.schools);
-	if (this.owner) schools.push( this.owner.schools);
+	if (this.assignedTo) {
+	    schools = this.assignedTo.map(user=>user.schools);   
+	} else {
+	    schools = (this.assignedToIds.map(id => Meteor.users.findOne({_id:id}).schools));
+	}
+	if (this.owner) {
+	    schools.push( this.owner.schools);
+	} else {
+	    schools.push( Meteor.users.findOne({_id:this.ownerId}).schools);
+	}	
 	return schools.flat();
     },
     // shcool names
@@ -72,15 +84,21 @@ planitems.helpers({
     // owner name
     ownerName(){
 	let name;
-	if (this.owner) name = this.owner.profile.name;
+	if (this.owner) {
+	    name = this.owner.profile.name;
+	} else {
+	    name = Meteor.users.findOne({_id:this.ownerId}).profile.name;
+	}
 	return name;
-	//return Meteor.users.findOne({_id:this.ownerId}).profile.name;
     },
     // assignedTo names
     assignedToNames(){
 	let names = [];
-	// names = this.assignedToIds.map(id => Meteor.users.findOne({_id:id}).profile.name);
-	if (this.assignedTo) names = this.assignedTo.map(user => user.profile.name );
+	if (this.assignedTo){
+	  names = this.assignedTo.map(user => user.profile.name );  
+	} else {
+	    names = this.assignedToIds.map(id => Meteor.users.findOne({_id:id}).profile.name);
+	}
 	return names;
     }
 });
@@ -134,10 +152,14 @@ units.helpers({
 	if (this.subcategoryId)  return subcategories.findOne({_id: this.subcategoryId}).name;
 	return undefined;
     },
+     categoryId() {
+        if (this.subcategoryId) return subcategories.findOne({_id: this.subcategoryId}).categoryId;
+	return undefined;
+    },    
     categoryName() {
         if (this.subcategoryId) return subcategories.findOne({_id: this.subcategoryId}).categoryName();
 	return undefined;
-    },    
+    },
 });
 
 // indexing for search bar

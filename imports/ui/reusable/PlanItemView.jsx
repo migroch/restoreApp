@@ -1,100 +1,92 @@
 import React from 'react';
 import { Meteor } from 'meteor/meteor';
 import moment from 'moment';
-import { Select, DatePicker, TreeSelect } from 'antd/dist/antd.min.js';
 import { withTracker } from 'meteor/react-meteor-data';
 import  Schemas from '../../api/schemas';
 import { planitems, categories, subcategories, units } from '../../api/collections';
 // import ShowMoreText from 'react-show-more-text'
 import 'react-quill/dist/quill.snow.css';
 
-const { Option } = Select;
-const { TreeNode } = TreeSelect;
-const dateFormat = 'YYYY/MM/DD';
-const dimensions = Schemas.dimensions;
+import { Breadcrumb, Tag, Avatar } from 'antd/dist/antd.min.js';
 
-const makecategorylists = (categories) => {
-  return (
-    categories.map((category, idx)=>(
-      <TreeNode title={category.name} value={category.id} selectable={false} key={'category'+idx+category.name}>
-        {
-          category.subcategories.map((subcategory, idx)=>(
-            <TreeNode title={subcategory.name} value={subcategory.id}  selectable={false} key={'subcategory'+idx+subcategory.name}>
-              {
-                subcategory.units.map((unit, idx)=>(
-                  <TreeNode value={unit.id} title={unit.name} key={'unit'+idx+unit.name}/>
-                ))
-              }
-            </TreeNode>
-          ))
-        }
-      </TreeNode>
-    ))    
-  )
-}
+const Dimensions = Schemas.dimensions;
+const dimColors = ["magenta","volcano","orange","blue","geekblue","purple"];
+const catColors = {'Health & Safety / Operations':'#FF9263', 'Instructional Programs':'#00a6a3',  'Student Support & Family Engagement':'#2AAAE1'}
+const ucolors = ["orange","magenta","green","blue","purple"];
 
-PlanItemView = ({data, disabled, isLoading, users, catergoryData}) => {
+PlanItemView = ({data, isLoading }) => {
   if (isLoading) return null
-  const { subcategories, item, dimension, assignedToIds, dueDate, unitIds, ownerId } = data
-
+  const { item, dimension, assignedToIds, dueDate, unitIds, ownerId } = data
+  const onwner = data.ownerName();
+  const assignedToNames = data.assignedToNames();
+  const schoolNames = data.schoolNames();
+  const districts = data.districts();
+  const users = [data.ownerName()].concat(data.assignedToNames());
+    
   return (
     <div className="plan-item-view">
-      <div className="label_1">
-        Units:
-        <TreeSelect
-          showSearch
-          style={{ width: '100%' }}
-          defaultValue={unitIds}
-          dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-          placeholder="Please select"
-          allowClear
-          multiple
-          disabled={disabled}
-          // treeDefaultExpandAll
-          // onChange={this.onChange}
-        >
-          {makecategorylists(catergoryData)}
-        </TreeSelect>
-      </div>  
-      <div>Dimension: 
-        <Select defaultValue={dimension} style={{ width: 180 }} disabled={disabled}>
-          { dimensions.map((item, index)=><Option key={index+item} value={item}>{item}</Option>) }
-        </Select>        
+      <div className="row">
+	<div className="col-md-auto">
+	  {
+	    units.find({_id:{$in:unitIds}}).fetch().map( (u, index) => {
+	      let subcategory = subcategories.findOne(u.subcategoryId);
+	      if (u && u.subcategoryName() && subcategory.categoryName()){
+		return(
+		  <div key={index} >
+		    <Breadcrumb separator=">" style={{color:catColors[subcategory.categoryName()]}}>
+		      <Breadcrumb.Item>{subcategory.categoryName()}</Breadcrumb.Item>
+		      <Breadcrumb.Item>{u.subcategoryName()}</Breadcrumb.Item>
+		      <Breadcrumb.Item>{u.name}</Breadcrumb.Item>
+		    </Breadcrumb>
+		  </div>
+		)
+	      }
+	    })
+	  }
+	  {
+	    subcategories.find({_id:{$in:unitIds}}).fetch().map( (s, index) => {
+	      if (s && s.categoryName()){
+		return(
+		  <div key={index} >
+		    <Breadcrumb separator=">" style={{color:catColors[s.categoryName()]}}>
+		      <Breadcrumb.Item>{s.categoryName()}</Breadcrumb.Item>
+		      <Breadcrumb.Item>{s.name}</Breadcrumb.Item>
+		    </Breadcrumb>
+		  </div>
+		)
+	      }
+	    })
+	  }			  
+	</div>
+
+	<div className="col-md-auto">
+	  <Tag color={ dimColors[Dimensions.findIndex(D => D==dimension)]}>{dimension}</Tag>
+	</div>
+
+	<div className="col-md-auto">
+	  {
+	    users.map((u, index) => {
+	      let color = ucolors[parseInt(u[u.length-1])]
+	      return(
+		<Avatar  size="small" key={index}  style={{ verticalAlign: 'middle', backgroundColor: color}} className="m-1" ><p style={{fontSize:'smaller'}}>{u[0]+u[u.length-1]}</p></Avatar>
+	      )})
+	  }
+	</div>
       </div>
-      <div>Owner: 
-        <Select defaultValue={ownerId} style={{ width: 180 }} disabled={disabled} >
-          { users.map((user, index)=><Option key={"owner"+user.id} value={user.id}>{user.name}</Option>) }
-        </Select>        
+      
+      <div className="row mt-2">
+	<div className="col-md-auto">
+	  <p><small><strong>Districts:</strong> {districts[0]} {districts.slice(1,).map(d => ', '+d)}</small></p>
+	</div>
+	<div className="col-md-auto">
+	  <p><small><strong>Schools:</strong> {schoolNames[0]} {schoolNames.slice(1,).map(s => ', '+s)}</small></p>
+	</div>
+
+	<div id={"pitemText-"+data._id} className="container-fluid" dangerouslySetInnerHTML={{__html: item.text}}>
+	</div>
       </div>
-      <div>Assigned To: 
-        <Select
-          mode="tags"
-          disabled={disabled}
-          defaultValue={assignedToIds}
-          // placeholder="Please select"
-          // onChange={handleChange}
-          style={{ width: '30%' }}
-          listHeight={30}
-        >
-          { users.map((user, index)=><Option key={"assigned"+user.id} value={user.id}>{user.name}</Option>) }
-        </Select>      
-      </div>      
-      <div>
-        Due Date: 
-        <DatePicker defaultValue={moment(dueDate, dateFormat)} disabled={disabled}  format={dateFormat} />
-      </div>     
-      <div style={{border: "1px solid", padding:10, marginTop: 10}}>
-        <div dangerouslySetInnerHTML={{__html: item.text}} />
-        {/* <ShowMoreText
-            lines={1}
-            more='more'
-            less='less'
-            anchorClass=''
-            expanded={false}
-        >
-          <div dangerouslySetInnerHTML={{__html: item.text}} />
-         </ShowMoreText>         */}
-      </div>
+	
+
     </div>
   )
 }
@@ -104,7 +96,6 @@ export default withTracker(({id}) => {
     Meteor.subscribe('categories'),
     Meteor.subscribe('subcategories'),
     Meteor.subscribe('units'),
-    // Meteor.subscribe('allUserData'),
   ];
   const isLoading = handles.some(handle => !handle.ready());
   if(isLoading){
@@ -114,31 +105,9 @@ export default withTracker(({id}) => {
     };
   }
   const data = planitems.findOne(id)
-  const catergoryData = categories.find({}).fetch().
-                    map(category=>{
-                      category.subcategories = subcategories.find({categoryId:category._id}).fetch()
-                            .map(sub=>{
-                                  sub.units = units.find({subcategoryId:sub._id}).fetch()
-                                              .map(unit=>({id:unit._id, name:unit.name}))
-                                  return {
-                                    id: sub._id,
-                                    name:sub.name,
-                                    units:sub.units
-
-                                  }
-                            })
-                      return {
-                        id: category._id,
-                        name:category.name,
-                        subcategories: category.subcategories
-                      }
-                    })  
-  const users = Meteor.users.find({}).fetch()
-                    .map(user => ({id: user._id, name: user.profile.name}))
+    
   return {
     data,
-    users,
-    catergoryData,
     isLoading: false
   };
 })(PlanItemView);

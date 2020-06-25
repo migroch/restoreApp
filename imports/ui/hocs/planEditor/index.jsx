@@ -30,11 +30,8 @@ const PlanEdit = ({ isLoading, data, id, changemode, oncreatedPlan }) => {
       {/* <GuidanceItems /> */}
       <div className="plan-edit container">
       	<div className="content-wrapper">
-          <div style={{marginLeft: 50}} onClick={changemode}>
-            Back
-          </div>  
           <div className="plan-edit-form">
-            <PlanEditForm data={data} id={planId} onCreatedPlan={id=>oncreatedPlan(id)}/>
+            <PlanEditForm data={data} id={planId} onCreatedPlan={id=>oncreatedPlan(id)} changemode={changemode}/>
           </div>
 {         
           planId &&<div className="plan-item-list">
