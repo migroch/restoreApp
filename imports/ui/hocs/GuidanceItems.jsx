@@ -3,7 +3,10 @@ import { withTracker } from "meteor/react-meteor-data";
 import Schemas from '../../api/schemas.js'
 import { guidanceitems, units, subcategories, categories } from "../../api/collections.js";
 import InfiniteScroll from 'react-infinite-scroller';
-import { Input, Select, Button, Tooltip, Breadcrumb, Tag, Collapse, List} from 'antd/dist/antd.min.js';
+import { Breadcrumb, Tag, Collapse, List} from 'antd/dist/antd.min.js';
+import { guidanceitemsWithFilter } from '../../api/queries'
+import FilterForGuidance from '../reusable/FilterForGuidance';
+import ShowMoreText from 'react-show-more-text';
 const { Panel } = Collapse;
 
 const Dimensions = Schemas.dimensions;
@@ -18,10 +21,10 @@ class GuidanceItems extends Component {
       loadedData: [],
       loadingMore: false,
       currentPage: 0,
-      ItemsPerPage: 10,
+      ItemsPerPage: 8,
       hasMore: true,
     };
-
+    // this.scrollParentRef = React.createRef();
     this.loadMore = this.loadMore.bind(this);
   }
 
@@ -31,7 +34,7 @@ class GuidanceItems extends Component {
       dataSource={this.state.loadedData}
       renderItem={gitem => (
         <List.Item key={"gitem-"+gitem._id} className="bg-white">
-	  <div className="container-fluid" onClick={() => $("#gitemText-"+gitem._id).toggleClass('collapsed-gitem-text')}>
+	  <div className="container-fluid">
 	    
 	    <div className="row">
 	      <div className="col-md-auto">
@@ -90,8 +93,18 @@ class GuidanceItems extends Component {
 	      </div>
 	    </div>
 			      
-	    <div id={"gitemText-"+gitem._id} className="container-fluid collapsed-gitem-text">
-	      <p className="m-0">{gitem.item.text}</p>
+	    <div id={"gitemText-"+gitem._id} className="container-fluid">
+	      {/* <p className="m-0">{gitem.item.text}</p> */}
+        <ShowMoreText
+            /* Default options */
+            lines={2}
+            more='more'
+            less='less'
+            anchorClass=''
+            expanded={false}
+        >
+            {gitem.item.text}
+        </ShowMoreText>        
 	    </div>
           </div>
 	  
@@ -103,18 +116,20 @@ class GuidanceItems extends Component {
   }
 
   loadMore(){
-    this.setState({loadingMore: true});
     const fullData = this.props.data;
-    const currentPage = this.state.currentPage;
-    let indexOfLastItem = (currentPage + 1) * this.state.ItemsPerPage - 1;
-    if (indexOfLastItem > fullData.length -1){
-      indexOfLastItem =  fullData.length -1;
+    let  currentPage = this.state.currentPage;
+    let indexOfLastItem = (currentPage + 1) * this.state.ItemsPerPage;
+    if (this.state.ItemsPerPage * currentPage >= fullData.length) {
+      return;
+    }
+    if (indexOfLastItem >= fullData.length){
+      indexOfLastItem =  fullData.length;
       this.setState({hasMore: false});
     }
-    const indexOfFirstItem = indexOfLastItem - this.state.ItemsPerPage;
+    let indexOfFirstItem = indexOfLastItem - this.state.ItemsPerPage;
+    if (indexOfFirstItem < 0) indexOfFirstItem = 0;
     const data = this.state.loadedData.concat(fullData.slice(indexOfFirstItem, indexOfLastItem));
-    this.setState({loadedData: data, loadingMore: false, currentPage: currentPage + 1 });
-
+    this.setState({loadedData: data,  currentPage: currentPage + 1 });
   }
 
   componentDidUpdate(){
@@ -132,22 +147,39 @@ class GuidanceItems extends Component {
         </div>
       );
     } else {
-      
+      if (this.props.isComponent) {
+        return (
+          <div className="container" style={{height:"90%", overflow:"auto", marginTop:20}} ref={(ref) => this.scrollParentRef = ref}>
+            {/* <Collapse bordered={false} expandIconPosition='right'>
+            <Panel header="Guidance Items"> */}
+              <InfiniteScroll
+                  initialLoad={false} 
+                        pageStart={0}
+                        loadMore={this.loadMore}
+                        hasMore={this.state.hasMore}
+                        useWindow={false}
+                        getScrollParent={() => this.scrollParentRef}
+                    >
+                {this.makeGuidanceItems()} 
+              </InfiniteScroll>
+            {/* </Panel>
+                  </Collapse> */}
+          </div>
+              );
+      }
       return (
 	<div className="container">
 	  {/* <Collapse bordered={false} expandIconPosition='right'>
 	  <Panel header="Guidance Items"> */}
-
-	  <InfiniteScroll
-	      initialLoad={false} 
-              pageStart={0}
-              loadMore={this.loadMore}
-              hasMore={this.state.hasMore}
-              useWindow={true}
-          >
- 	    {this.makeGuidanceItems()} 
-          </InfiniteScroll>
-
+      <InfiniteScroll
+          initialLoad={false} 
+          pageStart={0}
+          loadMore={this.loadMore}
+          hasMore={this.state.hasMore}
+          useWindow={true}
+       >
+        {this.makeGuidanceItems()} 
+      </InfiniteScroll>
 	  {/* </Panel>
           </Collapse> */}
 	</div>
@@ -156,7 +188,7 @@ class GuidanceItems extends Component {
   }
 }
 
-GuidanceItems = withTracker(() => {
+GuidanceItems = withTracker(({searchquery}) => {
   //const user = Meteor.user();
   const handles = [
     Meteor.subscribe("guidanceitems"),
@@ -171,12 +203,47 @@ GuidanceItems = withTracker(() => {
       isLoading: true
     };
   }
-  const guidanceitems_fetch = guidanceitems.find({}).fetch();
-  const data = guidanceitems_fetch
+
+    //-------search with select filter--------
+  // console.log('filterquery: ', searchquery)
+  const guidanceQuery_Clone = guidanceitemsWithFilter.clone(searchquery);
+  guidanceQuery_Clone.subscribe();
+  let guidance_data = guidanceQuery_Clone.fetch()
+
+  //filtering guidance_data
+  guidance_data = guidance_data.filter(item=>{
+      //in case unit & subcategory & category undefined
+      let flag = false
+      item.units.every( u => {
+  if (u && u.subcategory && u.subcategory.category) {
+          flag = true
+          return false
+  }
+  return true
+      })
+  return flag
+    })
+  // filtered guidance ids
+  const guidanceIdswithFilter = guidance_data.map(item=>item._id)
+  const data = guidanceitems.find({_id:{$in:guidanceIdswithFilter}}).fetch()
   return {
     data,
     isLoading: false
   };
 })(GuidanceItems);
 
-export default GuidanceItems;
+// Guidance Viewer Container
+GuidanceView = ({isComponent}) => {
+  
+  const [searchQuery, setSearchQuery] = useState({});
+  const setQuery = (query) => {setSearchQuery(query); setKey(Date.now())}
+  const [key, setKey] = useState(Date.now())
+  return (
+    <div className="plan-view container-fluid" style={{height:"100%"}}>
+      <FilterForGuidance onChangeQuery={setQuery}/>
+      <GuidanceItems searchquery={searchQuery} isComponent={isComponent} key={key}/>
+    </div>
+  )
+}
+
+export default GuidanceView

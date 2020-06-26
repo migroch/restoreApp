@@ -1,12 +1,13 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Meteor } from 'meteor/meteor';
 import moment from 'moment';
-import { Select, DatePicker, Cascader, TreeSelect, Form, Button } from 'antd/dist/antd.min.js';
+import { Select, DatePicker, Cascader, TreeSelect, Form, Button, Modal } from 'antd/dist/antd.min.js';
 import { withTracker } from 'meteor/react-meteor-data';
 import  Schemas from '../../api/schemas';
 import { plans, planitems, categories, subcategories, units } from '../../api/collections';
 import ReactQuill from 'react-quill/dist/react-quill.min.js';
 import 'react-quill/dist/quill.snow.css';
+import GuidanceView from '../hocs/GuidanceItems'
 
 const { Option } = Select;
 const { TreeNode } = TreeSelect;
@@ -92,9 +93,29 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
       })
     }
   }
+  const [guidanceVisible, setGuidanceVisible] = useState(false)
+  handleOk = e => {
+    setGuidanceVisible(false)
+  };
+
+  handleCancel = e => {
+    setGuidanceVisible(false)
+  };
   
   return (
     <div className="plan-item-edit">
+        <Button onClick={()=>setGuidanceVisible(true)} style={{backgroundColor:"grey"}}>Show Guidance</Button>
+        <Modal
+          title="GuidanceItems"
+          visible={guidanceVisible}
+          width="80%"
+          bodyStyle={{height:700}}
+          onOk={this.handleOk}
+          onCancel={this.handleCancel}
+          // confirmLoading={confirmLoading}
+        >
+          <GuidanceView isComponent/>
+        </Modal>      
       <Form
         // {...layout}
         name="Plan Item Edit"

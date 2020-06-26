@@ -7,7 +7,6 @@ import Schemas from '../../../api/schemas'
 import PlanItemList from '../../reusable/PlanItemList';
 import { Select } from 'antd/dist/antd.min.js';
 import PlanEditForm from '../../reusable/PlanEditForm'
-import GuidanceItems from '../GuidanceItems'
 import { plansQueryWithFilter } from '../../../api/queries'
 import './index.scss'
 
@@ -18,16 +17,16 @@ const scenarios = Schemas.scenarios;
 const PlanEdit = ({ isLoading, data, id, changemode, oncreatedPlan }) => {
   if (isLoading) return null
   const [planId, setPlanId] = useState(id)
-  const history = useHistory();
   const [isEditable, setIsEditable] = useState(true)
+  const history = useHistory();
+
   const { planItems } = data
   useEffect(() => {
     if (id != planId) setPlanId(id)
   }, [id])
-  console.log("planId:", planId)
+
   return (
     <>
-      {/* <GuidanceItems /> */}
       <div className="plan-edit container">
       	<div className="content-wrapper">
           <div className="plan-edit-form">

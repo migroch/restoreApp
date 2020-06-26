@@ -12,10 +12,10 @@ const dimensions =  Schemas.dimensions;
 const scenarios =  Schemas.scenarios;
 
 
-const SelectWrapper = ({isLoading, data, onChangeQuery, value, valueforMapLocation}) => {
+const SelectWrapper = ({isLoading, data, onChangeQuery, value}) => {
   if (isLoading) return null;
-  const { units_total, subcategories_total, districts_total, schools_total } = data;
-  const [query, setQuery] = useState(value);
+  const { units_total, subcategories_total, districts_total, schools_total, valueforMapLocation } = data;
+  const [query, setQuery] = useState(value || {});
   
   onChange = (item, value) => {
     if (value==="All") value = undefined
@@ -152,7 +152,7 @@ export default withTracker(({value}) => {
     };
   }
   let valueforMapLocation = []
-  if (value.unit) {
+  if (value && value.unit) {
     const unit = units.findOne({name:value.unit})
     valueforMapLocation = [
       unit.categoryName(),
@@ -161,7 +161,7 @@ export default withTracker(({value}) => {
     ]
   }
 
-  if (value.subcategory) {
+  if (value && value.subcategory) {
     const subcategory = subcategories.findOne({name:value.subcategory})
     valueforMapLocation = [
       subcategory.categoryName(),
@@ -169,7 +169,7 @@ export default withTracker(({value}) => {
     ]
   }
 
-  if (value.category) {
+  if (value && value.category) {
     valueforMapLocation = [value.category]
   }
 
@@ -182,10 +182,9 @@ export default withTracker(({value}) => {
   //const subcategories_total = plans_total.map(p => p.planItems.map(pi => pi.subcategories).flat()).flat();
   const units_total  = units.find({}).fetch();
   const subcategories_total = subcategories.find({}).fetch();
-  const data = { units_total, subcategories_total, schools_total, districts_total };
+  const data = { units_total, subcategories_total, schools_total, districts_total, valueforMapLocation };
   return {
     data,
-    valueforMapLocation,
     isLoading: false
   };
 })(SelectWrapper);

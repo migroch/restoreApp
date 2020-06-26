@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Meteor } from 'meteor/meteor';
-import SelectWrapper from '../../reusable/SelectWrapper';
+import FilterForPlan from '../../reusable/FilterForPlan';
 import SearchWrapper from '../../reusable/SearchWrapper';
 import { withTracker } from 'meteor/react-meteor-data';
 import { subcategories, planitems, plans, PlansIndex, PlanItemsIndex } from '../../../api/collections';
@@ -8,7 +8,7 @@ import  Schemas from '../../../api/schemas';
 import PlanItemList from '../../reusable/PlanItemList';
 import { useHistory, useLocation } from "react-router-dom";
 import { uniq, isEmpty, intersection } from 'lodash'
-import { plansQuery, plansQueryWithFilter } from '../../../api/queries'
+import { plansQueryWithFilter } from '../../../api/queries'
 import queryString from 'query-string';
 import './index.scss';
 
@@ -235,7 +235,7 @@ PlansListView = withTracker(({searchquery, searchbar}) => {
     const planIdswithSearchBar = uniq([...plan_ids_index_1, ...plan_ids_index_2])
 
     //-------2.search with select filter--------
-    const plansQuery_Clone = plansQueryWithFilter.clone(searchquery);
+  const plansQuery_Clone = plansQueryWithFilter.clone(searchquery);
   plansQuery_Clone.subscribe();
   let plans_data = plansQuery_Clone.fetch()
 
@@ -289,8 +289,7 @@ const addNewPlan = ()=>{
 
 // Plan Viewer Container
 PlanView = ({editPlanWithID, isPlanView}) => {
-  
-  const history = useHistory();
+
   const location = useLocation();
   const initial_query = queryString.parse(location.search);
   
@@ -304,7 +303,7 @@ PlanView = ({editPlanWithID, isPlanView}) => {
       {/* set searchquery in selectwrapper */}
 
       <SearchWrapper onChangeSearchbar={v => setSearchbar(v)}/>
-      <SelectWrapper onChangeQuery={setQuery} value={initial_query}/>
+      <FilterForPlan onChangeQuery={setQuery} value={initial_query}/>
 
       <div className="container-fluid text-center  mt-2">
 	<Tooltip  placement="bottom" title="Add New Plan">
