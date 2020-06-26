@@ -67,9 +67,9 @@ const empty_data = {
 
 PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, planId, users }) => {
   if (isLoading) return null
-
+  let guidanceItem = null
   const { subcategories, item, dimension, assignedToIds, dueDate, unitIds, ownerId } = (id) ? data : empty_data
-
+  const [guidance, setGuidance] = useState({visible: false, selectedItem: null})
   const onFinish = planItem => {
     planItem.dueDate = planItem.dueDate.format(dateFormat);
     planItem.unitIds = [planItem.unitIds.pop()];
@@ -93,33 +93,46 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
       })
     }
   }
-  const [guidanceVisible, setGuidanceVisible] = useState(false)
+
   handleOk = e => {
-    setGuidanceVisible(false)
+    setGuidance({visible: false, selectedItem: guidanceItem})
   };
 
   handleCancel = e => {
-    setGuidanceVisible(false)
+    setGuidance({visible: false, selectedItem: null})
   };
-  
+  const [form] = Form.useForm();
+  if (!!guidance.selectedItem){
+    form.setFieldsValue({
+      item:guidance.selectedItem.item,
+    });  
+  }
   return (
     <div className="plan-item-edit">
-        <Button onClick={()=>setGuidanceVisible(true)} style={{backgroundColor:"grey"}}>Show Guidance</Button>
+        <Button onClick={()=>setGuidance({visible:true, selectedItem: null})} style={{backgroundColor:"grey"}}>Show Guidance</Button>
         <Modal
           title="GuidanceItems"
-          visible={guidanceVisible}
+          visible={guidance.visible}
           width="80%"
           bodyStyle={{height:700}}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
           // confirmLoading={confirmLoading}
         >
-          <GuidanceView isComponent/>
+          <GuidanceView isComponent onSelect={g=>guidanceItem = g}/>
         </Modal>      
       <Form
         // {...layout}
         name="Plan Item Edit"
-        initialValues={{ unitIds:unitIds.map(id => {return(units.findOne(id).name || subcategories.findOne(id).name)}), dueDate:moment(dueDate, dateFormat), assignedToIds, item, dimension, ownerId }}
+        form={form}
+        initialValues={{ 
+          unitIds:unitIds.map(id => {return(units.findOne(id).name || subcategories.findOne(id).name)}), 
+          dueDate:moment(dueDate, dateFormat), 
+          assignedToIds, 
+          item, 
+          dimension, 
+          ownerId 
+      }}
         onFinish={onFinish}
         // onFinishFailed={onFinishFailed}
       >
