@@ -29,8 +29,7 @@ Schemas.plans = new SimpleSchema({
 
 // Plan Items
 Schemas.planitems = new SimpleSchema({
-    // we can get categories from subcategories, categories may be removed in the future
-    unitIds: [SimpleSchema.oneOf(String, SimpleSchema.Integer)],
+    unitIds: [SimpleSchema.oneOf(String, SimpleSchema.Integer)],  // unit or subcategory IDs
     ownerId: SimpleSchema.oneOf(String, SimpleSchema.Integer),
     assignedToIds:  { type: Array, optional: true},
     'assignedToIds.$': SimpleSchema.oneOf(String, SimpleSchema.Integer),
@@ -48,7 +47,7 @@ Schemas.planitems = new SimpleSchema({
 
 // Guidance Items
 Schemas.guidanceitems = new SimpleSchema({
-    unitIds: [SimpleSchema.oneOf(String, SimpleSchema.Integer)],
+    unitIds: [SimpleSchema.oneOf(String, SimpleSchema.Integer)],  // unit or subcategory IDs
     dimensions: { type: Array },
     'dimensions.$':{
         type: String,

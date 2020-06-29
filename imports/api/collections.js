@@ -41,11 +41,40 @@ menuitems.attachSchema(Schemas.menuitems);
 
 // Add helper functions to collections
 
+// guidanceitems helpers
+guidanceitems.helpers({
+     // unit names
+    unitNames(){
+	let names = [];
+	this.unitIds.forEach(id => {
+	    let uors = units.findOne(id) || subcategories.findOne(id);
+	    names.push(uors.name);
+	});
+	return names;
+    },
+    unitIsSubcategory(){
+	return this.unitIds.map(id =>  {
+	    if ( subcategories.findOne(id) ) { return  true ;} else { return  false;} ;
+	});
+    },
+});
+
 // planitems helpers
 planitems.helpers({
-    // unit names
+     // unit names
     unitNames(){
-	return  this.units.map(u => u.name);
+	let names = [];
+	this.unitIds.forEach(id => {
+	    let uors = units.findOne(id) || subcategories.findOne(id);
+	    names.push(uors.name);
+	});
+	return names;
+    },
+    // unit is subcategory?
+    unitIsSubcategory(){
+	return this.unitIds.map(id =>  {
+	    if ( subcategories.findOne(id) ) { return  true ;} else { return  false;} ;
+	});
     },
     // districts
     districts(){

@@ -252,6 +252,7 @@ PlansListView = withTracker(({searchquery, searchbar}) => {
       if (isEmpty(plan.planItems)) return false
       //in case unit & subcategory & category undefined
       let plan_units = uniq(plan.planItems.map( pi => pi.units ).flat());
+      let plan_subcategories = uniq(plan.planItems.map( pi => pi.subcategories).flat());
       let flag = false
       plan_units.every( u => {
 	if (u && u.subcategory && u.subcategory.category) {
@@ -259,12 +260,19 @@ PlansListView = withTracker(({searchquery, searchbar}) => {
           return false
 	}
 	return true
-      })
-	//in case districts and schools are empty
-	let plan_districts = plan.districts()
-	let plan_schools = plan.schools()
-	flag = flag && !isEmpty(plan_districts) && !isEmpty(plan_schools)
-	return flag
+      });
+      plan_subcategories.every( s => {
+	if (s && s.category) {
+          flag = true
+          return false
+	}
+	return true
+      });
+      //in case districts and schools are empty
+      let plan_districts = plan.districts();
+      let plan_schools = plan.schools();
+      flag = flag && !isEmpty(plan_districts) && !isEmpty(plan_schools);
+      return flag
     })
     // filtered plan ids
     const planIdswithFilter = plans_data.map(plan=>plan._id)

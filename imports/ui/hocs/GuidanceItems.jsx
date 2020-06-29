@@ -168,7 +168,7 @@ class GuidanceItems extends Component {
               );
       }
       return (
-	<div className="container">
+	<div className="container-fluid">
 	  {/* <Collapse bordered={false} expandIconPosition='right'>
 	  <Panel header="Guidance Items"> */}
       <InfiniteScroll
@@ -208,21 +208,29 @@ GuidanceItems = withTracker(({searchquery}) => {
   // console.log('filterquery: ', searchquery)
   const guidanceQuery_Clone = guidanceitemsWithFilter.clone(searchquery);
   guidanceQuery_Clone.subscribe();
-  let guidance_data = guidanceQuery_Clone.fetch()
+  let guidance_data = guidanceQuery_Clone.fetch();
 
   //filtering guidance_data
   guidance_data = guidance_data.filter(item=>{
-      //in case unit & subcategory & category undefined
-      let flag = false
-      item.units.every( u => {
-  if (u && u.subcategory && u.subcategory.category) {
-          flag = true
-          return false
-  }
-  return true
-      })
-  return flag
-    })
+    //in case unit & subcategory & category undefined
+    let flag = false
+    item.units.every( u => {
+      if (u && u.subcategory && u.subcategory.category) {
+	flag = true
+        return false
+      }
+      return true
+    });
+    item.subcategories.every( s => {
+      if (s && s.category) {
+	flag = true
+        return false
+      }
+      return true
+    });
+    return flag
+  })
+    
   // filtered guidance ids
   const guidanceIdswithFilter = guidance_data.map(item=>item._id)
   const data = guidanceitems.find({_id:{$in:guidanceIdswithFilter}}).fetch()

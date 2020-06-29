@@ -33,6 +33,11 @@ export default addCollectionLinks = function(){
 	    collection: units,
 	    field: 'unitIds',
 	},
+	'subcategories':{   // In case unitIds are subcategoryIds
+	    type: 'many',
+	    collection: subcategories,
+	    field: 'unitIds',   
+	},
 	'plan':{
 	    collection: plans,
             inversedBy: 'planItems'
@@ -57,6 +62,11 @@ export default addCollectionLinks = function(){
 	    type: 'many',
 	    collection: units,
 	    field: 'unitIds',
+	},
+	'subcategories':{   // In case unitIds are subcategoryIds
+	    type: 'many',
+	    collection: subcategories,
+	    field: 'unitIds',   
 	},
     });
 

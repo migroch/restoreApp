@@ -75,7 +75,7 @@ const SelectWrapper = ({isLoading, data, onChangeQuery, value}) => {
   return (
     <div>
 
-      <div className="select-wrapper row mt-2">
+      <div className="select-wrapper container-fluid row my-2">
 	<div  className="col col-md-4">
 	  <p className="m-0"><small>Map Location</small></p>
 	  <Cascader
