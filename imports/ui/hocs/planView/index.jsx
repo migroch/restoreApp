@@ -12,7 +12,7 @@ import { plansQueryWithFilter } from '../../../api/queries'
 import queryString from 'query-string';
 import './index.scss';
 
-import { Input, Select, Button, Tooltip, Breadcrumb, List, Tag } from 'antd/dist/antd.min.js';
+import { Input, Select, Button, Tooltip, Breadcrumb, List, Tag, Popconfirm } from 'antd/dist/antd.min.js';
 
 import styled from 'styled-components';
 import {MoreHorizontal} from 'styled-icons/feather/MoreHorizontal';
@@ -95,16 +95,25 @@ let PlanWrapper = ({data, editPlanWithID}) => {
 
       <div className={"header d-flex " + plan_bg} >
 	<p className="mr-auto mt-auto mb-auto ml-2">{scenario}</p>
-	<div className="right ml-auto mb-auto mt-auto p-1" >
+	<div className="right ml-auto mb-auto mt-auto p-1" onClick={e=> e.stopPropagation()} >
 	  <Tooltip  placement="bottom" title="Edit">
 	    <span className="icon mr-2 ml-2" onClick={()=>editPlanWithID(id)}><Edit3  size="20" /> </span>
 	  </Tooltip >
 	  <Tooltip  placement="bottom" title="Copy">
 	    <span className="icon mr-2 ml-2" onClick={copyPlanWithId}><Copy  size="20" /></span>
 	  </Tooltip >
-	  <Tooltip  placement="bottom" title="Delete">
-	    <span className="icon mr-2 ml-2" onClick={deletePlanWithId}><Trash  size="20" /></span>
-	  </Tooltip >
+    <Popconfirm
+        placement="topRight"
+        title={'Are you sure to delete this plan?'}
+        onConfirm={deletePlanWithId}
+        okText="Yes"
+        cancelText="No"
+      >
+      <Tooltip  placement="bottom" title="Delete">
+        <span className="icon mr-2 ml-2"><Trash  size="20"/></span>
+      </Tooltip >
+      </Popconfirm>    
+
 	</div>
       </div>
 

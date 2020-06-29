@@ -4,7 +4,7 @@ import PlanItemEdit from './PlanItemEdit'
 import { Meteor } from 'meteor/meteor';
 import { planitems, plans } from '../../api/collections';
 
-import { Tooltip, List } from 'antd/dist/antd.min.js';
+import { Tooltip, List, Popconfirm } from 'antd/dist/antd.min.js';
 
 import styled from 'styled-components';
 import {Trash} from "styled-icons/feather/Trash";
@@ -37,10 +37,18 @@ const PlanItemWrapper = ({id, editable, planId}) => {
 	  </Tooltip >,
 	  <Tooltip  placement="bottom" title="Copy">
 	    <span className="icon mr-2 ml-2"><Copy  size="20" /></span>
-	  </Tooltip >,
-	  <Tooltip  placement="bottom" title="Delete">
-	    <span className="icon mr-2 ml-2" onClick={removePlanItem}><Trash  size="20" /></span>
-	  </Tooltip >
+    </Tooltip >,
+    <Popconfirm
+    placement="top"
+    title={'Are you sure to delete this planItem?'}
+    onConfirm={removePlanItem}
+    okText="Yes"
+    cancelText="No"
+    >
+      <Tooltip  placement="bottom" title="Delete">
+        <span className="icon mr-2 ml-2"><Trash  size="20" /></span>
+      </Tooltip >
+    </Popconfirm>      
 	]
       );
       return null

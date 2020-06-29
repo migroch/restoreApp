@@ -23,6 +23,7 @@ class GuidanceItems extends Component {
       currentPage: 0,
       ItemsPerPage: 8,
       hasMore: true,
+      selectedItem: null
     };
     // this.scrollParentRef = React.createRef();
     this.loadMore = this.loadMore.bind(this);
@@ -33,8 +34,13 @@ class GuidanceItems extends Component {
       <List
       dataSource={this.state.loadedData}
       renderItem={gitem => (
-        <List.Item key={"gitem-"+gitem._id} className="bg-white">
-	  <div className="container-fluid">
+        <List.Item key={"gitem-"+gitem._id} className={(gitem._id == this.state.selectedItem) ? "bg-dark":"bg-white"}
+          onClick={()=>{
+            if (this.props.isComponent) this.props.onSelect(gitem);
+            this.setState({selectedItem:gitem._id})
+          }}
+        >
+	  <div className="container-fluid" >
 	    
 	    <div className="row">
 	      <div className="col-md-auto">
@@ -241,7 +247,7 @@ GuidanceItems = withTracker(({searchquery}) => {
 })(GuidanceItems);
 
 // Guidance Viewer Container
-GuidanceView = ({isComponent}) => {
+GuidanceView = ({isComponent, onSelect}) => {
   
   const [searchQuery, setSearchQuery] = useState({});
   const setQuery = (query) => {setSearchQuery(query); setKey(Date.now())}
@@ -249,7 +255,7 @@ GuidanceView = ({isComponent}) => {
   return (
     <div className="plan-view container-fluid" style={{height:"100%"}}>
       <FilterForGuidance onChangeQuery={setQuery}/>
-      <GuidanceItems searchquery={searchQuery} isComponent={isComponent} key={key}/>
+      <GuidanceItems searchquery={searchQuery} onSelect={onSelect} isComponent={isComponent} key={key}/>
     </div>
   )
 }
