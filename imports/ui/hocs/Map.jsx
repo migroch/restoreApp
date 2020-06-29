@@ -114,15 +114,15 @@ class Map extends Component {
     root.descendants().forEach((d, i) => {
       d.id = i;
       d._children = d.children;
+      if (d.depth > 0) d.children = null;
     });
    
-
     root.left_children = root.children.filter( d => LeftCategories.includes(d.data.name));
     root.right_children = root.children.filter( d => !LeftCategories.includes(d.data.name));
     this.root = root
     
-    //this.updateTree(rootRight, rootRight);
-    this.updateTree(root);       
+    // this.updateTree(rootRight, rootRight);
+    this.updateTree(root);
   }
 
   updateTree(sourceNode){
@@ -318,7 +318,7 @@ class Map extends Component {
     nodes.forEach(function(d) {
       d.x0 = d.x;
       d.y0 = d.y;
-    });
+    }); 
   } 
   
   handleNodeClick(node) {

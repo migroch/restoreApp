@@ -207,6 +207,8 @@ PlansListView = ({plan_ids, isLoading, editPlanWithID})=>{
   return (
     <div className="plans-wrapper">
       <List dataSource={plan_ids}
+	    //loading={plan_ids.length ? false : true}
+	    locale={{emptyText: 'No Plans Found'}}
 	    renderItem={  id =>(
 		<List.Item key={"plan-"+id}>
 		  <PlanWrapper  id={id}  editPlanWithID={editPlanWithID}/>

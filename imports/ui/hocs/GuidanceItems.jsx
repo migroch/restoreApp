@@ -32,9 +32,10 @@ class GuidanceItems extends Component {
   makeGuidanceItems() {
     return(
       <List
-      dataSource={this.state.loadedData}
-      renderItem={gitem => (
-        <List.Item key={"gitem-"+gitem._id} className={(gitem._id == this.state.selectedItem) ? "bg-dark":"bg-white"}
+	  dataSource={this.state.loadedData}
+	  locale={{emptyText: 'No Guidance Items Found'}}
+	  renderItem={gitem => (
+              <List.Item key={"gitem-"+gitem._id} className={(gitem._id == this.state.selectedItem) ? "border border-info ":"bg-white"}
           onClick={()=>{
             if (this.props.isComponent) this.props.onSelect(gitem);
             this.setState({selectedItem:gitem._id})

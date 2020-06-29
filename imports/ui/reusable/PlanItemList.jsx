@@ -20,10 +20,17 @@ const PlanItemList =({data, editable, planId})=> {
 	</Tooltip >
       </div>
     }
+    { addPlanItemMode && editable &&
+      <div className="plan-item-wrapper">
+        <PlanItemEdit id={undefined} planId={planId} finishAddItem={()=>setAddPlanItemMode(false)}/>
+      </div>
+    }
     {
       <List
 	  dataSource={data}
 	  itemLayout='vertical'
+         //loading={data.length ? false : true}
+          locale={{emptyText: 'No Plan Items'}}
 	  renderItem={item => (
               
 		<PlanItemWrapper id={item._id} planId={planId} editable={editable} key={"planItem"+item._id}/>
@@ -31,11 +38,7 @@ const PlanItemList =({data, editable, planId})=> {
 	    )}
       />
     }
-    { addPlanItemMode && editable &&
-      <div className="plan-item-wrapper">
-        <PlanItemEdit id={undefined} planId={planId} finishAddItem={()=>setAddPlanItemMode(false)}/>
-      </div>
-    }
+   
     </>
   )
 }

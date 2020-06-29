@@ -50,6 +50,7 @@ const PlanEditComponent = ({id, data, onCreatedPlan, changemode}) => {
     title,
     scenario
   });
+  
   return (
     <>
     <div className="container text-center my-2">

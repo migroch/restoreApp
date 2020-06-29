@@ -68,10 +68,11 @@ const empty_data = {
 PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, planId, users }) => {
   if (isLoading) return null
   let guidanceItem = null
-  const { subcategories, item, dimension, assignedToIds, dueDate, unitIds, ownerId } = (id) ? data : empty_data
+  let { item, dimension, assignedToIds, dueDate, unitIds, ownerId } = (id) ? data : empty_data
   const [guidance, setGuidance] = useState({visible: false, selectedItem: null})
   const onFinish = planItem => {
     planItem.dueDate = planItem.dueDate.format(dateFormat);
+    console.log(planItem.unitIds);
     planItem.unitIds = [planItem.unitIds.pop()];
     if (id) {
       Meteor.call('planItem.update', {planItemId:id, planItem}, (err, res) => {
@@ -101,37 +102,44 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
   handleCancel = e => {
     setGuidance({visible: false, selectedItem: null})
   };
+  
   const [form] = Form.useForm();
   if (!!guidance.selectedItem){
     form.setFieldsValue({
       item:guidance.selectedItem.item,
-    });  
+      dimension:guidance.selectedItem.dimensions[0],
+      unitIds:  guidance.selectedItem.unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] )[0], 
+    });
+    unitIds = guidance.selectedItem.unitIds
   }
+
   return (
     <div className="plan-item-edit">
-        <Button onClick={()=>setGuidance({visible:true, selectedItem: null})} style={{backgroundColor:"grey"}}>Show Guidance</Button>
+      <Button onClick={()=>setGuidance({visible:true, selectedItem: null})} className="my-2 w-100" style={{color:"#2AAAE1"}}><p> <strong>Use Guidance</strong> </p></Button>
         <Modal
-          title="GuidanceItems"
+          title="Guidance Items"
           visible={guidance.visible}
-          width="80%"
-          bodyStyle={{height:700}}
+          width="90%"
+          bodyStyle={{height: window.innerHeight - $("nav").outerHeight() -120}}
+	  okText ="Use Selected Item"
+	  //cancetText="Go Back"
           onOk={this.handleOk}
           onCancel={this.handleCancel}
           // confirmLoading={confirmLoading}
         >
-          <GuidanceView isComponent onSelect={g=>guidanceItem = g}/>
+            <GuidanceView isComponent onSelect={g=>guidanceItem = g}/>
         </Modal>      
       <Form
         // {...layout}
         name="Plan Item Edit"
         form={form}
         initialValues={{ 
-          unitIds:unitIds.map(id => {return(units.findOne(id).name || subcategories.findOne(id).name)}), 
-          dueDate:moment(dueDate, dateFormat), 
-          assignedToIds, 
-          item, 
-          dimension, 
-          ownerId 
+            unitIds:unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] )[0], 
+            dueDate:moment(dueDate, dateFormat), 
+            assignedToIds, 
+            item, 
+            dimension, 
+            ownerId 
       }}
         onFinish={onFinish}
         // onFinishFailed={onFinishFailed}
