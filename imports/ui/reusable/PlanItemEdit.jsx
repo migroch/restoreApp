@@ -8,7 +8,7 @@ import { plans, planitems, categories, subcategories, units } from '../../api/co
 import ReactQuill from 'react-quill/dist/react-quill.min.js';
 import 'react-quill/dist/quill.snow.css';
 import GuidanceView from '../hocs/GuidanceItems'
-
+import Editor from './quillTest'
 const { Option } = Select;
 const { TreeNode } = TreeSelect;
 const dateFormat = 'YYYY/MM/DD';
@@ -199,6 +199,7 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
         <Form.Item
           label="Due Date"
           name="dueDate"
+          className="date-input"
           rules= {[
             {
               type: 'object',
@@ -214,7 +215,8 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
           label=""
           name={["item", "text"]}
         >
-          <ReactQuill/>
+          <ReactQuill />
+          {/* <Editor /> */}
         </Form.Item>      
         <Form.Item style={{display:disabled?"none":"block"}}>
           <Button type="primary" htmlType="submit"  style={{backgroundColor: '#2176BB' }}>
