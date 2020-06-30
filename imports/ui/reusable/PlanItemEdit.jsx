@@ -72,7 +72,6 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
   const [guidance, setGuidance] = useState({visible: false, selectedItem: null})
   const onFinish = planItem => {
     planItem.dueDate = planItem.dueDate.format(dateFormat);
-    console.log(planItem.unitIds);
     planItem.unitIds = [planItem.unitIds.pop()];
     if (id) {
       Meteor.call('planItem.update', {planItemId:id, planItem}, (err, res) => {
@@ -110,9 +109,8 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
       dimension:guidance.selectedItem.dimensions[0],
       unitIds:  guidance.selectedItem.unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] )[0], 
     });
-    unitIds = guidance.selectedItem.unitIds
+    // unitIds = guidance.selectedItem.unitIds
   }
-
   return (
     <div className="plan-item-edit">
       <Button onClick={()=>setGuidance({visible:true, selectedItem: null})} className="my-2 w-100" style={{color:"#2AAAE1"}}><p> <strong>Use Guidance</strong> </p></Button>

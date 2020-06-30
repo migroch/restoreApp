@@ -191,7 +191,7 @@ units.helpers({
     },
 });
 
-// indexing for search bar
+// indexing for search bar in planview
 const PlansIndex = new Index({
     'collection': plans,
     'fields': ['title', 'scenario'],
@@ -208,6 +208,7 @@ const PlansIndex = new Index({
         }),
     }),
     'permission': () => true,
+    defaultSearchOptions: { limit: 0 },
 });
 const PlanItemsIndex = new Index({
     'collection': planitems,
@@ -222,7 +223,25 @@ const PlanItemsIndex = new Index({
         }),
     }),
     'permission': () => true,
+    defaultSearchOptions: { limit: 0 },
 });
 
-export { plans, planitems, guidanceitems, categories, subcategories, units, mapnodes, menuitems, schools, PlansIndex, PlanItemsIndex };
+// indexing for search bar in guidanceItem
+const GuidanceItemsIndex = new Index({
+    'collection': guidanceitems,
+    'fields': ['item.text'],
+    'engine': new MongoDBEngine({
+        'selector': function (searchObject, options, aggregation) {
+            const selector = this.defaultConfiguration().selector(searchObject, options, aggregation);
+            return selector;
+        },
+        'fields': (searchObject, options) => ({
+            '_id': 1,
+        }),
+    }),
+    'permission': () => true,
+    defaultSearchOptions: { limit: 0 },
+});
+
+export { plans, planitems, guidanceitems, categories, subcategories, units, mapnodes, menuitems, schools, PlansIndex, PlanItemsIndex, GuidanceItemsIndex };
 

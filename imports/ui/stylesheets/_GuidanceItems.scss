@@ -5,3 +5,18 @@
   overflow:auto;
   max-height: 4em;
 }
+@keyframes example {
+  0%   {right:-100px;}
+  100% {right:10px;}
+}
+.new-plan {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  border-radius: 3px;
+  border: 1px solid;
+  padding: 5px;
+  cursor: pointer;
+  animation-name: example;
+  animation-duration: 0.2s;
+}

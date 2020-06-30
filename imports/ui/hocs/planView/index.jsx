@@ -238,12 +238,15 @@ PlansListView = withTracker(({searchquery, searchbar}) => {
 
   //-------1.search with searchbar----------
   // search in planitems (item, dimension)
-  const planItem_ids = PlanItemsIndex.search(searchbar).fetch().map(pi=>pi.__originalId)
+  let planIdswithSearchBar
+  if (searchbar != '') {
+    const planItem_ids = PlanItemsIndex.search(searchbar).fetch().map(pi=>pi.__originalId)
     // get plan_ids from planitem_ids
     const plan_ids_index_1 = planItem_ids.map(pi_id=>plans.find({planItemIds: { $elemMatch: {$eq:pi_id}} }, { sort: {lastedittime: -1}}).fetch().map(p=>p._id)).flat()
     // search in plan (title, scenario)
     const plan_ids_index_2 = PlansIndex.search(searchbar).fetch().map(p=>p.__originalId)
-    const planIdswithSearchBar = uniq([...plan_ids_index_1, ...plan_ids_index_2])
+    planIdswithSearchBar = uniq([...plan_ids_index_1, ...plan_ids_index_2])
+  }
 
     //-------2.search with select filter--------
   const plansQuery_Clone = plansQueryWithFilter.clone(searchquery);
@@ -287,8 +290,13 @@ PlansListView = withTracker(({searchquery, searchbar}) => {
     })
     // filtered plan ids
     const planIdswithFilter = plans_data.map(plan=>plan._id)
-    //------3.intersection of two result from filter and searchbar-------
-  const plan_ids = intersection( planIdswithFilter, planIdswithSearchBar)
+  //------3.intersection of two result from filter and searchbar-------
+  let plan_ids
+  if (searchbar != '') {
+    plan_ids = intersection( planIdswithFilter, planIdswithSearchBar)  
+  } else {
+    plan_ids = planIdswithFilter
+  }
   return {
     plan_ids,
     isLoading: false

@@ -1,12 +1,16 @@
 import React, { Component, useState } from "react";
 import { withTracker } from "meteor/react-meteor-data";
+import { Meteor } from 'meteor/meteor';
 import Schemas from '../../api/schemas.js'
 import { guidanceitems, units, subcategories, categories } from "../../api/collections.js";
 import InfiniteScroll from 'react-infinite-scroller';
 import { Breadcrumb, Tag, Collapse, List} from 'antd/dist/antd.min.js';
 import { guidanceitemsWithFilter } from '../../api/queries'
+import { GuidanceItemsIndex } from '../../api/collections';
 import FilterForGuidance from '../reusable/FilterForGuidance';
+import SearchWrapper from '../reusable/SearchWrapper';
 import ShowMoreText from 'react-show-more-text';
+import { intersection } from 'lodash'
 const { Panel } = Collapse;
 
 const Dimensions = Schemas.dimensions;
@@ -21,14 +25,38 @@ class GuidanceItems extends Component {
       loadedData: [],
       loadingMore: false,
       currentPage: 0,
-      ItemsPerPage: 8,
+      ItemsPerPage: 10,
       hasMore: true,
       selectedItem: null
     };
     // this.scrollParentRef = React.createRef();
     this.loadMore = this.loadMore.bind(this);
   }
+  createNewPlan = (planItem) => {
 
+    const newPlanItem = {
+      item: planItem.item,
+      dimension: planItem.dimensions[0],
+      unitIds: planItem.unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] )[0], 
+      ownerId: Meteor.users.find({}).fetch()[0]._id, // TODO: used the random user, but should be changed, extracted after authentication implementation.
+      assignedToIds: []
+    }
+
+    Meteor.call('planItem.create', newPlanItem, (err, res) => {
+      if (err) {
+       alert(err);
+      } else {
+        const newplan = Meteor.call('plans.add', {title: "NEW PLAN", scenario:'High Restrictions', planItemIds:[res]}, (err, res) => {
+          if (err) {
+            alert(err);
+          } else {
+            
+            this.props.history.push("/plan-viewer")
+          }
+        })        
+      }
+    })
+  }
   makeGuidanceItems() {
     return(
       <List
@@ -41,8 +69,12 @@ class GuidanceItems extends Component {
             this.setState({selectedItem:gitem._id})
           }}
         >
-	  <div className="container-fluid" >
-	    
+
+	  <div className="container-fluid" style={{position: "relative"}}>
+      {
+        !this.props.isComponent && (gitem._id == this.state.selectedItem) && 
+        <div className="new-plan" onClick={()=>this.createNewPlan(gitem)}>Start a new plan</div>
+      }  	    
 	    <div className="row">
 	      <div className="col-md-auto">
 		{
@@ -195,7 +227,7 @@ class GuidanceItems extends Component {
   }
 }
 
-GuidanceItems = withTracker(({searchquery}) => {
+GuidanceItems = withTracker(({searchquery, searchbar}) => {
   //const user = Meteor.user();
   const handles = [
     Meteor.subscribe("guidanceitems"),
@@ -210,9 +242,13 @@ GuidanceItems = withTracker(({searchquery}) => {
       isLoading: true
     };
   }
+    //-------1.search with searchbar----------
+  // search in planitems (item, dimension)
+  let guidanceIdswithSearchBar
+  if (searchbar != '')
+    guidanceIdswithSearchBar = GuidanceItemsIndex.search(searchbar).fetch().map(gi=>gi.__originalId)
 
-    //-------search with select filter--------
-  // console.log('filterquery: ', searchquery)
+    //-------2.search with select filter--------
   const guidanceQuery_Clone = guidanceitemsWithFilter.clone(searchquery);
   guidanceQuery_Clone.subscribe();
   let guidance_data = guidanceQuery_Clone.fetch();
@@ -240,7 +276,14 @@ GuidanceItems = withTracker(({searchquery}) => {
     
   // filtered guidance ids
   const guidanceIdswithFilter = guidance_data.map(item=>item._id)
-  const data = guidanceitems.find({_id:{$in:guidanceIdswithFilter}}).fetch()
+
+  //------3.intersection of two result from filter and searchbar-------
+  let guidanceIds_result
+  if (searchbar != '')
+    guidanceIds_result = intersection( guidanceIdswithSearchBar, guidanceIdswithFilter)
+  else
+    guidanceIds_result = guidanceIdswithFilter
+  const data = guidanceitems.find({_id:{$in:guidanceIds_result}}).fetch()
   return {
     data,
     isLoading: false
@@ -248,15 +291,18 @@ GuidanceItems = withTracker(({searchquery}) => {
 })(GuidanceItems);
 
 // Guidance Viewer Container
-GuidanceView = ({isComponent, onSelect}) => {
+GuidanceView = ({isComponent, onSelect, history}) => {
   
   const [searchQuery, setSearchQuery] = useState({});
-  const setQuery = (query) => {setSearchQuery(query); setKey(Date.now())}
+  const onChangeQuery = (query) => {setSearchQuery(query); setKey(Date.now())}
+  const onChangeSearchbar = (query) => {setSearchbar(query); setKey(Date.now())}
   const [key, setKey] = useState(Date.now())
+  const [searchbar, setSearchbar] = useState('');
   return (
     <div className="plan-view container-fluid" style={{height:"100%"}}>
-      <FilterForGuidance onChangeQuery={setQuery}/>
-      <GuidanceItems searchquery={searchQuery} onSelect={onSelect} isComponent={isComponent} key={key}/>
+      <SearchWrapper onChangeSearchbar={onChangeSearchbar}/>
+      <FilterForGuidance onChangeQuery={onChangeQuery}/>
+      <GuidanceItems history={history} searchquery={searchQuery} searchbar={searchbar} onSelect={onSelect} isComponent={isComponent} key={key}/>
     </div>
   )
 }

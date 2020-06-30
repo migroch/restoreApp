@@ -30,13 +30,17 @@ Schemas.plans = new SimpleSchema({
 // Plan Items
 Schemas.planitems = new SimpleSchema({
     unitIds: [SimpleSchema.oneOf(String, SimpleSchema.Integer)],  // unit or subcategory IDs
-    ownerId: SimpleSchema.oneOf(String, SimpleSchema.Integer),
+    ownerId: {
+        type: SimpleSchema.oneOf(String, SimpleSchema.Integer),
+        optional: false
+    },
     assignedToIds:  { type: Array, optional: true},
     'assignedToIds.$': SimpleSchema.oneOf(String, SimpleSchema.Integer),
     dueDate: {type:Date, optional: true},
     dimension: {
                     type: String,
-                    allowedValues: Schemas.dimensions
+                    allowedValues: Schemas.dimensions,
+                    optional: true ////when create from guidanceItems
     },
     item: Object,
     'item.text': String,

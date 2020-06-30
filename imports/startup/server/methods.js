@@ -73,7 +73,15 @@ Meteor.methods({
 	check(planItemId, Match.OneOf(String, Mongo.ObjectID));
 	planItem.lastedittime = Date.now();
 	planitems.update(planItemId, { $set: planItem });
-    },
+		},
+		//just create new planitem
+		'planItem.create'(planItem) {
+	planItem.createdtime = Date.now();
+	planItem.lastedittime = Date.now();
+	const newPlanItem = planitems.insert(planItem);
+	return newPlanItem;
+		},
+		//when add new planitem to Plan
     'planItem.add'({planId, planItem}) {
 	check(planId, Match.OneOf(String, Mongo.ObjectID));
 	planItem.createdtime = Date.now();
