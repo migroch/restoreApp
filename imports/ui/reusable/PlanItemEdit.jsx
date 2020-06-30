@@ -67,9 +67,9 @@ const empty_data = {
 
 PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, planId, users }) => {
   if (isLoading) return null
-  let guidanceItem = null
   let { item, dimension, assignedToIds, dueDate, unitIds, ownerId } = (id) ? data : empty_data
   const [guidance, setGuidance] = useState({visible: false, selectedItem: null})
+  const [guidanceItem, setGuidanceItem] = useState(null) // selected guidance item but not confirmed
   const onFinish = planItem => {
     planItem.dueDate = planItem.dueDate.format(dateFormat);
     planItem.unitIds = [planItem.unitIds.pop()];
@@ -122,10 +122,11 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
 	  okText ="Use Selected Item"
 	  //cancetText="Go Back"
           onOk={this.handleOk}
+          okButtonProps={{ disabled: !guidanceItem }}
           onCancel={this.handleCancel}
           // confirmLoading={confirmLoading}
         >
-            <GuidanceView isComponent onSelect={g=>guidanceItem = g}/>
+            <GuidanceView isComponent onSelect={g=>setGuidanceItem(g)}/>
         </Modal>      
       <Form
         // {...layout}
