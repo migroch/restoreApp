@@ -72,7 +72,7 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
   const [guidanceItem, setGuidanceItem] = useState(null) ; // selected guidance item but not confirmed
   const [itemHtml, setItemHtml]  = useState(item.text) ;
 
-    const onFinish = planItem => {
+    const submit = planItem => {
     planItem.dueDate = planItem.dueDate.format(dateFormat);
     planItem.unitIds = [planItem.unitIds.pop()];
     planItem.ownerId = Meteor.users.findOne({'profile.name':'dummy1'});
@@ -100,6 +100,7 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
 
   handleOk = e => {
     setGuidance({visible: false, selectedItem: guidanceItem})
+    setItemHtml(guidanceItem.item.text)
   };
 
   handleCancel = e => {
@@ -113,7 +114,7 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
       dimension:guidance.selectedItem.dimensions[0],
       unitIds:  guidance.selectedItem.unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] )[0], 
     });
-    if (itemHtml !== guidance.selectedItem.item) setItemHtml(guidance.selectedItem.item);
+    // if (itemHtml !== guidance.selectedItem.item.text) setItemHtml(guidance.selectedItem.item.text);
     // unitIds = guidance.selectedItem.unitIds
   }
 
@@ -122,6 +123,7 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
       unitIds: unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] )[0], 
       assignedToIds, 
       dimension, 
+      item,
     }
     if (dueDate) values.dueDate = moment(dueDate, dateFormat) ;
     return values;
@@ -154,7 +156,7 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
         name="Plan Item Edit"
         form={form}
         initialValues={initialValues()}
-        onFinish={onFinish}
+        onFinish={submit}
         // onFinishFailed={onFinishFailed}
       >
 
@@ -239,10 +241,11 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
 
 	</Row>
       </Form>
-        
-
-      <Editor setItemHtml={setItemHtml} html={itemHtml} form={form}/>
-      
+	    {/* <Form.Item
+        name={["item", "text"]}
+      > */}
+      <Editor onChange={setItemHtml} value={itemHtml} submit={()=>form.submit()}/>
+      {/* </Form.Item> */}
       <Button type="primary" onClick={form.submit}  style={{backgroundColor: '#2176BB' }}>
         Save Plan Item
       </Button>

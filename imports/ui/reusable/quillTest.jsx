@@ -38,15 +38,22 @@ const CustomToolbar = () => (
 class Editor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { editorHtml: this.props.html };
+    this.state = { value: this.props.value };
     this.handleChange = this.handleChange.bind(this);
   }
 
-  handleChange(html) {
-    this.setState({ editorHtml: html });
-    this.props.setItemHtml(html);
+  handleChange(value) {
+    this.props.onChange(value);
   }
-
+  onKeyUp = e => {
+    if (e.key === 'Enter' && e.shiftKey) {   
+      // console.log("Shit Enter Shit Enter")
+    } else if (e.key === 'Enter' && !e.shiftKey) {   
+      e.stopPropagation();
+      e.preventDefault() 
+      this.props.submit();
+    }
+  }
   render() {
     return (
       <div className="text-editor my-1">
@@ -55,10 +62,13 @@ class Editor extends React.Component {
           placeholder={this.props.placeholder}
           modules={Editor.modules}
           formats={Editor.formats}
+          value={this.props.value}
           theme={"snow"} // pass false to use minimal theme
+          // onKeyUp={this.onKeyUp}
+          onKeyDown={this.onKeyUp}
         >
-	</ReactQuill>  
-	<CustomToolbar />
+      </ReactQuill>  
+      <CustomToolbar />
       </div>
     );
   }
