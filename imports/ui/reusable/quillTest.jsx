@@ -13,10 +13,16 @@ const CustomToolbar = () => (
     <select className="ql-header" defaultValue={""} onChange={e => e.persist()}>
       <option value="1" />
       <option value="2" />
+      <option value="3" />
       <option selected />
     </select>
     <button className="ql-bold" />
     <button className="ql-italic" />
+    <button className="ql-underline" />
+    <button className="ql-link" />
+    <button type="button" class="ql-list" value="ordered"/>
+    <button type="button" class="ql-list" value="bullet"/>
+    <button type="button" class="ql-clean"/>
     <select className="ql-color">
       <option value="red" />
       <option value="green" />
