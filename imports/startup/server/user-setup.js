@@ -1,5 +1,6 @@
 // user-setup.js
 // Initialize custom user fields and roles
+
 import roles_data from '../../data/roles_data.js';
 
 Accounts.onCreateUser((options, user)=>{

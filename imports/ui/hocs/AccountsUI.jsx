@@ -3,16 +3,22 @@ import ReactDOM from 'react-dom';
 import { Template } from 'meteor/templating';
 import { Blaze } from 'meteor/blaze';
 
+import {Google} from 'styled-icons/fa-brands/Google';
+
+
 const logoStyle = {
   width:'8em',
   height: 'auto'
 }
+
+
 
 export default class AccountsUIWrapper extends Component {
   componentDidMount() {
     // Use Meteor Blaze to render login form
     this.view = Blaze.render(Template.atForm,
 			     ReactDOM.findDOMNode(this.refs.container));
+    //Template['override-atSocial'].replaces('atSocial');
   }
 
   componentWillUnmount() {
@@ -22,6 +28,7 @@ export default class AccountsUIWrapper extends Component {
   render() {
     // Render a modal with the placeholder container that will be filled with the Blaze atForm template
     return(
+      <>
       <div className="modal fade" id="loginModal" tabIndex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
 	<div className="modal-dialog" role="document">
 	  <div className="modal-content">
@@ -32,7 +39,7 @@ export default class AccountsUIWrapper extends Component {
               </button>
 	    </div>
 	    <div className="d-flex justify-content-center">
-	      <img className="rounded-circle mt-4" style={logoStyle} alt="Santa Cruz COE RESTORE Logo" src="Restore_logo.png"/>
+	      <img className="rounded-circle mt-4" style={logoStyle} alt="Santa Cruz COE RESTORE Logo" src="Restore_logoOnly.png"/>
 	    </div>
 	    <div className="modal-body">
               <span ref="container" />
@@ -40,6 +47,11 @@ export default class AccountsUIWrapper extends Component {
 	  </div>
 	</div>
       </div>
+
+      {/* <template name="override-atSocial">
+      <button type="button" className="btn btn-light" id="at-google">Sign In/Register with <span><Google /></span></button>
+      </template> */}
+      </>
       );
   }
 }
