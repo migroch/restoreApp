@@ -1,6 +1,5 @@
 import React from 'react'
 import ReactQuill from 'react-quill/dist/react-quill.min.js';
-const CustomButton = () => <span className="octicon octicon-star" />;
 
 function insertStar() {
   const cursorPosition = this.quill.getSelection().index;
@@ -32,9 +31,6 @@ const CustomToolbar = () => (
       <option value="#d0d1d2" />
       <option selected />
     </select>
-    <button className="ql-insertStar">
-      <CustomButton />
-    </button>
     <div>
      
     </div>
@@ -44,19 +40,18 @@ const CustomToolbar = () => (
 class Editor extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { value: this.props.value };
+    this.state = { 
+      value: this.props.value,
+      isEnterKey: false
+     };
     this.handleChange = this.handleChange.bind(this);
   }
 
-  handleChange(value) {
+  handleChange(value, e) {
     this.props.onChange(value);
   }
-  onKeyUp = e => {
-    if (e.key === 'Enter' && e.shiftKey) {   
-      // console.log("Shit Enter Shit Enter")
-    } else if (e.key === 'Enter' && !e.shiftKey) {   
-      e.stopPropagation();
-      e.preventDefault() 
+  onKeyDown = e => {
+    if (e.key === 'Enter' && !e.shiftKey) {   
       this.props.submit();
     }
   }
@@ -70,8 +65,7 @@ class Editor extends React.Component {
           formats={Editor.formats}
           value={this.props.value}
           theme={"snow"} // pass false to use minimal theme
-          // onKeyUp={this.onKeyUp}
-          onKeyDown={this.onKeyUp}
+          onKeyDown={this.onKeyDown}
         >
       </ReactQuill>  
       <CustomToolbar />
@@ -79,12 +73,35 @@ class Editor extends React.Component {
     );
   }
 }
+// Editor.keyboard.addBinding({ key: Keyboard.keys.ENTER }, {
+//   empty: true,    // implies collapsed: true and offset: 0
+//   format: ['list']
+// }, function(range, context) {
+//   this.quill.format('list', false);
+// });
 
 Editor.modules = {
   toolbar: {
     container: "#toolbar",
     handlers: {
       insertStar: insertStar
+    }
+  },
+  keyboard: {
+    bindings: {
+      handleEnter: {
+        key: 13,
+        handler: function (range, context) {
+
+        }
+      },
+      handleShiftEnter: {
+        key: 13,
+        shiftKey: true,
+        handler: function (range, context) {
+          this.quill.insertText(range.index, '\n');
+        }
+      },
     }
   },
   clipboard: {
