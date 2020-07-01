@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { Meteor } from 'meteor/meteor';
 import moment from 'moment';
-import { Select, DatePicker, Cascader, TreeSelect, Form, Button, Modal } from 'antd/dist/antd.min.js';
+import { Select, DatePicker, Cascader, TreeSelect, Form, Button, Modal, Row, Col } from 'antd/dist/antd.min.js';
 import { withTracker } from 'meteor/react-meteor-data';
 import  Schemas from '../../api/schemas';
 import { plans, planitems, categories, subcategories, units } from '../../api/collections';
@@ -59,20 +59,24 @@ const empty_data = {
   item: {
     text: ''
   },
-  ownerId: '',
-  dueDate: new Date(),
+  ownerId: undefined,
+  dueDate: undefined,
   assignedToIds: [],
-  dimension: ''
+  dimension: undefined
 }
 
 PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, planId, users }) => {
-  if (isLoading) return null
-  let { item, dimension, assignedToIds, dueDate, unitIds, ownerId } = (id) ? data : empty_data
-  const [guidance, setGuidance] = useState({visible: false, selectedItem: null})
-  const [guidanceItem, setGuidanceItem] = useState(null) // selected guidance item but not confirmed
-  const onFinish = planItem => {
+  if (isLoading) return null;
+  let { item, dimension, assignedToIds, dueDate, unitIds, ownerId } = (id) ? data : empty_data ;
+  const [guidance, setGuidance] = useState({visible: false, selectedItem: null}) ;
+  const [guidanceItem, setGuidanceItem] = useState(null) ; // selected guidance item but not confirmed
+  const [itemHtml, setItemHtml]  = useState(item.text) ;
+
+    const onFinish = planItem => {
     planItem.dueDate = planItem.dueDate.format(dateFormat);
     planItem.unitIds = [planItem.unitIds.pop()];
+    planItem.ownerId = Meteor.users.findOne({'profile.name':'dummy1'});
+    planItem.item = {text: itemHtml} ;
     if (id) {
       Meteor.call('planItem.update', {planItemId:id, planItem}, (err, res) => {
         if (err) {
@@ -103,17 +107,31 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
   };
   
   const [form] = Form.useForm();
+  
   if (!!guidance.selectedItem){
     form.setFieldsValue({
-      item:guidance.selectedItem.item,
       dimension:guidance.selectedItem.dimensions[0],
       unitIds:  guidance.selectedItem.unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] )[0], 
     });
+    if (itemHtml !== guidance.selectedItem.item) setItemHtml(guidance.selectedItem.item);
     // unitIds = guidance.selectedItem.unitIds
   }
+
+  initialValues = ()=>{
+    let values = { 
+      unitIds: unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] )[0], 
+      assignedToIds, 
+      dimension, 
+    }
+    if (dueDate) values.dueDate = moment(dueDate, dateFormat) ;
+    return values;
+  }
+  
   return (
     <div className="plan-item-edit">
+       
       <Button onClick={()=>setGuidance({visible:true, selectedItem: null})} className="my-2 w-100" style={{color:"#2AAAE1"}}><p> <strong>Use Guidance</strong> </p></Button>
+      
         <Modal
           title="Guidance Items"
           visible={guidance.visible}
@@ -127,106 +145,111 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
           // confirmLoading={confirmLoading}
         >
             <GuidanceView isComponent onSelect={g=>setGuidanceItem(g)}/>
-        </Modal>      
-      <Form
-        // {...layout}
+        </Modal>
+
+	
+      <Form 
+          // {...layout}
+	//layout="inline"  
         name="Plan Item Edit"
         form={form}
-        initialValues={{ 
-            unitIds:unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] )[0], 
-            dueDate:moment(dueDate, dateFormat), 
-            assignedToIds, 
-            item, 
-            dimension, 
-            ownerId 
-      }}
+        initialValues={initialValues()}
         onFinish={onFinish}
         // onFinishFailed={onFinishFailed}
       >
-        <Form.Item
-          label="Map Location"
-          name="unitIds"
-          rules={[{ required: true, message: 'Please add a Map Location!' }]}
-        >
-	  <Cascader
-	      showSearch={{	filter: (input, option) => option.map(o =>o.label).filter( o => o.toLowerCase().indexOf(input.toLowerCase()) >= 0 ).length }}
-	      style={{ width: '100%' }}
-	      placeholder="Select Map Location"
-	      displayRender={label => label.join(' > ')}
-	      changeOnSelect={false}
-	      expandTrigger="hover"
-	      options={mapOptions()}
-	      disabled={disabled}
-	      onChange={(values) => { }}
-	  />
-        </Form.Item>        
-        <Form.Item
-          label="Dimension"
-          name="dimension"
-          rules={[{ required: true, message: 'Please input Dimension!' }]}
-        >
-          <Select disabled={disabled}>
-            { dimensions.map((item, index)=><Option key={index+item} value={item}>{item}</Option>) }
-          </Select>   
-        </Form.Item>  
-        <Form.Item
-          label="Owner"
-          name="ownerId"
-          rules={[{ required: true, message: 'Please input Owner!' }]}
-        >
-          <Select disabled={disabled}>
-            { users.map((user, index)=><Option key={"owner"+user.id} value={user.id}>{user.name}</Option>) }
-          </Select>   
-        </Form.Item>  
-        <Form.Item
-          label="Assigned To"
-          name="assignedToIds"
-          rules={[{ required: true, message: 'Please input AssignedTo!' }]}
-        >
-          <Select
-            mode="tags"
-            disabled={disabled}
-            // placeholder="Please select"
-            // onChange={handleChange}
-            style={{ width: '30%' }}
-            // listHeight={30}
-          >
-            {/* {children} */}
-            { users.map((user, index)=><Option key={"assigned"+user.id} value={user.id}>{user.name}</Option>) }
-          </Select>   
-        </Form.Item>  
- 
-        <Form.Item
-          label="Due Date"
-          name="dueDate"
-          className="date-input"
-          rules= {[
-            {
-              type: 'object',
-              required: false,
-              message: 'Please input publishDate',
-              whitespace: true,
-            },
-          ]}
-        >
-          <DatePicker disabled={disabled}  format={dateFormat} />
-        </Form.Item>     
-        <Form.Item
-          label=""
-          name={["item", "text"]}
-        >
-          <ReactQuill />
-          {/* <Editor /> */}
-        </Form.Item>      
-        <Form.Item style={{display:disabled?"none":"block"}}>
-          <Button type="primary" htmlType="submit"  style={{backgroundColor: '#2176BB' }}>
-            Save Plan Item
-          </Button>
-          <Button type="cancel" style={{marginLeft: 50}} onClick={ id ? disableEditMode : finishAddItem }>
-            Cancel
-          </Button>        
-        </Form.Item>        
-      </Form>      
+
+	<Row gutter={[8,0]} align="middle">
+
+	  <Col span={10}>
+	    <Form.Item
+              //label="Map Location"
+	      placeholder="Map Location"
+              name="unitIds"
+              rules={[{ required: true, message: 'Please add a Map Location!' }]}
+            >
+	      <Cascader
+		  showSearch={{	filter: (input, option) => option.map(o =>o.label).filter( o => o.toLowerCase().indexOf(input.toLowerCase()) >= 0 ).length }}
+		  style={{ width: '100%' }}
+		  placeholder="Map Location"
+		  displayRender={label => label.join(' > ')}
+		  changeOnSelect={false}
+		  expandTrigger="hover"
+		  options={mapOptions()}
+		  disabled={disabled}
+		  onChange={(values) => { }}
+	      />
+            </Form.Item>
+	  </Col>
+
+	  <Col span={5}>
+	    <Form.Item
+                //label="Dimension"
+		placeholder="Dimension"   
+		name="dimension"
+		rules={[{ required: true, message: 'Please add a Dimension!' }]}
+            >
+              <Select
+		  disabled={disabled}
+		  placeholder="Dimension" 
+	      >
+		{ dimensions.map((d, index)=><Option key={index+d} value={d}>{d}</Option>) }
+              </Select>   
+            </Form.Item>
+	  </Col>
+
+	  <Col span={5}>
+	    <Form.Item
+            //label="Assigned To"
+	      placeholder="Assigned to"
+              name="assignedToIds"
+              rules={[{ required: true, message: 'Please assign to at least one user!' }]}
+            >
+              <Select
+		  mode="tags"
+		  disabled={disabled}
+		  placeholder="Assigned to"
+		  // onChange={handleChange}
+		  //style={{ width: '30%' }}
+		  // listHeight={30}
+              >
+		{/* {children} */}
+		{ users.map((user, index)=><Option key={"assigned"+user.id} value={user.id}>{user.name}</Option>) }
+              </Select>   
+            </Form.Item>  
+	  </Col>
+
+	  <Col span={4}>
+	    <Form.Item
+            //label="Due Date"
+              name="dueDate"
+	      placeholder="Due date"
+              //className="date-input"
+              rules= {[
+		{
+		  type: 'object',
+		  required: false,
+		  message: 'Please enter a Due Date',
+		  whitespace: true,
+		},
+              ]}
+            >
+              <DatePicker disabled={disabled}  format={dateFormat} />
+            </Form.Item>       
+  	  </Col>
+
+	</Row>
+      </Form>
+        
+
+      <Editor setItemHtml={setItemHtml} html={itemHtml} form={form}/>
+      
+      <Button type="primary" onClick={form.submit}  style={{backgroundColor: '#2176BB' }}>
+        Save Plan Item
+      </Button>
+      <Button type="cancel" style={{marginLeft: 50}} onClick={ id ? disableEditMode : finishAddItem }>
+        Cancel
+      </Button>        
+            
     </div>
   )
 }
