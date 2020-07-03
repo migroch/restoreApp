@@ -7,6 +7,7 @@ Accounts.onCreateUser((options, user)=>{
     let email;
     let verified_email;
     user._id = Random.id();
+    user.color = '#'+Random.hexString(6);
 
     // set email and verified_email to top fields 
     if (user.services.google) {

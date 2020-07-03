@@ -12,7 +12,7 @@ import {User} from 'styled-icons/feather/User';
 import {Menu} from 'styled-icons/material/Menu';
 import AccountsUIWrapper from './AccountsUI.jsx';
 import { Link, withRouter } from 'react-router-dom';
-
+import { Avatar } from  'antd/dist/antd.min.js';;
 
 const styles = {
   logoStyle:{
@@ -182,14 +182,13 @@ class Nav extends Component {
       }
       let roles = Roles.getRolesForUser(user._id);
       if (roles.includes('All')) roles = ['All'];
-      let roleList = roles.map((role, index)=><li key={index} className="list-inline-item"  style={{"color":"#00a6a3"}}>{role}</li>)
+      let roleList = roles.map((role, index)=><li key={index} className="list-inline-item"  style={{"color":"#00a6a3"}}>{role}</li>);
+      console.log(user.color)
       return(	
 	     <li className="nav-item" style={{"width":"10em"}}>
 	  
-	       <a href="#" role="button" id="ProfileButton" className="nav-link dropdown-toggle text-center d-table align-middle p-0 m-0 ml-auto" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		 <User size="50"/>
-		 <br />
-		 {user.profile.name}
+	       <a href="#" role="button" id="ProfileButton" className="nav-link  text-center d-table align-middle p-0 m-0 ml-auto" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		 <Avatar size={35} style={{ backgroundColor: user.color }}>{user.profile.name.split(' ')[0][0]+user.profile.name.split(' ')[1][0]}</Avatar>
 	       </a>
 
 	       <div className="dropdown-menu dropdown-menu-right" aria-labelledby="ProfileButton">
