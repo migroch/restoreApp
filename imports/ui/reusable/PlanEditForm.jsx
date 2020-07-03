@@ -15,8 +15,7 @@ const tailLayout = {
 
 const scenarios = Schemas.scenarios;
 
-const PlanEditComponent = ({id, data, onCreatedPlan, changemode}) => {
-  
+const PlanEditComponent = ({id, data, onCreatedPlan, changemode, planItemOrders}) => {
   const history = useHistory()
     let { title, scenario, planItemIds } = data
   
@@ -34,15 +33,19 @@ const PlanEditComponent = ({id, data, onCreatedPlan, changemode}) => {
           });
        }
       })
-    else // in case of updating the plan
-      Meteor.call('plans.update', { id, title, scenario, planItemIds }, (err, res) => {
+    else // in case of updating the plan 
+    {
+      Meteor.call('plans.update', { id, title, scenario, planItemIds:planItemOrders }, (err, res) => {
         if (err) {
           alert(err);
         } else {
           // history.push('/plan-viewer')
+          changemode();
         }
       })
-      changemode();
+    }
+
+      
   };
   
   const [form] = Form.useForm();

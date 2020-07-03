@@ -52,10 +52,10 @@ Meteor.methods({
 	return newPlan;
     },
     'plans.update'(arg) {
-	const { id, title, scenario } = arg;
+	const { id, title, scenario, planItemIds } = arg;
 	const lastedittime =  Date.now();
 	check(id, Match.OneOf(String, Mongo.ObjectID));
-	plans.update(id, { $set: { scenario, title, lastedittime} });
+	plans.update(id, { $set: { scenario, title, planItemIds, lastedittime} });
     },
     'planItem.remove'({planId, planItemId}) {
 	check(planId, Match.OneOf(String, Mongo.ObjectID));

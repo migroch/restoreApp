@@ -73,12 +73,6 @@ class Editor extends React.Component {
     );
   }
 }
-// Editor.keyboard.addBinding({ key: Keyboard.keys.ENTER }, {
-//   empty: true,    // implies collapsed: true and offset: 0
-//   format: ['list']
-// }, function(range, context) {
-//   this.quill.format('list', false);
-// });
 
 Editor.modules = {
   toolbar: {
@@ -92,7 +86,7 @@ Editor.modules = {
       handleEnter: {
         key: 13,
         handler: function (range, context) {
-
+          // do nothing
         }
       },
       handleShiftEnter: {
