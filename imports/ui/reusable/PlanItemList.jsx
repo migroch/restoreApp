@@ -3,13 +3,11 @@ import PlanItemWrapper from './PlanItemWrapper'
 import PlanItemEdit from './PlanItemEdit'
 import { isEmpty } from 'lodash'
 import {  Tooltip, List } from 'antd/dist/antd.min.js';
-
 import styled from 'styled-components';
 import {PlusCircle} from 'styled-icons/feather/PlusCircle';
+import ListSortWithDrag from './ListAnimation';
 
-
-const PlanItemList =({data, editable, planId})=> {
-  //data = planItemIds
+const PlanItemList =({data, editable, planId, onChangePlanItemsOrder})=> {
   const [addPlanItemMode, setAddPlanItemMode] = useState(false)
   return (
     <>
@@ -26,17 +24,24 @@ const PlanItemList =({data, editable, planId})=> {
       </div>
     }
     {
+
+    !editable ? 
       <List
-	  dataSource={data}
-	  itemLayout='vertical'
-         //loading={data.length ? false : true}
-          locale={{emptyText: 'No Plan Items'}}
-	  renderItem={item => (
-              
-		<PlanItemWrapper id={item._id} planId={planId} editable={editable} key={"planItem"+item._id}/>
-              
-	    )}
-      />
+        dataSource={data}
+        itemLayout='vertical'
+        locale={{emptyText: 'No Plan Items'}}
+        renderItem={(item, index)=><PlanItemWrapper id={item} planId={planId} editable={editable} key={"planItem"+index}/> }
+      /> :
+      <div style={{position:"relative"}}>
+        <ListSortWithDrag
+          dragClassName="list-drag-selected"
+          appearAnim={{ animConfig: { marginTop: [5, 30], opacity: [1, 0] } }}
+          onChange={e=>onChangePlanItemsOrder(e.map(item=>item.key))}
+          key={data.length}
+        >
+        { data.map((item, index)=><div className="list-animation-list" key={item}><PlanItemWrapper id={item} planId={planId} editable={editable} /></div>)}
+        </ListSortWithDrag>
+      </div>
     }
    
     </>

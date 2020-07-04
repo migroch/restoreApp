@@ -63,14 +63,15 @@ export const plansQueryWithFilter = plans.createQuery({
     },
     lastedittime: 1,
     title: 1,
-    scenario: 1,
+		scenario: 1,
+		planItemIds: 1,
     planItems: {
 	$filter({filters, params}) {
 	    if (params.dimension)  filters.dimension = params.dimension;
 	},
-	$options: {
-	    sort: {lastedittime: -1}
-	},
+	// $options: {
+	//     sort: {order: -1}
+	// },
 	lastedittime: 1,
 	unitIds: 1,
 	ownerId: 1,

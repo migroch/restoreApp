@@ -8,7 +8,7 @@ import { plans, planitems, categories, subcategories, units } from '../../api/co
 import ReactQuill from 'react-quill/dist/react-quill.min.js';
 import 'react-quill/dist/quill.snow.css';
 import GuidanceView from '../hocs/GuidanceItems'
-import Editor from './quillTest'
+import Editor from './CustomQuill'
 const { Option } = Select;
 const { TreeNode } = TreeSelect;
 const dateFormat = 'YYYY/MM/DD';
@@ -75,7 +75,7 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
     const submit = planItem => {
     planItem.dueDate = planItem.dueDate.format(dateFormat);
     planItem.unitIds = [planItem.unitIds.pop()];
-    planItem.ownerId = Meteor.users.findOne({'profile.name':'dummy1'});
+    planItem.ownerId = Meteor.users.findOne({'profile.name':'dummy1'})._id;
     planItem.item = {text: itemHtml} ;
     if (id) {
       Meteor.call('planItem.update', {planItemId:id, planItem}, (err, res) => {

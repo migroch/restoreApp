@@ -45,6 +45,7 @@ Schemas.planitems = new SimpleSchema({
     item: Object,
     'item.text': String,
     'item.delta': {type: Object, optional: true},   // A Quill Delta Object https://quilljs.com/docs/delta/
+    order: {type: Number, optional: true},
     createdtime: Date,
     lastedittime: Date,
 });

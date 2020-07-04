@@ -49,7 +49,7 @@ let PlanWrapper = ({data, editPlanWithID}) => {
   const [isDetailVisible, setIsDetailVisible] = useState(false);
   const [ title, setTitle ] = useState(data.title);
   const [ scenario, setScenario ] = useState(data.scenario);
-  const { planItems, _id } = data;
+  const { planItems, _id, planItemIds } = data;
   const id = _id;
   const bgs = {
     "High Restrictions": "bg-danger",
@@ -182,7 +182,7 @@ let PlanWrapper = ({data, editPlanWithID}) => {
 	  </div>
 	</div>
 	<div className="plan-item-list" style={{display: isDetailVisible ? "block" : "none"}}>
-	  <PlanItemList data={planItems} editable={false}/>
+	  <PlanItemList data={planItemIds} editable={false}/>
 	</div>
       </div>
     </div>
