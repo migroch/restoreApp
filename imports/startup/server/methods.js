@@ -8,7 +8,8 @@ Meteor.methods({
     'updateEmailVerified'(user){
 	let email;
 	let verified_email;
-	if (user.services) {
+
+	if (user.services && user.services.google) {
 	    email = user.services.google.email;
 	    verified_email = user.services.google.verified_email;
 	} else {
