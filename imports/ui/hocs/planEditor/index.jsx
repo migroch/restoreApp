@@ -8,6 +8,7 @@ import PlanItemList from '../../reusable/PlanItemList';
 import { Select } from 'antd/dist/antd.min.js';
 import PlanEditForm from '../../reusable/PlanEditForm'
 import { plansQueryWithFilter } from '../../../api/queries'
+import { uniq, isEmpty, intersection } from 'lodash'
 import './index.scss'
 
 const { Option } = Select;
@@ -22,10 +23,20 @@ const PlanEdit = ({ isLoading, data, id, changemode, oncreatedPlan }) => {
   const history = useHistory();
   const { planItemIds } = data
   const [ planItemOrders, setPlanItemOrders] = useState(planItemIds)
+  onChangePlanItemsOrder = v => {
+    setPlanItemOrders(v)
+  }
+
   useEffect(() => {
     if (id != planId) setPlanId(id)
   }, [id])
 
+  useEffect(() => {
+    const { planItemIds } = data
+    if (planItemIds.length != planItemOrders.length) {
+      setPlanItemOrders(planItemIds)
+    }
+  }, [data])
   return (
     <>
       <div className="plan-edit container">
@@ -35,7 +46,7 @@ const PlanEdit = ({ isLoading, data, id, changemode, oncreatedPlan }) => {
           </div>
 {         
           planId &&<div className="plan-item-list">
-            <PlanItemList data={planItemIds} planId={planId} editable={isEditable} onChangePlanItemsOrder={v => setPlanItemOrders(v)}/>
+            <PlanItemList data={planItemIds} planId={planId} editable={isEditable} onChangePlanItemsOrder={onChangePlanItemsOrder}/>
           </div>
 }
       	</div>

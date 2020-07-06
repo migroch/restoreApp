@@ -1,7 +1,6 @@
 import React, {useState} from 'react'
 import PlanItemWrapper from './PlanItemWrapper'
 import PlanItemEdit from './PlanItemEdit'
-import { isEmpty } from 'lodash'
 import {  Tooltip, List } from 'antd/dist/antd.min.js';
 import styled from 'styled-components';
 import {PlusCircle} from 'styled-icons/feather/PlusCircle';
@@ -9,6 +8,11 @@ import ListSortWithDrag from './ListAnimation';
 
 const PlanItemList =({data, editable, planId, onChangePlanItemsOrder})=> {
   const [addPlanItemMode, setAddPlanItemMode] = useState(false)
+  onChangeOrder = e => {
+    const reOrdered = e.map(item=>item.key)
+    onChangePlanItemsOrder(reOrdered)
+  }
+  
   return (
     <>
     { editable && 
@@ -36,8 +40,7 @@ const PlanItemList =({data, editable, planId, onChangePlanItemsOrder})=> {
         <ListSortWithDrag
           dragClassName="list-drag-selected"
           appearAnim={{ animConfig: { marginTop: [5, 30], opacity: [1, 0] } }}
-          onChange={e=>onChangePlanItemsOrder(e.map(item=>item.key))}
-          key={data.length}
+          onChange={onChangeOrder}
         >
         { data.map((item, index)=><div className="list-animation-list" key={item}><PlanItemWrapper id={item} planId={planId} editable={editable} /></div>)}
         </ListSortWithDrag>

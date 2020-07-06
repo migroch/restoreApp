@@ -1,4 +1,5 @@
 import React, { Component, useState } from "react";
+import { Promise } from 'meteor/promise';
 import { withTracker } from "meteor/react-meteor-data";
 import { Meteor } from 'meteor/meteor';
 import Schemas from '../../api/schemas.js'
@@ -27,54 +28,52 @@ class GuidanceItems extends Component {
       currentPage: 0,
       ItemsPerPage: 10,
       hasMore: true,
-      selectedItem: null
+      selectedItems: [],
+      selectedItemIds: []
     };
     // this.scrollParentRef = React.createRef();
     this.loadMore = this.loadMore.bind(this);
   }
-  createNewPlan = (planItem) => {
-
-    const newPlanItem = {
-      item: planItem.item,
-      dimension: planItem.dimensions[0],
-      unitIds: planItem.unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] )[0], 
-      ownerId: Meteor.users.find({}).fetch()[0]._id, // TODO: used the random user, but should be changed, extracted after authentication implementation.
-      assignedToIds: []
-    }
-
-    Meteor.call('planItem.create', newPlanItem, (err, res) => {
-      if (err) {
-       alert(err);
-      } else {
-        const newplan = Meteor.call('plans.add', {title: "NEW PLAN", scenario:'High Restrictions', planItemIds:[res]}, (err, res) => {
-          if (err) {
-            alert(err);
-          } else {
-            
-            this.props.history.push("/plan-viewer")
-          }
-        })        
+  createNewPlan = async (planItems) => {
+ 
+    const newPlanItems = planItems.map(planItem => (
+      {
+        item: planItem.item,
+        dimension: planItem.dimensions[0],
+        unitIds: planItem.unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] )[0], 
+        ownerId: Meteor.users.find({}).fetch()[0]._id, // TODO: used the random user, but should be changed, extracted after authentication implementation.
+        assignedToIds: []
       }
-    })
-  }
+    ))
+    try {
+      const result = await Promise.all(
+        newPlanItems.map(async (planitem) => await Meteor.callPromise('planItem.create', planitem))
+      )
+      const newplan = await Meteor.callPromise('plans.add', {title: "NEW PLAN", scenario:'High Restrictions', planItemIds:result})
+      this.props.history.push("/plan-viewer")
+    } catch(err) {
+      alert(err);
+    }
+ }
   makeGuidanceItems() {
     return(
       <List
 	  dataSource={this.state.loadedData}
 	  locale={{emptyText: 'No Guidance Items Found'}}
 	  renderItem={gitem => (
-              <List.Item key={"gitem-"+gitem._id} className={(gitem._id == this.state.selectedItem) ? "border border-info ":"bg-white"}
+              <List.Item key={"gitem-"+gitem._id} className={this.state.selectedItemIds.includes(gitem._id) ? "border border-info ":"bg-white"}
           onClick={()=>{
             if (this.props.isComponent) this.props.onSelect(gitem);
-            this.setState({selectedItem:gitem._id})
+            console.log("ssss: ", gitem)
+            console.log("selectedItems: ", this.state.selectedItems)
+            this.setState({
+              selectedItems: [...this.state.selectedItems, gitem],
+              selectedItemIds: [...this.state.selectedItemIds, gitem._id]
+            })
           }}
         >
 
 	  <div className="container-fluid" style={{position: "relative"}}>
-      {
-        !this.props.isComponent && (gitem._id == this.state.selectedItem) && 
-        <div className="new-plan" onClick={()=>this.createNewPlan(gitem)}>Start a new plan</div>
-      }  	    
 	    <div className="row">
 	      <div className="col-md-auto">
 		{
@@ -176,7 +175,7 @@ class GuidanceItems extends Component {
   }
 
   render() {
-
+    const { selectedItems } = this.state
     if (this.props.isLoading) {
       return (
         <div className="d-flex justify-content-center text-primary">
@@ -221,6 +220,10 @@ class GuidanceItems extends Component {
       </InfiniteScroll>
 	  {/* </Panel>
           </Collapse> */}
+      {
+        (selectedItems.length) && 
+        <div className="new-plan" style={{zIndex: 9999}}onClick={()=>this.createNewPlan(selectedItems)}>Start a new plan with selected plan items</div>
+      }          
 	</div>
       );
     }

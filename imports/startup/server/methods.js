@@ -81,6 +81,12 @@ Meteor.methods({
 	const newPlanItem = planitems.insert(planItem);
 	return newPlanItem;
 		},
+		// 'planItems.create'(planItems) {
+		// 	planItem.createdtime = Date.now();
+		// 	planItem.lastedittime = Date.now();
+		// 	const newPlanItem = planitems.insert(planItem);
+		// 	return newPlanItem;
+		// 		},
 		//when add new planitem to Plan
     'planItem.add'({planId, planItem}) {
 	check(planId, Match.OneOf(String, Mongo.ObjectID));
