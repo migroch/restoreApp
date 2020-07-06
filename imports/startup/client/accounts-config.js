@@ -1,6 +1,8 @@
 //accounts-config.js
 // User accounts configuration
 
+import {Google} from 'styled-icons/fa-brands/Google';
+
 var mySubmitFunc = (error, state)=>{
     if (!error) {
 	if (state === "signIn") {
@@ -24,6 +26,13 @@ AccountsTemplates.addField({
     type: 'text',
     displayName: "Name",
     required: true
+});
+
+AccountsTemplates.addField({
+    _id: 'School',
+    type: 'text',
+    displayName: "School",
+    required: false
 });
 
 AccountsTemplates.configure({
@@ -75,7 +84,7 @@ AccountsTemplates.configure({
             signUp: "Register!"
 	},
 	socialIcons: {
-            //google: 'google_icon.svg'
+            google: "Restore_logoOnly.png"
         },
 	//socialSignUp: "Register",
 	title: {

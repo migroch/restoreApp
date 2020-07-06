@@ -2,8 +2,11 @@
 // Navigation bar component
 
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 import {menuitems} from '../../api/collections.js';
+import UserAvatar from "../reusable/UserAvatar";
+import Blaze from 'meteor/gadicc:blaze-react-component';
 
 import styled from 'styled-components'
 import {LogIn} from 'styled-icons/feather/LogIn';
@@ -12,11 +15,12 @@ import {User} from 'styled-icons/feather/User';
 import {Menu} from 'styled-icons/material/Menu';
 import AccountsUIWrapper from './AccountsUI.jsx';
 import { Link, withRouter } from 'react-router-dom';
+import { Tag } from  'antd/dist/antd.min.js';
 
 
 const styles = {
   logoStyle:{
-    width:'10em',
+    width:'7em',
     height: 'auto'
   },
   navToggler:{
@@ -64,7 +68,7 @@ class Nav extends Component {
       
       return (
 	<div>
-	  <nav className="navbar navbar-expand-lg navbar-light  fixed-top" style={{backgroundColor: '#F2F2F2'}}>
+	  <nav ref="navbar" className="navbar navbar-expand-lg navbar-light  fixed-top" style={{backgroundColor: '#F2F2F2'}}>
 	    {/*Logo & Brand*/}
 	    <a  className="navbar-brand" href="/">
 	      <img className=" " style={styles.logoStyle} alt="Santa Cruz COE RESTORE Logo" src="Restore_logo.png"/>
@@ -182,14 +186,12 @@ class Nav extends Component {
       }
       let roles = Roles.getRolesForUser(user._id);
       if (roles.includes('All')) roles = ['All'];
-      let roleList = roles.map((role, index)=><li key={index} className="list-inline-item"  style={{"color":"#00a6a3"}}>{role}</li>)
+      let roleList = roles.map((role, index)=><li key={index} className="list-inline-item"  style={{"color":"#00a6a3"}}><Tag>{role}</Tag></li>);
       return(	
 	     <li className="nav-item" style={{"width":"10em"}}>
 	  
-	       <a href="#" role="button" id="ProfileButton" className="nav-link dropdown-toggle text-center d-table align-middle p-0 m-0 ml-auto" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		 <User size="50"/>
-		 <br />
-		 {user.profile.name}
+	       <a href="#" role="button" id="ProfileButton" className="nav-link  text-center d-table align-middle p-0 m-0 ml-auto" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		 <UserAvatar user={user} shape="circle" size="small" />
 	       </a>
 
 	       <div className="dropdown-menu dropdown-menu-right" aria-labelledby="ProfileButton">
@@ -201,9 +203,9 @@ class Nav extends Component {
 		   <p className="m-0">Permissions:</p>
 		   <ul className="list-inline">{roleList}</ul>
 		 </div>
-		 <a href="" id="signIOButton" role="button" className="btn  px-2 text-center dropdown-item" onClick={AccountsTemplates.logout}>
-		   <span className="p-0 m-0">Sign Out </span>
-		   <LogOut size="30" />
+		 <a href="" id="signIOButton" role="button" className="btn  px-2 text-center text-primary dropdown-item" onClick={AccountsTemplates.logout}>
+		   <span className="p-0 m-0 text-primary">Sign Out </span>
+		   <LogOut size="30" className="text-primary"/>
 		 </a>
 	       </div>
 	       
@@ -213,8 +215,8 @@ class Nav extends Component {
       return(
 	<li className="nav-item">
 	  <button id="signIOButton" type="button" className="btn text-primary"  data-toggle="modal" data-target="#loginModal" onClick={this.handleSignInClick}>
-	    <LogIn size="40" />
-	    <p className="m-0">Sign In</p>
+	    <LogIn size="30" />
+	    <p className="m-0"><small>Sign In</small></p>
 	  </button>
 	</li>
       )
@@ -226,19 +228,19 @@ class Nav extends Component {
   }
   
   componentDidMount(){
-   
+    
+  }
+
+  update(){
+    let navheight = $(".navbar").outerHeight();
+    $("body").css("padding-top", navheight);
+    window.dispatchEvent(new Event('resize')); 
   }
 
   componentDidUpdate(){
     if (!this.props.loading){
-
-      let navheight = $(".navbar").outerHeight();
-      $("body").css("padding-top", navheight);
-      //this.activateScrollSpy();
-      window.dispatchEvent(new Event('resize')); 
-
+      setTimeout(this.update, 200);
       $('[data-toggle="tooltip"]').tooltip();
-      
     }
   }
 
