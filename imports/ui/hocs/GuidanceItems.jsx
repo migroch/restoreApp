@@ -64,12 +64,24 @@ class GuidanceItems extends Component {
               <List.Item key={"gitem-"+gitem._id} className={this.state.selectedItemIds.includes(gitem._id) ? "border border-info ":"bg-white"}
           onClick={()=>{
             if (this.props.isComponent) this.props.onSelect(gitem);
-            console.log("ssss: ", gitem)
-            console.log("selectedItems: ", this.state.selectedItems)
-            this.setState({
-              selectedItems: [...this.state.selectedItems, gitem],
-              selectedItemIds: [...this.state.selectedItemIds, gitem._id]
-            })
+            if (this.state.selectedItemIds.includes(gitem._id)) { // if it is already selected, it should be removed
+              var selectedItemIds_array = [...this.state.selectedItemIds];
+              var selectedItems_array = [...this.state.selectedItems];
+              var index = selectedItemIds_array.indexOf(gitem._id)
+              if (index !== -1) {
+                selectedItemIds_array.splice(index, 1);
+                selectedItems_array.splice(index, 1);
+                this.setState({
+                  selectedItemIds: selectedItemIds_array,
+                  selectedItems: selectedItems_array
+                });
+              }
+            } else {
+              this.setState({
+                selectedItems: [...this.state.selectedItems, gitem],
+                selectedItemIds: [...this.state.selectedItemIds, gitem._id]
+              })
+            }
           }}
         >
 
@@ -222,7 +234,7 @@ class GuidanceItems extends Component {
           </Collapse> */}
       {
         (selectedItems.length) && 
-        <div className="new-plan" style={{zIndex: 9999}}onClick={()=>this.createNewPlan(selectedItems)}>Start a new plan with selected plan items</div>
+        <div className="new-plan" onClick={()=>this.createNewPlan(selectedItems)}>Start a new plan with selected plan items</div>
       }          
 	</div>
       );

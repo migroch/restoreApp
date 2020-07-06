@@ -1,18 +1,31 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import PlanItemWrapper from './PlanItemWrapper'
 import PlanItemEdit from './PlanItemEdit'
-import {  Tooltip, List } from 'antd/dist/antd.min.js';
+import {  Tooltip, List, Modal } from 'antd/dist/antd.min.js';
 import styled from 'styled-components';
 import {PlusCircle} from 'styled-icons/feather/PlusCircle';
 import ListSortWithDrag from './ListAnimation';
+import PlanItemOrderModal from './PlanItemsOrderModal'
 
 const PlanItemList =({data, editable, planId, onChangePlanItemsOrder})=> {
   const [addPlanItemMode, setAddPlanItemMode] = useState(false)
-  onChangeOrder = e => {
-    const reOrdered = e.map(item=>item.key)
-    onChangePlanItemsOrder(reOrdered)
-  }
-  
+  const [isOrderMode, setIsOrderMode] = useState(false)
+  const[planItemOrders, setPlanItemOrders] = useState(data)
+  handleOk = e => {
+    onChangePlanItemsOrder(planitems)
+    setPlanItemOrders(planitems)
+    setIsOrderMode(false)
+  };
+
+  handleCancel = e => {
+    setIsOrderMode(false)
+  };
+  useEffect(() => {
+    if (planItemOrders.length != data.length) {
+      setPlanItemOrders(data)
+    }
+  }, [data])
+  let planitems = []
   return (
     <>
     { editable && 
@@ -28,25 +41,24 @@ const PlanItemList =({data, editable, planId, onChangePlanItemsOrder})=> {
       </div>
     }
     {
-
-    !editable ? 
       <List
-        dataSource={data}
+        dataSource={planItemOrders}
         itemLayout='vertical'
         locale={{emptyText: 'No Plan Items'}}
-        renderItem={(item, index)=><PlanItemWrapper id={item} planId={planId} editable={editable} key={"planItem"+index}/> }
-      /> :
-      <div style={{position:"relative"}}>
-        <ListSortWithDrag
-          dragClassName="list-drag-selected"
-          appearAnim={{ animConfig: { marginTop: [5, 30], opacity: [1, 0] } }}
-          onChange={onChangeOrder}
-        >
-        { data.map((item, index)=><div className="list-animation-list" key={item}><PlanItemWrapper id={item} planId={planId} editable={editable} /></div>)}
-        </ListSortWithDrag>
-      </div>
+        renderItem={(item, index)=><PlanItemWrapper id={item} planId={planId} editable={editable} key={"planItem"+index} setOrderMode={()=>setIsOrderMode(true)}/> }
+      /> 
     }
-   
+    <Modal
+      title="Change Order of Plan items"
+      visible={isOrderMode}
+      width="40%"
+      bodyStyle={{height:500}}
+      okText ="Ok"
+      onOk={this.handleOk}
+      onCancel={this.handleCancel}
+    >
+      <PlanItemOrderModal dataSource={data} onChange={v=>planitems=v}/>
+    </Modal>   
     </>
   )
 }

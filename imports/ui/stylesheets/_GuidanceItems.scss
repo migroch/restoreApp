@@ -10,13 +10,15 @@
   100% {right:10px;}
 }
 .new-plan {
-  position: absolute;
-  right: 10px;
-  top: 10px;
+  position: fixed;
+  right: 30px;
+  bottom: 30px;
   border-radius: 3px;
   border: 1px solid;
   padding: 5px;
   cursor: pointer;
   animation-name: example;
   animation-duration: 0.2s;
+  background-color: gray;
+  z-index: 9999;
 }

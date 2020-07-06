@@ -10,14 +10,15 @@ import styled from 'styled-components';
 import {Trash} from "styled-icons/feather/Trash";
 import {Edit3} from 'styled-icons/feather/Edit3';
 import {Copy} from 'styled-icons/feather/Copy';
+import {ArrowDownCircle} from 'styled-icons/feather/ArrowDownCircle'
 
 // even in editable case, it should be editable when the edit button clicked
 // delete, edit, more buttong added
 
-const PlanItemWrapper = ({id, editable, planId}) => {
+const PlanItemWrapper = ({id, editable, planId, setOrderMode}) => {
 
   const [editMode, setEditMode] = useState(false);
-
+  const [isHover, setIsHover] = useState(false)
   const removePlanItem = ()=> {
     Meteor.call('planItem.remove', {planId, planItemId:id}, (err, res) => {
       if (err) {
@@ -29,9 +30,12 @@ const PlanItemWrapper = ({id, editable, planId}) => {
   }
 
   const actions = () =>{
-    if(editable&&!editMode){
+    if(editable&&!editMode&&isHover){
       return(
 	[
+	  <Tooltip  placement="bottom" title="Order">
+	    <span className="icon mr-2 ml-2" onClick={setOrderMode}><ArrowDownCircle size="20" /> </span>
+	  </Tooltip >,    
 	  <Tooltip  placement="bottom" title="Edit">
 	    <span className="icon mr-2 ml-2" onClick={()=>setEditMode(editable)}><Edit3  size="20" /> </span>
 	  </Tooltip >,
@@ -56,7 +60,10 @@ const PlanItemWrapper = ({id, editable, planId}) => {
   }
   
   return (
-    <List.Item   actions={actions()} >
+    <List.Item   
+      onMouseEnter={()=>setIsHover(true)} 
+      onMouseLeave={()=>setIsHover(false)} 
+      actions={actions()} >
       {
         editMode ? <PlanItemEdit id={id} disableEditMode={()=>setEditMode(false)}/> : <PlanItemView id={id} disabled/>   
       }
