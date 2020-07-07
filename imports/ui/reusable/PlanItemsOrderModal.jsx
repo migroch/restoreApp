@@ -49,7 +49,7 @@ export default withTracker(({dataSource}) => {
   }
   const data = dataSource.map(id=>{
     return {
-      title: `title + ${planitems.findOne(id)._id}`,//TODO: change it into Plan item Title
+      title: planitems.findOne(id).title,//TODO: change it into Plan item Title
       id
     }
   })

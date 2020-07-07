@@ -16,7 +16,7 @@ const ucolors = ["orange","magenta","green","blue","purple"];
 
 PlanItemView = ({data, isLoading }) => {
   if (isLoading) return null
-  const { item, dimension, assignedToIds, dueDate, unitIds, ownerId } = data
+  const { item, dimension, assignedToIds, dueDate, unitIds, ownerId, title } = data
   const onwner = data.ownerName();
   const assignedToNames = data.assignedToNames();
   const schoolNames = data.schoolNames();
@@ -25,6 +25,14 @@ PlanItemView = ({data, isLoading }) => {
     
   return (
     <div className="plan-item-view">
+			<div style={{
+				textAlign: "center",
+				width: "100%",
+				backgroundColor: "green",
+				height: 25,
+				lineHeight: "25px"
+				
+			}}>{title}</div>
       <div className="row">
 	<div className="col-md-auto">
 	  {

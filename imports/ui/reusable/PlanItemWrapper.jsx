@@ -18,11 +18,10 @@ import {ArrowDownCircle} from 'styled-icons/feather/ArrowDownCircle'
 const PlanItemWrapper = ({id, editable, planId, setOrderMode}) => {
 
   const [editMode, setEditMode] = useState(false);
-  const [isHover, setIsHover] = useState(false)
   const removePlanItem = ()=> {
     Meteor.call('planItem.remove', {planId, planItemId:id}, (err, res) => {
       if (err) {
-	alert(err);
+      	alert(err);
       } else {
         // history.push('/plan-viewer')
       }
@@ -30,7 +29,7 @@ const PlanItemWrapper = ({id, editable, planId, setOrderMode}) => {
   }
 
   const actions = () =>{
-    if(editable&&!editMode&&isHover){
+    if(editable&&!editMode){
       return(
 	[
 	  <Tooltip  placement="bottom" title="Order">
@@ -60,10 +59,7 @@ const PlanItemWrapper = ({id, editable, planId, setOrderMode}) => {
   }
   
   return (
-    <List.Item   
-      onMouseEnter={()=>setIsHover(true)} 
-      onMouseLeave={()=>setIsHover(false)} 
-      actions={actions()} >
+    <List.Item actions={actions()} className="ant-plan-item-list">
       {
         editMode ? <PlanItemEdit id={id} disableEditMode={()=>setEditMode(false)}/> : <PlanItemView id={id} disabled/>   
       }

@@ -2,9 +2,7 @@ import React, {useState, useEffect} from 'react'
 import PlanItemWrapper from './PlanItemWrapper'
 import PlanItemEdit from './PlanItemEdit'
 import {  Tooltip, List, Modal } from 'antd/dist/antd.min.js';
-import styled from 'styled-components';
 import {PlusCircle} from 'styled-icons/feather/PlusCircle';
-import ListSortWithDrag from './ListAnimation';
 import PlanItemOrderModal from './PlanItemsOrderModal'
 
 const PlanItemList =({data, editable, planId, onChangePlanItemsOrder})=> {

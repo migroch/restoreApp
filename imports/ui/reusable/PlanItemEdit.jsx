@@ -1,16 +1,14 @@
 import React, {useState} from 'react';
 import { Meteor } from 'meteor/meteor';
 import moment from 'moment';
-import { Select, DatePicker, Cascader, TreeSelect, Form, Button, Modal, Row, Col } from 'antd/dist/antd.min.js';
+import { Select, DatePicker, Cascader, Form, Button, Modal, Row, Col, Input } from 'antd/dist/antd.min.js';
 import { withTracker } from 'meteor/react-meteor-data';
 import  Schemas from '../../api/schemas';
-import { plans, planitems, categories, subcategories, units } from '../../api/collections';
-import ReactQuill from 'react-quill/dist/react-quill.min.js';
+import { planitems, subcategories, units } from '../../api/collections';
 import 'react-quill/dist/quill.snow.css';
 import GuidanceView from '../hocs/GuidanceItems'
 import Editor from './CustomQuill'
 const { Option } = Select;
-const { TreeNode } = TreeSelect;
 const dateFormat = 'YYYY/MM/DD';
 const dimensions = Schemas.dimensions;
 
@@ -55,6 +53,7 @@ const mapOptions = () => {
 }
 
 const empty_data = {
+  title: '',
   unitIds: [],
   item: {
     text: ''
@@ -67,12 +66,14 @@ const empty_data = {
 
 PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, planId, users }) => {
   if (isLoading) return null;
-  let { item, dimension, assignedToIds, dueDate, unitIds, ownerId } = (id) ? data : empty_data ;
+  //if id is null or undefined, it is when add new plan item
+  let { item, dimension, assignedToIds, dueDate, unitIds, ownerId, title } = (id) ? data : empty_data ;
   const [guidance, setGuidance] = useState({visible: false, selectedItem: null}) ;
   const [guidanceItem, setGuidanceItem] = useState(null) ; // selected guidance item but not confirmed
   const [itemHtml, setItemHtml]  = useState(item.text) ;
 
     const submit = planItem => {
+    planItem.title = planItem.title;
     planItem.dueDate = planItem.dueDate.format(dateFormat);
     planItem.unitIds = [planItem.unitIds.pop()];
     planItem.ownerId = Meteor.users.findOne({'profile.name':'dummy1'})._id;
@@ -120,6 +121,7 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
 
   initialValues = ()=>{
     let values = { 
+      title,
       unitIds: unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] )[0], 
       assignedToIds, 
       dimension, 
@@ -139,12 +141,11 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
           visible={guidance.visible}
           width="90%"
           bodyStyle={{height: window.innerHeight - $("nav").outerHeight() -120}}
-	  okText ="Use Selected Item"
-	  //cancetText="Go Back"
+          okText ="Use Selected Item"
+          //cancetText="Go Back"
           onOk={this.handleOk}
           okButtonProps={{ disabled: !guidanceItem }}
           onCancel={this.handleCancel}
-          // confirmLoading={confirmLoading}
         >
             <GuidanceView isComponent onSelect={g=>setGuidanceItem(g)}/>
         </Modal>
@@ -159,7 +160,15 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
         onFinish={submit}
         // onFinishFailed={onFinishFailed}
       >
-
+  <Row gutter={[8,0]} align="middle">
+  <Form.Item
+    placeholder="Title"
+    name="title"
+    rules={[{ required: true, message: 'Please input title' }]}
+  >
+    <Input />
+  </Form.Item>      
+  </Row>
 	<Row gutter={[8,0]} align="middle">
 
 	  <Col span={10}>

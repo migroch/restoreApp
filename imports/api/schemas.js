@@ -29,6 +29,7 @@ Schemas.plans = new SimpleSchema({
 
 // Plan Items
 Schemas.planitems = new SimpleSchema({
+    title: String,
     unitIds: [SimpleSchema.oneOf(String, SimpleSchema.Integer)],  // unit or subcategory IDs
     ownerId: {
         type: SimpleSchema.oneOf(String, SimpleSchema.Integer),

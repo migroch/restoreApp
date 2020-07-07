@@ -1,4 +1,5 @@
 import React, { Component, useState } from "react";
+import { withRouter } from 'react-router-dom';
 import { Promise } from 'meteor/promise';
 import { withTracker } from "meteor/react-meteor-data";
 import { Meteor } from 'meteor/meteor';
@@ -29,15 +30,16 @@ class GuidanceItems extends Component {
       ItemsPerPage: 10,
       hasMore: true,
       selectedItems: [],
-      selectedItemIds: []
+      selectedItemIds: [],
+      selectedItem: null,
     };
-    // this.scrollParentRef = React.createRef();
     this.loadMore = this.loadMore.bind(this);
   }
   createNewPlan = async (planItems) => {
  
     const newPlanItems = planItems.map(planItem => (
       {
+        title: "New Plan Item",
         item: planItem.item,
         dimension: planItem.dimensions[0],
         unitIds: planItem.unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] )[0], 
@@ -55,35 +57,64 @@ class GuidanceItems extends Component {
       alert(err);
     }
  }
+  onClickListitem = gitem => {
+
+    if (!this.props.isMultiSelectable) {
+      if (this.props.isComponent) { // when edit plan item from guidance
+        this.setState({selectedItem: gitem})
+        this.props.onSelect(gitem);
+        return;
+      }
+    }
+    
+    if (this.state.selectedItemIds.includes(gitem._id)) { // if it is already selected, it should be removed
+      var selectedItemIds_array = [...this.state.selectedItemIds];
+      var selectedItems_array = [...this.state.selectedItems];
+      var index = selectedItemIds_array.indexOf(gitem._id)
+      if (index !== -1) {
+        selectedItemIds_array.splice(index, 1);
+        selectedItems_array.splice(index, 1);
+        this.setState({
+          selectedItemIds: selectedItemIds_array,
+          selectedItems: selectedItems_array
+        }, ()=>{
+          if (this.props.isComponent) 
+            this.props.onSelect(this.state.selectedItems)
+        });
+      }
+    } else {
+      this.setState({
+        selectedItems: [...this.state.selectedItems, gitem],
+        selectedItemIds: [...this.state.selectedItemIds, gitem._id]
+      }, ()=>{
+        if (this.props.isComponent) 
+          this.props.onSelect(this.state.selectedItems)
+      })
+    }
+
+    
+  }
+  makeListItemClassName = gitem => {
+    let className;
+    const { selectedItemIds, selectedItem } = this.state;
+    if (this.props.isMultiSelectable) {
+      className =  selectedItemIds.includes(gitem._id) ? "border border-info ":"bg-white"
+    } else {
+      className =  (selectedItem && selectedItem._id == gitem._id )? "border border-info ":"bg-white"
+    }
+      
+    return className
+  }
   makeGuidanceItems() {
     return(
       <List
 	  dataSource={this.state.loadedData}
 	  locale={{emptyText: 'No Guidance Items Found'}}
 	  renderItem={gitem => (
-              <List.Item key={"gitem-"+gitem._id} className={this.state.selectedItemIds.includes(gitem._id) ? "border border-info ":"bg-white"}
-          onClick={()=>{
-            if (this.props.isComponent) this.props.onSelect(gitem);
-            if (this.state.selectedItemIds.includes(gitem._id)) { // if it is already selected, it should be removed
-              var selectedItemIds_array = [...this.state.selectedItemIds];
-              var selectedItems_array = [...this.state.selectedItems];
-              var index = selectedItemIds_array.indexOf(gitem._id)
-              if (index !== -1) {
-                selectedItemIds_array.splice(index, 1);
-                selectedItems_array.splice(index, 1);
-                this.setState({
-                  selectedItemIds: selectedItemIds_array,
-                  selectedItems: selectedItems_array
-                });
-              }
-            } else {
-              this.setState({
-                selectedItems: [...this.state.selectedItems, gitem],
-                selectedItemIds: [...this.state.selectedItemIds, gitem._id]
-              })
-            }
-          }}
-        >
+      <List.Item key={"gitem-"+gitem._id} 
+        className={this.makeListItemClassName(gitem)}
+        onClick={()=>this.onClickListitem(gitem)}
+      >
 
 	  <div className="container-fluid" style={{position: "relative"}}>
 	    <div className="row">
@@ -306,7 +337,7 @@ GuidanceItems = withTracker(({searchquery, searchbar}) => {
 })(GuidanceItems);
 
 // Guidance Viewer Container
-GuidanceView = ({isComponent, onSelect, history}) => {
+GuidanceView = ({isComponent, isMultiSelectable, history, onSelect}) => {
   
   const [searchQuery, setSearchQuery] = useState({});
   const onChangeQuery = (query) => {setSearchQuery(query); setKey(Date.now())}
@@ -317,9 +348,18 @@ GuidanceView = ({isComponent, onSelect, history}) => {
     <div className="plan-view container-fluid" style={{height:"100%"}}>
       <SearchWrapper onChangeSearchbar={onChangeSearchbar}/>
       <FilterForGuidance onChangeQuery={onChangeQuery}/>
-      <GuidanceItems history={history} searchquery={searchQuery} searchbar={searchbar} onSelect={onSelect} isComponent={isComponent} key={key}/>
+      <GuidanceItems 
+        history={history} 
+        searchquery={searchQuery} 
+        searchbar={searchbar} 
+        onSelect={onSelect} 
+        isComponent={isComponent} 
+        isMultiSelectable={isMultiSelectable} 
+        key={key} 
+        onSelect={onSelect}
+      />
     </div>
   )
 }
 
-export default GuidanceView
+export default withRouter(GuidanceView);
