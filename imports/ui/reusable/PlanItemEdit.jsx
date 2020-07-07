@@ -64,13 +64,13 @@ const empty_data = {
   dimension: undefined
 }
 
-PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, planId, users }) => {
+PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, planId, users, guidanceData }) => {
   if (isLoading) return null;
   //if id is null or undefined, it is when add new plan item
   let { item, dimension, assignedToIds, dueDate, unitIds, ownerId, title } = (id) ? data : empty_data ;
-  const [guidance, setGuidance] = useState({visible: false, selectedItem: null}) ;
+  const [guidance, setGuidance] = useState({visible: false, selectedItem: guidanceData}) ;
   const [guidanceItem, setGuidanceItem] = useState(null) ; // selected guidance item but not confirmed
-  const [itemHtml, setItemHtml]  = useState(item.text) ;
+  const [itemHtml, setItemHtml]  = useState(item.text || guidanceData.item.text) ;
 
     const submit = planItem => {
     planItem.title = planItem.title;
@@ -112,6 +112,7 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
   
   if (!!guidance.selectedItem){
     form.setFieldsValue({
+      title: "New Plan Item",
       dimension:guidance.selectedItem.dimensions[0],
       unitIds:  guidance.selectedItem.unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] )[0], 
     });
@@ -150,7 +151,6 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
             <GuidanceView isComponent onSelect={g=>setGuidanceItem(g)}/>
         </Modal>
 
-	
       <Form 
           // {...layout}
 	//layout="inline"  
