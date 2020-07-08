@@ -304,16 +304,6 @@ PlansListView = withTracker(({searchquery, searchbar}) => {
 })(PlansListView);
 
 
-const addNewPlan = ()=>{ 
-  const newplan = Meteor.call('plans.add', {title: "NEW PLAN", scenario:'High Restrictions', planItemIds:[]}, (err, res) => {
-    if (err) {
-      alert(err);
-    } else {
-      //history.push('/plan-viewer')
-    }
-  })
-}
-
 // Plan Viewer Container
 PlanView = ({editPlanWithID, isPlanView}) => {
 
@@ -321,16 +311,30 @@ PlanView = ({editPlanWithID, isPlanView}) => {
   const initial_query = queryString.parse(location.search);
   
   const [searchQuery, setSearchQuery] = useState(initial_query);
+  const [refreshKey, setRefreshKey] = useState(Date.now());
   const setQuery = (query) => setSearchQuery(query);
 
   const [searchbar, setSearchbar] = useState('');
+
+  const addNewPlan = ()=>{ 
+    setSearchQuery({})
+    setSearchbar('')
+    setRefreshKey(Date.now())
+    const newplan = Meteor.call('plans.add', {title: "NEW PLAN", scenario:'High Restrictions', planItemIds:[]}, (err, res) => {
+      if (err) {
+        alert(err);
+      } else {
+        //history.push('/plan-viewer')
+      }
+    })
+  }
 
   return (
     <div className="plan-view container-fluid ">
       {/* set searchquery in selectwrapper */}
 
-      <SearchWrapper onChangeSearchbar={v => setSearchbar(v)}/>
-      <FilterForPlan onChangeQuery={setQuery} value={initial_query}/>
+      <SearchWrapper onChangeSearchbar={v => setSearchbar(v)} key={"searchbar"+refreshKey}/>
+      <FilterForPlan onChangeQuery={setQuery} value={initial_query} key={"filter"+refreshKey}/>
 
       <div className="container-fluid text-center  mt-2">
 	<Tooltip  placement="bottom" title="Add New Plan">
