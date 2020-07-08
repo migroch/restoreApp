@@ -47,7 +47,7 @@ const PlanItemList =({data, editable, planId, onChangePlanItemsOrder})=> {
   return (
     <>
     { editable && 
-      <Button onClick={()=>setGuidance({...guidance, visible:true})} className="my-2 w-100" style={{color:"#2AAAE1"}}><p> <strong>Use Guidance In Plan Editor</strong> </p></Button>
+      <Button onClick={()=>setGuidance({...guidance, visible:true})} className="my-2 w-100" style={{color:"#2AAAE1"}}><p> <strong>Use Guidance</strong> </p></Button>
     }
     { editable && 
       <div className="container-fluid text-center mb-2" >
