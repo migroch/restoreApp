@@ -16,6 +16,7 @@ import {Menu} from 'styled-icons/material/Menu';
 import AccountsUIWrapper from './AccountsUI.jsx';
 import { Link, withRouter } from 'react-router-dom';
 import { Tag } from  'antd/dist/antd.min.js';
+import UserContext from '../context/user';
 
 
 const styles = {
@@ -42,6 +43,7 @@ class Nav extends Component {
 
     this.state = {
       inview: true,
+      isAccountModalOpen: false
     };
 
     this.handleLinkClick = this.handleLinkClick.bind(this);
@@ -49,10 +51,12 @@ class Nav extends Component {
     this.activateScrollSpy = this.activateScrollSpy.bind(this);
   }
   
+  static contextType = UserContext;
+
   render() {
     const { user, loading, menuitemsExists, menuitems } = this.props;
     const { history: { location: { pathname }} } = this.props;
-    
+    const { isAuthModalOpened } = this.context;
     if(loading){
       return(
         <div className="d-flex justify-content-center text-primary">
@@ -99,7 +103,7 @@ class Nav extends Component {
 	    </div>
 	  </nav>
 
-	  <AccountsUIWrapper />
+	  <AccountsUIWrapper isOpened={isAuthModalOpened}/>
       
 	</div>
       );
@@ -109,6 +113,7 @@ class Nav extends Component {
   makeMenu(menuitems, pathname){
     return(
       menuitems.map( (item, index) =>{
+  if (!this.props.user && item.title=='My Plans') return
 	let active = pathname.includes(item.route) ? 'active' : ''
   // if (pathname.includes('plan-editor')&&(item.title=="Plan Viewer")) active = 'active'
 	let invisible = (index == 0) ? '' : 'invisible'
@@ -177,6 +182,7 @@ class Nav extends Component {
   
   signIOButton(user){
     if (user) {
+      this.context.setAuthModalState(false);
       $('#closeLoginModal').click();
       let email;
       if (user.verified_email){
@@ -228,7 +234,9 @@ class Nav extends Component {
   }
   
   componentDidMount(){
-    
+    // AccountsTemplates.setState('signIn')
+    // console.log("FFFFF")
+    // $('#signIOButton').click();
   }
 
   update(){

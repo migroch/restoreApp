@@ -4,14 +4,24 @@ import PlanItemEdit from './PlanItemEdit'
 import {  Tooltip, List, Modal } from 'antd/dist/antd.min.js';
 import {PlusCircle} from 'styled-icons/feather/PlusCircle';
 import PlanItemOrderModal from './PlanItemsOrderModal'
+import {
+  SortableContainer,
+  SortableElement,
+  SortableHandle,
+  arrayMove,
+} from 'react-sortable-hoc';
 
 const PlanItemList =({data, editable, planId, onChangePlanItemsOrder})=> {
   const [addPlanItemMode, setAddPlanItemMode] = useState(false)
   const [isOrderMode, setIsOrderMode] = useState(false)
   const[planItemOrders, setPlanItemOrders] = useState(data)
 
+  // useEffect(() => {
+  //   onChangePlanItemsOrder(planItemOrders)
+  // }, [planItemOrders])
+
   handleOkWithOrders = e => {
-    onChangePlanItemsOrder(planitems)
+    onChangePlanItemsOrder(planItemOrders)
     setPlanItemOrders(planitems)
     setIsOrderMode(false)
   };
@@ -19,6 +29,26 @@ const PlanItemList =({data, editable, planId, onChangePlanItemsOrder})=> {
   handleCancelWithOrders = e => {
     setIsOrderMode(false)
   };
+
+  onSortEnd = ({oldIndex, newIndex}) => {
+    onChangePlanItemsOrder(arrayMove(planItemOrders, oldIndex, newIndex))
+    setPlanItemOrders(arrayMove(planItemOrders, oldIndex, newIndex));
+  };
+  
+  const SortableItem = SortableElement(({value}) => {
+    return (
+      <PlanItemWrapper id={value} planId={planId} editable={editable} setOrderMode={()=>setIsOrderMode(true)}/>
+    );
+  });
+  const SortableList = SortableContainer(({data}) => {
+    return (
+    <ul>
+      {data.map((value, index) => (
+        <SortableItem key={`item-${index}`} index={index} value={value} />
+      ))}
+    </ul>
+    );
+  });
 
 
 
@@ -45,13 +75,15 @@ const PlanItemList =({data, editable, planId, onChangePlanItemsOrder})=> {
         <PlanItemEdit id={undefined} planId={planId} finishAddItem={()=>setAddPlanItemMode(false)}/>
       </div>
     }
-    {
+    {!editable ?
       <List
         dataSource={planItemOrders}
         itemLayout='vertical'
         locale={{emptyText: 'No Plan Items'}}
         renderItem={(item, index)=><PlanItemWrapper id={item} planId={planId} editable={editable} key={"planItem"+index} setOrderMode={()=>setIsOrderMode(true)}/> }
       /> 
+      :
+      <SortableList data={planItemOrders} onSortEnd={this.onSortEnd} useDragHandle={true}/>
     }
 
     { editable && 

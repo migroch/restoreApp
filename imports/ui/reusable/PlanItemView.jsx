@@ -4,15 +4,14 @@ import moment from 'moment';
 import { withTracker } from 'meteor/react-meteor-data';
 import  Schemas from '../../api/schemas';
 import { planitems, categories, subcategories, units } from '../../api/collections';
-// import ShowMoreText from 'react-show-more-text'
 import 'react-quill/dist/quill.snow.css';
-
 import { Breadcrumb, Tag, Avatar } from 'antd/dist/antd.min.js';
-
+import { SortableHandle } from 'react-sortable-hoc';
 const Dimensions = Schemas.dimensions;
 const dimColors = ["magenta","volcano","orange","blue","geekblue","purple"];
 const catColors = {'Health & Safety / Operations':'#FF9263', 'Instructional Programs':'#00a6a3',  'Student Support & Family Engagement':'#2AAAE1'}
 const ucolors = ["orange","magenta","green","blue","purple"];
+
 
 PlanItemView = ({data, isLoading }) => {
   if (isLoading) return null
@@ -22,11 +21,11 @@ PlanItemView = ({data, isLoading }) => {
   const schoolNames = data.schoolNames();
   const districts = data.districts();
   const users = [data.ownerName()].concat(data.assignedToNames());
-    
+	const DragHandle = SortableHandle(({title}) => <h6 style={{cursor: "move"}}>{title}</h6>);
   return (
     <div className="plan-item-view">
       <div className="container-fluid my-2 p-0" >
-	<h6>{title}</h6>
+				<DragHandle title={title} />
       </div>
       <div className="row">
 	<div className="col-md-auto">

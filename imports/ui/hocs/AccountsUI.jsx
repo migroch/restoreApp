@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Template } from 'meteor/templating';
 import { Blaze } from 'meteor/blaze';
-
+import UserContext from '../context/user';
 import {Google} from 'styled-icons/fa-brands/Google';
 
 
@@ -14,18 +14,31 @@ const logoStyle = {
 
 
 export default class AccountsUIWrapper extends Component {
+  static contextType = UserContext;
   componentDidMount() {
     // Use Meteor Blaze to render login form
     this.view = Blaze.render(Template.atForm,
-			     ReactDOM.findDOMNode(this.refs.container));
+           ReactDOM.findDOMNode(this.refs.container));
     //Template['override-atSocial'].replaces('atSocial');
+    if (this.props.isOpened) 
+      $('#loginModal').modal('show')
   }
+  componentWillReceiveProps(nextProps, preProps) {
+    if (nextProps.isOpened != preProps.isOpened) {
+      console.log("nextProps", nextProps.isOpened)
+      if (nextProps.isOpened) 
+      $('#loginModal').modal('show')
+    }
+  }
+  componentDidUpdate() {
 
+  }
   componentWillUnmount() {
     // Clean up Blaze view
     Blaze.remove(this.view);
   }
   render() {
+    
     // Render a modal with the placeholder container that will be filled with the Blaze atForm template
     return(
       <>
@@ -34,7 +47,7 @@ export default class AccountsUIWrapper extends Component {
 	  <div className="modal-content">
 	    <div className="modal-header">
               <h5 className="modal-title" id="ModalLabel">Sign In  to RESTORE</h5>
-              <button  type="button"  id="closeLoginModal" className="close" data-dismiss="modal" aria-label="Close">
+              <button  type="button"  id="closeLoginModal" className="close" data-dismiss="modal" aria-label="Close" onClick={()=>this.context.setAuthModalState(false)}>
 		<span aria-hidden="true">&times;</span>
               </button>
 	    </div>

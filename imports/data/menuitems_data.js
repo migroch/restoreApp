@@ -12,15 +12,15 @@ export default menuitems_data = [
 	title:'Plans',
 	route:'/plan-viewer',
     },
-  //   {
-	// key:'PlanEditor',
-	// title:'Plan Editor',
-	// route:'/plan-editor',
-  //   },
     {
 	key:'Guidance',
 	title:'Guidance',
 	route:'/guidance',
+    },
+    {
+	key:'My-Plans',
+	title:'My Plans',
+	route:'/my-plans',
     },
     
 ]

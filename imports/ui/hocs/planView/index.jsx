@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Meteor } from 'meteor/meteor';
 import FilterForPlan from '../../reusable/FilterForPlan';
 import SearchWrapper from '../../reusable/SearchWrapper';
@@ -23,7 +23,7 @@ import {Trash} from "styled-icons/feather/Trash";
 import {Edit3} from 'styled-icons/feather/Edit3';
 import {PlusCircle} from 'styled-icons/feather/PlusCircle';
 import {FilePlus} from 'styled-icons/feather/FilePlus';
-
+import UserContext from "../../context/user";
 
 const { Option } = Select;
 const scenarios = Schemas.scenarios
@@ -43,12 +43,13 @@ const Tags = (data) =>{
 }
 
 // Plan    
-let PlanWrapper = ({data, editPlanWithID}) => {
+let PlanWrapper = ({data, editPlanWithID, isAuthenticated}) => {
   if (!data) return(null);
   const history = useHistory();
   const [isDetailVisible, setIsDetailVisible] = useState(false);
   const [ title, setTitle ] = useState(data.title);
   const [ scenario, setScenario ] = useState(data.scenario);
+  const { isAuthModalOpened, setAuthModalState } = useContext(UserContext);
   const { planItems, _id, planItemIds } = data;
   const id = _id;
   const bgs = {
@@ -86,7 +87,13 @@ let PlanWrapper = ({data, editPlanWithID}) => {
       }
     })
   }
-  
+  const editPlan = id => {
+    if (isAuthenticated)
+      editPlanWithID(id)
+    else {
+      setAuthModalState(true);
+    }
+  }
   const plan_bg = bgs[scenario]
   
   return (
@@ -97,7 +104,7 @@ let PlanWrapper = ({data, editPlanWithID}) => {
 	<p className="mr-auto mt-auto mb-auto ml-2">{scenario}</p>
 	<div className="right ml-auto mb-auto mt-auto p-1" onClick={e=> e.stopPropagation()} >
 	  <Tooltip  placement="bottom" title="Edit">
-	    <span className="icon mr-2 ml-2" onClick={()=>editPlanWithID(id)}><Edit3  size="20" /> </span>
+	    <span className="icon mr-2 ml-2" onClick={()=>editPlan(id)}><Edit3  size="20" /> </span>
 	  </Tooltip >
 	  <Tooltip  placement="bottom" title="Copy">
 	    <span className="icon mr-2 ml-2" onClick={copyPlanWithId}><Copy  size="20" /></span>
@@ -196,6 +203,7 @@ PlanWrapper = withTracker(({id}) => {
   let data = plansQuery_Clone.fetchOne();
   return {
     data,
+    isAuthenticated: Meteor.userId() !== null,
     isLoading: false
   };
 })(PlanWrapper);
@@ -305,7 +313,7 @@ PlansListView = withTracker(({searchquery, searchbar}) => {
 
 
 // Plan Viewer Container
-PlanView = ({editPlanWithID, isPlanView}) => {
+PlanView = ({editPlanWithID, isPlanView, isAuthenticated}) => {
 
   const location = useLocation();
   const initial_query = queryString.parse(location.search);
@@ -315,18 +323,23 @@ PlanView = ({editPlanWithID, isPlanView}) => {
   const setQuery = (query) => setSearchQuery(query);
 
   const [searchbar, setSearchbar] = useState('');
-
+  const {  isAuthModalOpened, setAuthModalState } = useContext(UserContext);
   const addNewPlan = ()=>{ 
-    setSearchQuery({})
-    setSearchbar('')
-    setRefreshKey(Date.now())
-    const newplan = Meteor.call('plans.add', {title: "NEW PLAN", scenario:'High Restrictions', planItemIds:[]}, (err, res) => {
-      if (err) {
-        alert(err);
-      } else {
-        //history.push('/plan-viewer')
-      }
-    })
+    if (isAuthenticated) {
+      setSearchQuery({})
+      setSearchbar('')
+      setRefreshKey(Date.now())
+      const newplan = Meteor.call('plans.add', {title: "NEW PLAN", scenario:'High Restrictions', planItemIds:[]}, (err, res) => {
+        if (err) {
+          alert(err);
+        } else {
+          //history.push('/plan-viewer')
+        }
+      })
+    } else {
+      setAuthModalState(true)
+    }
+
   }
 
   return (
@@ -353,5 +366,9 @@ PlanView = ({editPlanWithID, isPlanView}) => {
     </div>
   )
 }
-
+PlanView = withTracker(() => {
+  return {
+    isAuthenticated: Meteor.userId() !== null,
+  };
+})(PlanView);
 export default PlanView
