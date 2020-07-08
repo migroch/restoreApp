@@ -49,13 +49,7 @@ const PlanItemList =({data, editable, planId, onChangePlanItemsOrder})=> {
     { editable && 
       <Button onClick={()=>setGuidance({...guidance, visible:true})} className="my-2 w-100" style={{color:"#2AAAE1"}}><p> <strong>Use Guidance</strong> </p></Button>
     }
-    { editable && 
-      <div className="container-fluid text-center mb-2" >
-	<Tooltip  placement="bottom" title="Add Plan Item">
-	  <span className="add-btn" style={{cursor:'pointer'}} onClick={()=>setAddPlanItemMode(true)}><PlusCircle size="40"  /></span>
-	</Tooltip >
-      </div>
-    }
+   
     { addPlanItemMode && editable &&
       <div className="plan-item-wrapper">
         <PlanItemEdit id={undefined} planId={planId} finishAddItem={()=>setAddPlanItemMode(false)}/>
@@ -76,6 +70,15 @@ const PlanItemList =({data, editable, planId, onChangePlanItemsOrder})=> {
         renderItem={(item, index)=><PlanItemWrapper id={item} planId={planId} editable={editable} key={"planItem"+index} setOrderMode={()=>setIsOrderMode(true)}/> }
       /> 
     }
+
+    { editable && 
+      <div className="container-fluid text-center mb-2" >
+	<Tooltip  placement="bottom" title="Add Plan Item">
+	  <span className="add-btn" style={{cursor:'pointer'}} onClick={()=>setAddPlanItemMode(true)}><PlusCircle size="40"  /></span>
+	</Tooltip >
+      </div>
+    }
+    
     <Modal
       title="Change Order of Plan items"
       visible={isOrderMode}
