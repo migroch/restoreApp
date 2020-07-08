@@ -64,13 +64,13 @@ const empty_data = {
   dimension: undefined
 }
 
-PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, planId, users, guidanceData }) => {
+PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, planId, users }) => {
   if (isLoading) return null;
   //if id is null or undefined, it is when add new plan item
   let { item, dimension, assignedToIds, dueDate, unitIds, ownerId, title } = (id) ? data : empty_data ;
-  const [guidance, setGuidance] = useState({visible: false, selectedItem: guidanceData}) ;
+  const [guidance, setGuidance] = useState({visible: false, selectedItem: null}) ;
   const [guidanceItem, setGuidanceItem] = useState(null) ; // selected guidance item but not confirmed
-  const [itemHtml, setItemHtml]  = useState(item.text || guidanceData.item.text) ;
+  const [itemHtml, setItemHtml]  = useState(item.text) ;
 
     const submit = planItem => {
     planItem.title = planItem.title;

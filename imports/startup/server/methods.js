@@ -95,7 +95,7 @@ Meteor.methods({
 	planItem.lastedittime = Date.now();
 	planitems.insert(planItem, function(err, newPlanItem){
 	    const plan = plans.findOne(planId);
-	    let planItemIds = [...plan.planItemIds, newPlanItem];
+	    let planItemIds = [newPlanItem, ...plan.planItemIds];
 	    const lastedittime =  Date.now();
 	    plans.update(planId, { $set: { planItemIds, lastedittime } });
 	});		
