@@ -73,7 +73,7 @@ const PlanEdit = ({ isLoading, data, id, changemode, oncreatedPlan }) => {
             <PlanEditForm data={data} id={planId} onCreatedPlan={id=>oncreatedPlan(id)} changemode={changemode} planItemOrders={planItemOrders}/>
           </div>
     {
-      <Button onClick={()=>setGuidance({...guidance, visible:true})} className="my-2 w-100" style={{color:"#2AAAE1"}}><p> <strong>Use Guidance In Plan Editor</strong> </p></Button>
+      <Button onClick={()=>setGuidance({...guidance, visible:true})} className="my-2 w-100" style={{color:"#2AAAE1"}}><p> <strong>Use Guidance</strong> </p></Button>
     }          
 {         
           planId &&<div className="plan-item-list">

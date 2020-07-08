@@ -135,7 +135,7 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
   return (
     <div className="plan-item-edit">
        
-      <Button onClick={()=>setGuidance({visible:true, selectedItem: null})} className="my-2 w-100" style={{color:"#2AAAE1"}}><p> <strong>Use Guidance</strong> </p></Button>
+      {/* <Button onClick={()=>setGuidance({visible:true, selectedItem: null})} className="my-2 w-100" style={{color:"#2AAAE1"}}><p> <strong>Use Guidance</strong> </p></Button> */}
       
         <Modal
           title="Guidance Items"
@@ -253,7 +253,7 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
 	    {/* <Form.Item
         name={["item", "text"]}
       > */}
-      <Editor onChange={setItemHtml} value={itemHtml} submit={()=>form.submit()}/>
+      <Editor onChange={setItemHtml} value={itemHtml} submit={()=>form.submit()} id={id ?  id : Random.id()} />
       {/* </Form.Item> */}
       <Button type="primary" onClick={form.submit}  style={{backgroundColor: '#2176BB' }}>
         Save Plan Item

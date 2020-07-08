@@ -25,14 +25,9 @@ PlanItemView = ({data, isLoading }) => {
     
   return (
     <div className="plan-item-view">
-			<div style={{
-				textAlign: "center",
-				width: "100%",
-				backgroundColor: "green",
-				height: 25,
-				lineHeight: "25px"
-				
-			}}>{title}</div>
+      <div className="container-fluid my-2 p-0" >
+	<h6>{title}</h6>
+      </div>
       <div className="row">
 	<div className="col-md-auto">
 	  {
