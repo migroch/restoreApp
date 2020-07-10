@@ -315,17 +315,21 @@ PlansListView = withTracker(({searchquery, searchbar}) => {
 // Plan Viewer Container
 PlanView = ({editPlanWithID, isPlanView, isAuthenticated}) => {
 
+  const history = useHistory()
   const location = useLocation();
   const initial_query = queryString.parse(location.search);
-  
+
   const [searchQuery, setSearchQuery] = useState(initial_query);
   const [refreshKey, setRefreshKey] = useState(Date.now());
   const setQuery = (query) => setSearchQuery(query);
 
   const [searchbar, setSearchbar] = useState('');
   const {  isAuthModalOpened, setAuthModalState } = useContext(UserContext);
-  const addNewPlan = ()=>{ 
+  
+  const addNewPlan = ()=>{
+    
     if (isAuthenticated) {
+      history.push('/plan-viewer')
       setSearchQuery({})
       setSearchbar('')
       setRefreshKey(Date.now())

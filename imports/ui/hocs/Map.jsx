@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { withTracker } from 'meteor/react-meteor-data';
 import {mapnodes, categories } from '../../api/collections.js'
 import Schemas from '../../api/schemas.js'
-import { Tag, Divider } from 'antd/dist/antd.min.js';
+import { Tag, Divider, Card } from 'antd/dist/antd.min.js';
 import * as d3 from "d3";
 import queryString from 'query-string';
 
@@ -30,6 +30,8 @@ class Map extends Component {
       height: window.innerHeight - $('.navbar').outerHeight(),
     };
 
+    this.handleMouseEnter = this.handleMouseEnter.bind(this);
+    this.handleMouseLeave = this.handleMouseLeave.bind(this);
     this.handleNodeClick = this.handleNodeClick.bind(this);
     this.handleDimensionClick = this.handleDimensionClick.bind(this);
     this.updateDimensions = this.updateDimensions.bind(this);
@@ -50,8 +52,21 @@ class Map extends Component {
     }else{
       return(
 	<div id="Map">
-	  <div id="mapcanvas" className=""></div>
-	  {this.Dimensions()}
+	  
+	  <div  id="usage"  className="container-fluid bg-white rounded ml-auto mr-auto" style={{width:"98%"}}>
+	    <Divider orientation="center" className="mt-0 pt-3">How to Use</Divider>
+	    <p className="m-0">Select an Organizational Unit or a Logistic Map location to filter plans accordingly. You can click on the parent nodes of the Logistic Map to expand or collapse, and that way navigate through the categories and subcategories of the map</p>
+	  </div>
+
+	  <div id="dimensions" className="container-fluid bg-white ml-auto mr-auto my-2" style={{width:"98%"}}>
+	    <Divider orientation="left" className="mt-0 pt-3">Organizational Units</Divider>
+	    {this.Dimensions()}
+	  </div>
+
+	  <div id="map" className="container-fluid bg-white ml-auto mr-auto my-2" style={{width:"98%"}}>
+	    <Divider  orientation="left" className="mt-0 pt-3">Logistic Map</Divider>
+	    <div id="mapcanvas" className="container-fluid p-0"></div>
+	  </div>
 	</div>
       );
     }    
@@ -59,7 +74,7 @@ class Map extends Component {
 
   Dimensions(){
     return(
-      <div id="dimensions" className="container-fluid mb-3">
+      <div className="container-fluid pb-2">
 	<div className="row justify-content-center">
 	  {
 	    Dimensions.map((dim, index) => {
@@ -80,15 +95,21 @@ class Map extends Component {
   drawMap(){
 
     // Config values
-    let  width = this.state.width,
-	 height =this.state.height - $('#dimensions').outerHeight(true);
+    let  width = this.state.width - 80;
+    let  height = this.state.height - $('#dimensions').outerHeight(true)  - $('#usage').outerHeight(true) - 50;
 
     // Creage top svg container
     const svg = d3.select("#mapcanvas").append("svg")
 		  .attr("id", "svgMap")
 		  .attr("width", width)
 		  .attr("height", height)
-		  .attr("transform",  "translate(" + 20  + "," + 0 + ")" );
+		 // .attr("transform",  "translate(" + 20  + "," + 0 + ")" );
+
+    // Background layer
+    svg.append('g')
+       .attr("id", "bgLayer")
+       .attr("width", width)
+       .attr("height", height);
 
     // Links layer
     svg.append('g')
@@ -126,10 +147,12 @@ class Map extends Component {
   }
 
   updateTree(sourceNode){
-    // Config values    
-    let  width = this.state.width,
-	 height =this.state.height - $('#dimensions').outerHeight(true),
-	 treeWidth = 0.3*width,
+    // Config values
+
+    let  width = this.state.width - 80;
+    let  height = this.state.height - $('#dimensions').outerHeight(true)  - $('#usage').outerHeight(true) - 50;
+    
+    let   treeWidth = 0.3*width,
 	 treeHeight = 0.95*height,
 	 x0 = height/2, // position of root node
 	 dx0 = 0.02*height,
@@ -217,6 +240,7 @@ class Map extends Component {
 
     const nodeEnter = node.enter().append("g")
 			  .attr("class", "node")
+			  .attr("id", d => "node-"+d.id)
 			  .attr("transform", function(d) {
 			    return "translate(" + sourceNode.y0  + "," + sourceNode.x0 + ")"; // initially placed at source node
 			  })
@@ -224,8 +248,19 @@ class Map extends Component {
 			  .attr("stroke-opacity", 0)
 			  .attr("cursor", "pointer")
 			  .attr("pointer-events", "all")
+			  .on("mouseenter", this.handleMouseEnter)
+			  .on("mouseleave", this.handleMouseLeave)
 			  .on('click', this.handleNodeClick);
-    
+
+    // Add enclosing rect
+    nodeEnter.append('rect')
+	     .attr('id', d => "hoverRect-"+d.id)
+	     .attr('rx', 10)
+	     .attr( 'fill', d => this.selectColor(d))
+	     .attr( 'fill-opacity', 0)
+	     .attr('stroke', d => this.selectColor(d))
+	     .attr("stroke-width", "0px");
+   
     // Add triangles/arrows
     nodeEnter.filter(d => (d.depth == 0)).append("path")
 	     .attr('d', d => {
@@ -313,7 +348,13 @@ class Map extends Component {
 			 .attr("fill-opacity", 0)
 			 .attr("stroke-opacity", 0);
 
-      
+    // Resize enclosing rect
+    nodeEnter.select('rect')
+	     .attr('x', d => this.getBBox(d).x - 0.02* this.getBBox(d).width )
+	     .attr('y', d => this.getBBox(d).y - 0.1* this.getBBox(d).height )
+	     .attr('width', d => this.getBBox(d).width + 0.04*this.getBBox(d).width )
+	     .attr('height', d => this.getBBox(d).height + 0.2*this.getBBox(d).height)
+   
     // Stash the old positions for transition.
     nodes.forEach(function(d) {
       d.x0 = d.x;
@@ -335,6 +376,18 @@ class Map extends Component {
     }
   }
 
+  handleMouseEnter(node){
+    d3.select("#hoverRect-"+node.id)
+      .attr("fill-opacity", 0.5)
+      .attr("stroke-width", "2px")
+  }
+
+  handleMouseLeave(node){
+    d3.select("#hoverRect-"+node.id)
+      .attr("fill-opacity", 0)
+      .attr("stroke-width", "0px")
+  }
+  
   handleDimensionClick(e){
     let target = e.target;
     let dimension = target.innerHTML;
@@ -353,6 +406,10 @@ class Map extends Component {
     return flip;
   };
 
+  getBBox(node){
+    return d3.select("#node-"+node.id).node().getBBox()
+  }
+  
   selectColor(nodeOrLink){
     let node =  nodeOrLink.target ?  nodeOrLink.target :  nodeOrLink;
     let anames = node.ancestors().map( a => a.data.name);
@@ -381,11 +438,11 @@ class Map extends Component {
   componentDidMount(){
     this.updateDimensions();
     window.addEventListener("resize", this.updateDimensions);
-    if (!this.props.loading) this.drawMap();
+    if (!this.props.loading && this.state.height) this.drawMap();
   }
 
   componentDidUpdate(){
-    if (!this.props.loading) this.redrawMap();
+    if (!this.props.loading && this.state.height) this.redrawMap();
   }
 
   componentWillUnmount() {
