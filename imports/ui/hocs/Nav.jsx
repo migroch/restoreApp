@@ -113,7 +113,7 @@ class Nav extends Component {
   makeMenu(menuitems, pathname){
     return(
       menuitems.map( (item, index) =>{
-  if (!this.props.user && item.title=='My Plans') return
+  if (!this.props.user && (item.title=='My Plans'||item.title=='Profile')) return
 	let active = pathname.includes(item.route) ? 'active' : ''
   // if (pathname.includes('plan-editor')&&(item.title=="Plan Viewer")) active = 'active'
 	let invisible = (index == 0) ? '' : 'invisible'

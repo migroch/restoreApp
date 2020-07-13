@@ -25,7 +25,6 @@ export default class AccountsUIWrapper extends Component {
   }
   componentWillReceiveProps(nextProps, preProps) {
     if (nextProps.isOpened != preProps.isOpened) {
-      console.log("nextProps", nextProps.isOpened)
       if (nextProps.isOpened) 
       $('#loginModal').modal('show')
     }

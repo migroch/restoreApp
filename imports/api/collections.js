@@ -142,6 +142,13 @@ plans.helpers({
     unitIds(){
 	return this.planItems.map(pi => pi.unitIds).flat();
     },
+    owners(){
+    let owners = [
+        ...this.planItems.map(pi=>pi.assignedToIds).flat(),
+        ...this.planItems.map(pi=>pi.ownerId).flat(),
+    ];
+    return owners
+    },
     // dimensions
     dimensions(){
 	return this.planItems.map(pi => pi.dimension);

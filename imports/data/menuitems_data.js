@@ -22,6 +22,10 @@ export default menuitems_data = [
 	title:'My Plans',
 	route:'/my-plans',
     },
-    
+    {
+	key:'Profile',
+	title:'Profile',
+	route:'/profile',
+    },    
 ]
 

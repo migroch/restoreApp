@@ -20,7 +20,15 @@ Meteor.methods({
 	    email: email,
 	    verified_email: verified_email
 	}});
-    },
+		},
+    'profile.update'(user){
+	check(user.id, Match.OneOf(String, Mongo.ObjectID));
+	Meteor.users.update(user.id, { $set: {
+			name: user.name,
+			district: user.district,
+	    schools: user.schools
+	}});
+    },		
     // 'plans.insert'(text) {
     //   check(text, String);
     //   // let's make sure the user is logged in before inserting a pllan

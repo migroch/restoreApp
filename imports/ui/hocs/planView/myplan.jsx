@@ -10,7 +10,7 @@ import { useHistory, useLocation } from "react-router-dom";
 import { uniq, isEmpty, intersection } from 'lodash'
 import { plansQueryWithFilter } from '../../../api/queries'
 import queryString from 'query-string';
-import './index.scss';
+// import './index.scss';
 
 import { Input, Select, Button, Tooltip, Breadcrumb, List, Tag, Popconfirm } from 'antd/dist/antd.min.js';
 
@@ -209,7 +209,7 @@ PlanWrapper = withTracker(({id}) => {
 })(PlanWrapper);
 
 // List of Plans
-PlansListView = ({plan_ids, isLoading, editPlanWithID})=>{
+MyPlansListView = ({plan_ids, isLoading, editPlanWithID})=>{
   if (isLoading) return null;
   // const [plans, setPlans] = useState(plans_data)
   return (
@@ -229,12 +229,13 @@ PlansListView = ({plan_ids, isLoading, editPlanWithID})=>{
 }
 
 // List of Plans data layer
-PlansListView = withTracker(({searchquery, searchbar}) => {
+MyPlansListView = withTracker(({searchquery, searchbar}) => {
   const handles = [
     Meteor.subscribe('subcategories'),
     Meteor.subscribe('planitems'),
     Meteor.subscribe('plans'),
   ];
+
   const isLoading = handles.some(handle => !handle.ready());
   if(isLoading){
     return {
@@ -242,7 +243,6 @@ PlansListView = withTracker(({searchquery, searchbar}) => {
       isLoading: true
     };
   }
-
   //-------1.search with searchbar----------
   // search in planitems (item, dimension)
   let planIdswithSearchBar
@@ -256,15 +256,15 @@ PlansListView = withTracker(({searchquery, searchbar}) => {
   }
 
     //-------2.search with select filter--------
-  const plansQuery_Clone = plansQueryWithFilter.clone(searchquery);
+  const myplan_searchquery = {...searchquery, ownerId: Meteor.userId()}
+  const plansQuery_Clone = plansQueryWithFilter.clone(myplan_searchquery);
   plansQuery_Clone.subscribe();
   let plans_data = plansQuery_Clone.fetch()
-
-    // in case search based on scenario, it doesn't matter the planitems are empty
+    // in case search based on scenario, it doesn't matter with the fact that the planitems are empty
     let isOnlyScenarioSearch = true
-  for(var key in searchquery) {
+  for(var key in myplan_searchquery) {
     if (key != 'scenario')
-      isOnlyScenarioSearch = isOnlyScenarioSearch && (!searchquery[key]);
+      isOnlyScenarioSearch = isOnlyScenarioSearch && (!myplan_searchquery[key]);
   }
   //filtering plans_data
   if (!isOnlyScenarioSearch) {
@@ -282,6 +282,7 @@ PlansListView = withTracker(({searchquery, searchbar}) => {
 	}
 	return true
       });
+
       plan_subcategories.every( s => {
 	if (s && s.category) {
           flag = true
@@ -292,11 +293,12 @@ PlansListView = withTracker(({searchquery, searchbar}) => {
       //in case districts and schools are empty
       let plan_districts = plan.districts();
       let plan_schools = plan.schools();
-      flag = flag && !isEmpty(plan_districts) && !isEmpty(plan_schools);
+      let plan_owners = plan.owners();
+      flag = flag && !isEmpty(plan_districts) && !isEmpty(plan_schools) && !isEmpty(plan_owners);
       return flag
     })
-
   }
+    console.log("filtered plans data: ", plans_data)
     // filtered plan ids
     const planIdswithFilter = plans_data.map(plan=>plan._id)
   //------3.intersection of two result from filter and searchbar-------
@@ -310,11 +312,11 @@ PlansListView = withTracker(({searchquery, searchbar}) => {
     plan_ids,
     isLoading: false
   };
-})(PlansListView);
+})(MyPlansListView);
 
 
 // Plan Viewer Container
-PlanView = ({editPlanWithID, isPlanView, isAuthenticated}) => {
+MyPlan = ({editPlanWithID, isPlanView, isAuthenticated}) => {
 
   const location = useLocation();
   const initial_query = queryString.parse(location.search);
@@ -353,9 +355,7 @@ PlanView = ({editPlanWithID, isPlanView, isAuthenticated}) => {
 	  <span className="add-btn" onClick={addNewPlan}><PlusCircle size="40"  /></span>
 	</Tooltip >
       </div>
-      {isPlanView &&
-      <PlansListView searchquery={searchQuery} searchbar={searchbar} editPlanWithID={editPlanWithID}/>}
-
+      <MyPlansListView searchquery={searchQuery} searchbar={searchbar} editPlanWithID={editPlanWithID} />
       <div className="container-fluid text-center mb-2" onClick={()=>window.scrollTo(0,0)}>
 	  <Tooltip  placement="top" title="Add New Plan">
 	    <span className="add-btn" onClick={addNewPlan}><PlusCircle size="40"  /></span>
@@ -365,9 +365,9 @@ PlanView = ({editPlanWithID, isPlanView, isAuthenticated}) => {
     </div>
   )
 }
-PlanView = withTracker(() => {
+MyPlan = withTracker(() => {
   return {
     isAuthenticated: Meteor.userId() !== null,
   };
-})(PlanView);
-export default PlanView
+})(MyPlan);
+export default MyPlan
