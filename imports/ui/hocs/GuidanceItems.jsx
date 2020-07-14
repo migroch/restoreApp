@@ -43,7 +43,7 @@ class GuidanceItems extends Component {
         item: planItem.item,
         dimension: planItem.dimensions[0],
         unitIds: planItem.unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] )[0], 
-        ownerId: Meteor.users.find({}).fetch()[0]._id, // TODO: used the random user, but should be changed, extracted after authentication implementation.
+        ownerId: Meteor.user().id,
         assignedToIds: []
       }
     ))
@@ -265,7 +265,7 @@ class GuidanceItems extends Component {
           </Collapse> */}
       {
         (selectedItems.length) && 
-        <div className="new-plan" onClick={()=>this.createNewPlan(selectedItems)}>Start a new plan with selected plan items</div>
+        <button className="btn btn-primary new-plan" onClick={()=>this.createNewPlan(selectedItems)}>Start a new plan with selected items</button>
       }          
 	</div>
       );
@@ -274,7 +274,7 @@ class GuidanceItems extends Component {
 }
 
 GuidanceItems = withTracker(({searchquery, searchbar}) => {
-  //const user = Meteor.user();
+  const user = Meteor.user();
   const handles = [
     Meteor.subscribe("guidanceitems"),
     Meteor.subscribe('categories'),

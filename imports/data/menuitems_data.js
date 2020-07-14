@@ -2,9 +2,14 @@
 // Initial menu items 
 
 export default menuitems_data = [
+     {
+	key:'My-Plans',
+	title:'My Plans',
+	route:'/my-plans',
+    },
     {
 	key:'Map',
-	title:'Logistic Map',
+	title:'Logistics',
 	route:'/map',
     },
     {
@@ -16,11 +21,6 @@ export default menuitems_data = [
 	key:'Guidance',
 	title:'Guidance',
 	route:'/guidance',
-    },
-    {
-	key:'My-Plans',
-	title:'My Plans',
-	route:'/my-plans',
     },
     
 ]

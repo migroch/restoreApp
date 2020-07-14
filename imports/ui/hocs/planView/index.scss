@@ -1,14 +1,18 @@
 .plan-view {
-  .add-btn {
-    //position:fixed;
-    //bottom:30px;
-    //right:15px;
-    //color: #2AAAE1;
-    //background-color: rgba(0,0,0,0.2);
-    //display: flex;
-    //justify-content: right;
-    //padding: 30px 0;
-    cursor: pointer;
+  position:relative;
+  overflow:auto;
+  .add-btn-div {
+    position:sticky;
+    bottom:20px;
+    //right:20px;
+    .add-btn{
+      //color: white;
+      background-color: rgba(0,0,0,0.7);
+      //display: flex;
+      //justify: right;
+      //padding: 30px 0;
+      cursor: pointer;
+    }
   }
   .select-wrapper {
     display: flex;

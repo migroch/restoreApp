@@ -11,7 +11,7 @@
 }
 .new-plan {
   position: fixed;
-  right: 30px;
+  right: 35px;
   bottom: 30px;
   border-radius: 3px;
   border: 1px solid;
@@ -19,6 +19,7 @@
   cursor: pointer;
   animation-name: example;
   animation-duration: 0.2s;
-  background-color: gray;
+  //background-color: gray;
+  opacity: 0.8;
   z-index: 9999;
 }

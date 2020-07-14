@@ -68,7 +68,7 @@ const SelectWrapper = ({isLoading, data, onChangeQuery, value}) => {
   
   const filters = [
     {label:'Level of Restriction', options: scenarios, fname: "scenario"},
-    {label:'Dimensions', options: dimensions , fname: "dimension"},
+    {label:'Organizational Units', options: dimensions , fname: "dimension"},
     {label:'Districts', options: districts_total, fname: "district"},
     {label:'Shools', options: schools_total , fname: "school"},
   ] 
@@ -76,9 +76,9 @@ const SelectWrapper = ({isLoading, data, onChangeQuery, value}) => {
   return (
     <div>
 
-      <div className="select-wrapper row mt-2">
+      <div className="select-wrapper row mt-2 container-fluid">
 	<div  className="col col-md-4">
-	  <p className="m-0"><small>Map Location</small></p>
+	  <p className="m-0"><small>Logistic Tree Location</small></p>
 	  <Cascader
 	      showSearch={{	filter: (input, option) => option.map(o =>o.label).filter( o => o.toLowerCase().indexOf(input.toLowerCase()) >= 0 ).length }}
 	      style={{ width: '100%' }}

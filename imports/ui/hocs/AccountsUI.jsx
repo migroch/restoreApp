@@ -4,7 +4,7 @@ import { Template } from 'meteor/templating';
 import { Blaze } from 'meteor/blaze';
 import UserContext from '../context/user';
 import {Google} from 'styled-icons/fa-brands/Google';
-
+import GoogleButton from 'react-google-button'
 
 const logoStyle = {
   width:'8em',
@@ -12,17 +12,21 @@ const logoStyle = {
 }
 
 
-
 export default class AccountsUIWrapper extends Component {
   static contextType = UserContext;
+
+  atSocialButton = () =>{
+    <button type="button" className="btn btn-light" id="at-google">Sign In/Register with <span><Google /></span></button>
+  }
+  
   componentDidMount() {
     // Use Meteor Blaze to render login form
     this.view = Blaze.render(Template.atForm,
            ReactDOM.findDOMNode(this.refs.container));
-    //Template['override-atSocial'].replaces('atSocial');
-    if (this.props.isOpened) 
-      $('#loginModal').modal('show')
+    if (this.props.isOpened)  $('#loginModal').modal('show');
+    if (document.getElementById("at-google")) ReactDOM.render(<GoogleButton type="light" className="w-100"/>, document.getElementById("at-google"));
   }
+  
   componentWillReceiveProps(nextProps, preProps) {
     if (nextProps.isOpened != preProps.isOpened) {
       console.log("nextProps", nextProps.isOpened)
@@ -30,18 +34,21 @@ export default class AccountsUIWrapper extends Component {
       $('#loginModal').modal('show')
     }
   }
+  
   componentDidUpdate() {
-
+    
   }
+  
   componentWillUnmount() {
     // Clean up Blaze view
     Blaze.remove(this.view);
-  }
+  } 
+  
   render() {
     
     // Render a modal with the placeholder container that will be filled with the Blaze atForm template
     return(
-      <>
+      <> 
       <div className="modal fade" id="loginModal" tabIndex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
 	<div className="modal-dialog" role="document">
 	  <div className="modal-content">
@@ -60,10 +67,6 @@ export default class AccountsUIWrapper extends Component {
 	  </div>
 	</div>
       </div>
-
-      {/* <template name="override-atSocial">
-      <button type="button" className="btn btn-light" id="at-google">Sign In/Register with <span><Google /></span></button>
-      </template> */}
       </>
       );
   }

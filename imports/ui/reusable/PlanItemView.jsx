@@ -4,24 +4,25 @@ import moment from 'moment';
 import { withTracker } from 'meteor/react-meteor-data';
 import  Schemas from '../../api/schemas';
 import { planitems, categories, subcategories, units } from '../../api/collections';
+import UserAvatar from "./UserAvatar";
 import 'react-quill/dist/quill.snow.css';
-import { Breadcrumb, Tag, Avatar } from 'antd/dist/antd.min.js';
+import { Breadcrumb, Tag } from 'antd/dist/antd.min.js';
 import { SortableHandle } from 'react-sortable-hoc';
+import uniq from 'lodash/uniq';
 const Dimensions = Schemas.dimensions;
 const dimColors = ["magenta","volcano","orange","blue","geekblue","purple"];
 const catColors = {'Health & Safety / Operations':'#FF9263', 'Instructional Programs':'#00a6a3',  'Student Support & Family Engagement':'#2AAAE1'}
-const ucolors = ["orange","magenta","green","blue","purple"];
 
 
 PlanItemView = ({data, isLoading }) => {
   if (isLoading) return null
   const { item, dimension, assignedToIds, dueDate, unitIds, ownerId, title } = data
-  const onwner = data.ownerName();
+  const owner = data.ownerId;
   const assignedToNames = data.assignedToNames();
   const schoolNames = data.schoolNames();
   const districts = data.districts();
-  const users = [data.ownerName()].concat(data.assignedToNames());
-	const DragHandle = SortableHandle(({title}) => <h6 style={{cursor: "move"}}>{title}</h6>);
+  const users =uniq([data.ownerId].concat(data.assignedToIds));
+  const DragHandle = SortableHandle(({title}) => <h6 style={{cursor: "move"}}>{title}</h6>);
   return (
     <div className="plan-item-view">
       <div className="container-fluid my-2 p-0" >
@@ -65,12 +66,13 @@ PlanItemView = ({data, isLoading }) => {
 	  <Tag color={ dimColors[Dimensions.findIndex(D => D==dimension)]}>{dimension}</Tag>
 	</div>
 
-	<div className="col-md-auto">
+	<div className="col-md-auto d-inline-flex">
 	  {
 	    users.map((u, index) => {
-	      let color = ucolors[parseInt(u[u.length-1])]
+	      let size = "extra-small";
+	      if (u == owner)  size = "small";
 	      return(
-		<Avatar  size="small" key={index}  style={{ verticalAlign: 'middle', backgroundColor: color}} className="m-1" ><p style={{fontSize:'smaller'}}>{u[0]+u[u.length-1]}</p></Avatar>
+		<UserAvatar key={index}  user={u} size={size}  shape="circle" className="mx-1" />
 	      )})
 	  }
 	</div>
