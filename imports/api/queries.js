@@ -67,7 +67,11 @@ export const plansQueryWithFilter = plans.createQuery({
 		planItemIds: 1,
     planItems: {
 	$filter({filters, params}) {
-	    if (params.dimension)  filters.dimension = params.dimension;
+		if (params.dimension)  filters.dimension = params.dimension;
+		if (params.ownerId) {
+			filters.ownerId = params.ownerId;
+			// filters.assignedToIds = {$elemMatch: {$eq:params.ownerId}};
+		} 
 	},
 	// $options: {
 	//     sort: {order: -1}
