@@ -38,11 +38,12 @@ Schemas.planitems = new SimpleSchema({
     assignedToIds:  { type: Array, optional: true},
     'assignedToIds.$': SimpleSchema.oneOf(String, SimpleSchema.Integer),
     dueDate: {type:Date, optional: true},
-    dimension: {
-                    type: String,
-                    allowedValues: Schemas.dimensions,
-                    optional: true ////when create from guidanceItems
-    },
+    dimensions: { type: Array },
+    'dimensions.$':{
+        type: String,
+        allowedValues: Schemas.dimensions,
+	    optional: true
+    },   
     item: Object,
     'item.text': String,
     'item.delta': {type: Object, optional: true},   // A Quill Delta Object https://quilljs.com/docs/delta/

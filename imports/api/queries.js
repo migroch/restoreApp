@@ -67,9 +67,10 @@ export const plansQueryWithFilter = plans.createQuery({
 		planItemIds: 1,
     planItems: {
 	$filter({filters, params}) {
-		if (params.dimension)  filters.dimension = params.dimension;
+		if (params.dimension) filters.dimensions = {$elemMatch: {$eq:params.dimension}};
 		if (params.ownerId) {
 			filters.ownerId = params.ownerId;
+			//TODO: it should be $or operation for ownderID and assignedIds
 			// filters.assignedToIds = {$elemMatch: {$eq:params.ownerId}};
 		} 
 	},
@@ -81,7 +82,7 @@ export const plansQueryWithFilter = plans.createQuery({
 	ownerId: 1,
 	assignedToIds :1,
 	dueDate: 1,
-	dimension: 1,
+	dimensions: 1,
 	units: {
 	    $filter({filters, params}) {
 		if (params.unit)  filters.name = params.unit;

@@ -94,6 +94,20 @@ let PlanWrapper = ({data, editPlanWithID, isAuthenticated}) => {
       setAuthModalState(true);
     }
   }
+  const deletePlan = id => {
+    if (isAuthenticated)
+      deletePlanWithId(id)
+    else {
+      setAuthModalState(true);
+    }
+  }  
+  const copyPlan = id => {
+    if (isAuthenticated)
+      copyPlanWithId(id)
+    else {
+      setAuthModalState(true);
+    }
+  }    
   const plan_bg = bgs[scenario]
   
   return (
@@ -107,12 +121,12 @@ let PlanWrapper = ({data, editPlanWithID, isAuthenticated}) => {
 	    <span className="icon mr-2 ml-2" onClick={()=>editPlan(id)}><Edit3  size="20" /> </span>
 	  </Tooltip >
 	  <Tooltip  placement="bottom" title="Copy">
-	    <span className="icon mr-2 ml-2" onClick={copyPlanWithId}><Copy  size="20" /></span>
+	    <span className="icon mr-2 ml-2" onClick={()=>copyPlan(id)}><Copy  size="20" /></span>
 	  </Tooltip >
     <Popconfirm
         placement="topRight"
         title={'Are you sure to delete this plan?'}
-        onConfirm={deletePlanWithId}
+        onConfirm={()=>deletePlan(id)}
         okText="Yes"
         cancelText="No"
       >

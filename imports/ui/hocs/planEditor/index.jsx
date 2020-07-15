@@ -40,9 +40,9 @@ const PlanEdit = ({ isLoading, data, id, changemode, oncreatedPlan }) => {
       {
         title: "New Plan Item",
         item: planItem.item,
-        dimension: planItem.dimensions[0], //TODO: should be able to input all dimensions
+        dimensions: planItem.dimensions,
         unitIds: planItem.unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] )[0], 
-        ownerId: Meteor.users.find({}).fetch()[0]._id, // TODO: used the random user, but should be changed, extracted after authentication implementation.
+        ownerId: Meteor.userId(), // TODO: used the random user, but should be changed, extracted after authentication implementation.
         assignedToIds: []
       }
     ))

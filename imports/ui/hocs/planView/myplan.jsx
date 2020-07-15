@@ -298,7 +298,6 @@ MyPlansListView = withTracker(({searchquery, searchbar}) => {
       return flag
     })
   }
-    console.log("filtered plans data: ", plans_data)
     // filtered plan ids
     const planIdswithFilter = plans_data.map(plan=>plan._id)
   //------3.intersection of two result from filter and searchbar-------

@@ -8,6 +8,9 @@ import { planitems, subcategories, units } from '../../api/collections';
 import 'react-quill/dist/quill.snow.css';
 import GuidanceView from '../hocs/GuidanceItems'
 import Editor from './CustomQuill'
+import { uniq } from 'lodash'
+import MultiDimensionInput from './MultiDimensionInput'
+import MultiMaplocationInput from './MultiMaplocationInput'
 const { Option } = Select;
 const dateFormat = 'YYYY/MM/DD';
 const dimensions = Schemas.dimensions;
@@ -61,13 +64,13 @@ const empty_data = {
   ownerId: undefined,
   dueDate: undefined,
   assignedToIds: [],
-  dimension: undefined
+  dimensions: undefined
 }
 
 PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, planId, users }) => {
   if (isLoading) return null;
   //if id is null or undefined, it is when add new plan item
-  let { item, dimension, assignedToIds, dueDate, unitIds, ownerId, title } = (id) ? data : empty_data ;
+  let { item, dimensions, assignedToIds, dueDate, unitIds, ownerId, title } = (id) ? data : empty_data ;
   const [guidance, setGuidance] = useState({visible: false, selectedItem: null}) ;
   const [guidanceItem, setGuidanceItem] = useState(null) ; // selected guidance item but not confirmed
   const [itemHtml, setItemHtml]  = useState(item.text) ;
@@ -75,8 +78,8 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
     const submit = planItem => {
     planItem.title = planItem.title;
     planItem.dueDate = planItem.dueDate.format(dateFormat);
-    planItem.unitIds = [planItem.unitIds.pop()];
-    planItem.ownerId = Meteor.users.findOne({'profile.name':'dummy1'})._id;
+    planItem.unitIds = uniq(planItem.unitIds.map(item=>item.pop()))
+    planItem.ownerId = Meteor.userId(); //TODO: changed to signed user.
     planItem.item = {text: itemHtml} ;
     if (id) {
       Meteor.call('planItem.update', {planItemId:id, planItem}, (err, res) => {
@@ -113,8 +116,8 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
   if (!!guidance.selectedItem){
     form.setFieldsValue({
       title: "New Plan Item",
-      dimension:guidance.selectedItem.dimensions[0],
-      unitIds:  guidance.selectedItem.unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] )[0], 
+      dimensions:guidance.selectedItem.dimensions,
+      unitIds:  guidance.selectedItem.unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] ), 
     });
     // if (itemHtml !== guidance.selectedItem.item.text) setItemHtml(guidance.selectedItem.item.text);
     // unitIds = guidance.selectedItem.unitIds
@@ -123,9 +126,9 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
   initialValues = ()=>{
     let values = { 
       title,
-      unitIds: unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] )[0], 
+      unitIds: unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] ), 
       assignedToIds, 
-      dimension, 
+      dimensions,
       item,
     }
     if (dueDate) values.dueDate = moment(dueDate, dateFormat) ;
@@ -178,33 +181,22 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
               name="unitIds"
               rules={[{ required: true, message: 'Please add a Map Location!' }]}
             >
-	      <Cascader
-		  showSearch={{	filter: (input, option) => option.map(o =>o.label).filter( o => o.toLowerCase().indexOf(input.toLowerCase()) >= 0 ).length }}
-		  style={{ width: '100%' }}
-		  placeholder="Map Location"
-		  displayRender={label => label.join(' > ')}
-		  changeOnSelect={false}
-		  expandTrigger="hover"
-		  options={mapOptions()}
-		  disabled={disabled}
-		  onChange={(values) => { }}
-	      />
+              <MultiMaplocationInput options={mapOptions()} />
             </Form.Item>
 	  </Col>
 
 	  <Col span={5}>
 	    <Form.Item
-                //label="Dimension"
-		placeholder="Dimension"   
-		name="dimension"
+		name="dimensions"
 		rules={[{ required: true, message: 'Please add a Dimension!' }]}
             >
-              <Select
+              {/* <Select
 		  disabled={disabled}
 		  placeholder="Dimension" 
 	      >
 		{ dimensions.map((d, index)=><Option key={index+d} value={d}>{d}</Option>) }
-              </Select>   
+              </Select>    */}
+              <MultiDimensionInput />
             </Form.Item>
 	  </Col>
 

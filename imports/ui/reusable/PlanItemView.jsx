@@ -15,7 +15,7 @@ const ucolors = ["orange","magenta","green","blue","purple"];
 
 PlanItemView = ({data, isLoading }) => {
   if (isLoading) return null
-  const { item, dimension, assignedToIds, dueDate, unitIds, ownerId, title } = data
+  const { item, dimensions, assignedToIds, dueDate, unitIds, ownerId, title } = data
   const onwner = data.ownerName();
   const assignedToNames = data.assignedToNames();
   const schoolNames = data.schoolNames();
@@ -62,7 +62,14 @@ PlanItemView = ({data, isLoading }) => {
 	</div>
 
 	<div className="col-md-auto">
-	  <Tag color={ dimColors[Dimensions.findIndex(D => D==dimension)]}>{dimension}</Tag>
+	  {
+			    dimensions.map( (item, index) => {
+						let color = dimColors[Dimensions.findIndex(D => D==item)];
+						return(
+				<Tag key={index} color={color}>{item}</Tag>
+						)
+					})
+		}
 	</div>
 
 	<div className="col-md-auto">

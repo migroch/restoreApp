@@ -13,6 +13,7 @@ import FilterForGuidance from '../reusable/FilterForGuidance';
 import SearchWrapper from '../reusable/SearchWrapper';
 import ShowMoreText from 'react-show-more-text';
 import { intersection } from 'lodash'
+import UserContext from "../context/user";
 const { Panel } = Collapse;
 
 const Dimensions = Schemas.dimensions;
@@ -35,15 +36,21 @@ class GuidanceItems extends Component {
     };
     this.loadMore = this.loadMore.bind(this);
   }
+
+  static contextType = UserContext;
+
   createNewPlan = async (planItems) => {
- 
+    if (!Meteor.userId()) {
+      this.context.setAuthModalState(true);
+      return
+    }
     const newPlanItems = planItems.map(planItem => (
       {
         title: "New Plan Item",
         item: planItem.item,
-        dimension: planItem.dimensions[0],
+        dimensions: planItem.dimensions,
         unitIds: planItem.unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] )[0], 
-        ownerId: Meteor.users.find({}).fetch()[0]._id, // TODO: used the random user, but should be changed, extracted after authentication implementation.
+        ownerId: Meteor.userId(), // TODO: used the random user, but should be changed, extracted after authentication implementation.
         assignedToIds: []
       }
     ))
@@ -264,7 +271,7 @@ class GuidanceItems extends Component {
 	  {/* </Panel>
           </Collapse> */}
       {
-        (selectedItems.length) && 
+        (selectedItems.length) && Meteor.userId() &&
         <div className="new-plan" onClick={()=>this.createNewPlan(selectedItems)}>Start a new plan with selected plan items</div>
       }          
 	</div>
@@ -273,7 +280,7 @@ class GuidanceItems extends Component {
   }
 }
 
-GuidanceItems = withTracker(({searchquery, searchbar}) => {
+GuidanceItems = withTracker(({searchquery, searchbar, is}) => {
   //const user = Meteor.user();
   const handles = [
     Meteor.subscribe("guidanceitems"),

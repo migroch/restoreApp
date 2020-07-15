@@ -164,7 +164,6 @@ class SchoolInput extends React.Component {
 
 ProfileView = ({user})=> {
   if (!user) return null
-  console.log("user: ", user)
   const [editMode, setEditMode] = useState(false)
   const onFinish = value => {
     //save updated user profile

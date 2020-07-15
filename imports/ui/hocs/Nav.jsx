@@ -235,7 +235,6 @@ class Nav extends Component {
   
   componentDidMount(){
     // AccountsTemplates.setState('signIn')
-    // console.log("FFFFF")
     // $('#signIOButton').click();
   }
 

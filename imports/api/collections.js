@@ -151,7 +151,7 @@ plans.helpers({
     },
     // dimensions
     dimensions(){
-	return this.planItems.map(pi => pi.dimension);
+	return this.planItems.map(pi => pi.dimensions).flat();
     },
     // districts
     districts(){
@@ -219,7 +219,7 @@ const PlansIndex = new Index({
 });
 const PlanItemsIndex = new Index({
     'collection': planitems,
-    'fields': ['item.text', 'item.type', 'dimension'],
+    'fields': ['item.text', 'item.type', 'dimensions'],
     'engine': new MongoDBEngine({
         'selector': function (searchObject, options, aggregation) {
             const selector = this.defaultConfiguration().selector(searchObject, options, aggregation);
