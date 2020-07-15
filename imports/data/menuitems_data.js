@@ -22,10 +22,5 @@ export default menuitems_data = [
 	title:'Guidance',
 	route:'/guidance',
     },
-    {
-	key:'Profile',
-	title:'Profile',
-	route:'/profile',
-    },    
 ]
 

@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 import {menuitems} from '../../api/collections.js';
 import UserAvatar from "../reusable/UserAvatar";
+import Profile from './Profile';
 import Blaze from 'meteor/gadicc:blaze-react-component';
 
 import styled from 'styled-components'
@@ -42,7 +43,7 @@ class Nav extends Component {
     super(props);
 
     this.state = {
-      inview: true,
+      showProfile: false,
       isAccountModalOpen: false
     };
 
@@ -196,20 +197,19 @@ class Nav extends Component {
       return(	
 	     <li className="nav-item" style={{"width":"10em"}}>
 	  
-	       <a href="#" role="button" id="ProfileButton" className="nav-link  text-center d-table align-middle p-0 m-0 ml-auto" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	       <a href="#" role="button" id="ProfileButton" className="nav-link  text-center d-table align-middle p-0 m-0 ml-auto"  aria-haspopup="true" aria-expanded="false" onClick={()=>$('#profile-dropdown').toggle()}>
 		 <UserAvatar user={user} shape="circle" size="small" />
 	       </a>
 
-	       <div className="dropdown-menu dropdown-menu-right" aria-labelledby="ProfileButton">
-		 <div className="px-2 pb-2">
-		   <p className="m-0">Email:</p>
-		   {email}
-		 </div>
-		 <div className="px-2 pb-2">
-		   <p className="m-0">Permissions:</p>
-		   <ul className="list-inline">{roleList}</ul>
-		 </div>
-		 <a href="" id="signIOButton" role="button" className="btn  px-2 text-center text-primary dropdown-item" onClick={AccountsTemplates.logout}>
+	       <div id="profile-dropdown" className="container dropdown-menu dropdown-menu-right" style={{width: 400, display:'none'}} aria-labelledby="ProfileButton" >
+
+		 <button type="button" className="close" aria-label="Close" onClick={()=>$('#profile-dropdown').toggle()} style={{position:"absolute", top:"10px", left:"10px"}}>
+		   <span aria-hidden="true">&times;</span>
+		 </button>
+		 
+		 <Profile />
+		 
+		 <a href="" id="signIOButton" role="button" className="btn mt-2  px-2 text-center text-primary dropdown-item" onClick={AccountsTemplates.logout}>
 		   <span className="p-0 m-0 text-primary">Sign Out </span>
 		   <LogOut size="30" className="text-primary"/>
 		 </a>
@@ -242,7 +242,7 @@ class Nav extends Component {
   update(){
     let navheight = $(".navbar").outerHeight();
     $("body").css("padding-top", navheight);
-    window.dispatchEvent(new Event('resize')); 
+    window.dispatchEvent(new Event('resize'));
   }
 
   componentDidUpdate(){
@@ -251,7 +251,6 @@ class Nav extends Component {
       $('[data-toggle="tooltip"]').tooltip();
     }
   }
-
   
 }
 

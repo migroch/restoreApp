@@ -1,9 +1,11 @@
 import React, {useState} from 'react';
 import { Meteor } from 'meteor/meteor';
+import UserAvatar from "../reusable/UserAvatar";
 import { Form, Input, Tag, Avatar, Button, Tooltip  } from 'antd/dist/antd.min.js';
 //import { UserOutlined, PlusOutlined } from '@ant-design/icons';
 import { withTracker } from 'meteor/react-meteor-data';
 import classNames from 'classnames';
+
 const CommonField = ({fieldName, value}) => (
   <div className="mt-15">
     <h6>{fieldName}: {value}</h6>
@@ -18,10 +20,10 @@ const ColorField = ({color}) => {
   )
 }
 
-const ProfileImage = ({src}) => {
+const ProfileImage = ({user}) => {
   return (
-    <div className="mt-5 mb-5" style={{marginTop: 50, marginBottom: 50}}>
-      <Avatar className="d-block m-auto mt-15 mb-" size={100}/>
+    <div className="my-2 ml-auto mr-auto" style={{marginTop: 50, marginBottom: 50}}>
+      <UserAvatar user={user} shape="circle" size="large"  />
     </div>
   )
 }
@@ -164,7 +166,6 @@ class SchoolInput extends React.Component {
 
 ProfileView = ({user})=> {
   if (!user) return null
-  console.log("user: ", user)
   const [editMode, setEditMode] = useState(false)
   const onFinish = value => {
     //save updated user profile
@@ -180,27 +181,46 @@ ProfileView = ({user})=> {
       }
     })
   };
-  const { profile:{name}, district } = user
-  const schools = user.schools.map(school=>school.name)
+
+  const { profile:{name}, district } = user;
+  const schools = user.schools.map(school=>school.name);
+  const roles = Roles.getRolesForUser(user._id);
+  if (roles.includes('All')) roles = ['All'];
   return (
-    <div className="m-auto mt-50" style={{width: 300}}>
-      <div className={classNames("container", {"d-block:": !editMode, "d-none": editMode})}>
-      <ProfileImage src=""/>
-      <CommonField fieldName="Email" value={user.email} />
-      <CommonField fieldName="Name" value={user.profile.name} />
-      <CommonField fieldName="Nick Name" value={user.profile.initials} />
-      <ColorField color={user.color}/>
-      <CommonField fieldName="County" value={user.county} />
-      <CommonField fieldName="District" value={user.district} />
-      <div className="d-flex">
-        <h6>Schools:</h6>
-          <div>
-           {user.schools.map(school=><div>{school.name}</div>)}
-          </div>
-      </div>
-      <Button onClick={()=>setEditMode(true)}>Edit</Button>
-      </div>
-      <div className={classNames("container", {"d-block:": editMode, "d-none": !editMode})}>
+    <div className="m-auto">
+    <div className={classNames("flex-column", {"d-flex": !editMode, "d-none": editMode})}>
+    
+    <ProfileImage user={user} />
+    <Button className="ml-auto mr-auto my-2"onClick={()=>setEditMode(true)}>Edit</Button>
+    
+    <div className="d-block">
+    <CommonField fieldName="Email" value={user.email} />
+    <CommonField fieldName="Name" value={user.profile.name} />
+    <CommonField fieldName="Initials" value={user.profile.initials} />
+    {/*       <ColorField color={user.color}/> */}
+    <CommonField fieldName="County" value={user.county} />
+    <CommonField fieldName="District" value={user.district} />
+
+    <div className="d-flex">
+    <h6 className='mr-1'>Schools: </h6>
+    <div>
+    {user.schools.map( (s , i)=><div key={i}>{s.name}</div>)}
+    </div>
+    </div>
+
+    <div className="d-flex">
+    <h6 className='mr-1'>Roles: </h6>
+    <div>
+    {
+      roles.map((role, index)=><div key={index} className="list-inline-item"  style={{"color":"#00a6a3"}}><Tag>{role}</Tag></div>)
+    }
+    </div>
+    </div>
+    </div>
+    </div>
+
+    <div className={classNames("flex-column", {"d-flex": editMode, "d-none": !editMode})}>
+     <ProfileImage user={user} />
       <Form 
         layout='vertical'
         name="Profile Edit"
@@ -210,21 +230,21 @@ ProfileView = ({user})=> {
         <Form.Item
           label="Name"
           name="name"
-          rules={[{ required: true, message: 'Please input name!' }]}
+          rules={[{ required: true, message: 'Please enter your name!' }]}
         >
           <Input style={{width: 300}}/>
         </Form.Item>
         <Form.Item
           label="District"
           name="district"
-          rules={[{ required: true, message: 'Please input district!' }]}
+          rules={[{ required: false, message: 'Please add your district!' }]}
         >
           <Input style={{width: 300}}/>
         </Form.Item>
         <Form.Item
           label="Schools"
           name="schools"
-          rules={[{ required: true, message: 'Please add school!' }]}
+          rules={[{ required: false, message: 'Please add a school!' }]}
         >
           <SchoolInput />
         </Form.Item>
