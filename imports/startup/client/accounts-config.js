@@ -84,7 +84,7 @@ AccountsTemplates.configure({
             signUp: "Register!"
 	},
 	socialIcons: {
-            google: "Restore_logoOnly.png"
+            google: "google-icon"
         },
 	//socialSignUp: "Register",
 	title: {

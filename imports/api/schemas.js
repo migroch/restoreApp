@@ -6,7 +6,7 @@ import SimpleSchema from 'simpl-schema';
 const Schemas = {};
 
 // Scenarios
-Schemas.scenarios = ['High Restrictions', 'Medium Restrictions', 'Low Restrictions'];
+Schemas.scenarios = ['High Restrictions', 'Mid Restrictions', 'Low Restrictions'];
 
 // Dimensions
 Schemas.dimensions = ['Communication', 'Data / Technology', 'Professional Development', 'HR / Bargaining Units', 'Policy / Governance / Liability', 'Finances / Resources'  ];

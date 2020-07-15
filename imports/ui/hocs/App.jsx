@@ -7,7 +7,6 @@ import GuidanceView from './GuidanceItems'
 import Map from './Map';
 import Plan from './Plan';
 import MyPlan from './planView/myplan';
-import Profile from './Profile';
 import UserContext from '../context/user'
 
 App = (auth) => {
@@ -23,7 +22,6 @@ App = (auth) => {
           <Route exact path="/plan-viewer" component={Plan}/>
           <Route exact path="/guidance" component={()=><GuidanceView isMultiSelectable/>}/>
           {auth.isAuthenticated && <Route exact path="/my-plans" component={MyPlan}/>}
-          {auth.isAuthenticated && <Route exact path="/profile" component={Profile}/>}
           <Redirect to="/map" from="/"/>
         </Switch>
       </div>

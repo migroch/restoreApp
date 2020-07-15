@@ -83,7 +83,7 @@ Meteor.startup(() => {
 	},
 	{
 	    title: 'Sample Plan2',
-	    scenario:  'Medium Restrictions',
+	    scenario:  'Mid Restrictions',
 	    planItemIds:[pitems[0]._id,   pitems[2]._id],
 	    createdtime:  Date.now(),
 	    lastedittime:  Date.now(),

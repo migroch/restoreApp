@@ -50,7 +50,7 @@ class GuidanceItems extends Component {
         item: planItem.item,
         dimensions: planItem.dimensions,
         unitIds: planItem.unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] )[0], 
-        ownerId: Meteor.userId(), // TODO: used the random user, but should be changed, extracted after authentication implementation.
+        ownerId: Meteor.userId(),
         assignedToIds: []
       }
     ))
@@ -280,8 +280,8 @@ class GuidanceItems extends Component {
   }
 }
 
-GuidanceItems = withTracker(({searchquery, searchbar, is}) => {
-  //const user = Meteor.user();
+GuidanceItems = withTracker(({searchquery, searchbar}) => {
+  const user = Meteor.user();
   const handles = [
     Meteor.subscribe("guidanceitems"),
     Meteor.subscribe('categories'),

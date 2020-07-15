@@ -52,19 +52,22 @@ class Map extends Component {
     }else{
       return(
 	<div id="Map">
-	  
-	  <div  id="usage"  className="container-fluid bg-white rounded ml-auto mr-auto" style={{width:"98%"}}>
-	    <Divider orientation="center" className="mt-0 pt-3">How to Use</Divider>
-	    <p className="m-0">Select an Organizational Unit or a Logistic Map location to filter plans accordingly. You can click on the parent nodes of the Logistic Map to expand or collapse, and that way navigate through the categories and subcategories of the map</p>
-	  </div>
 
+	  { !Meteor.user() &&
+	    <div  id="usage"  className="container-fluid bg-white rounded ml-auto mr-auto" style={{width:"98%"}}>
+	      <Divider orientation="center" className="mt-0 pt-3">How to Use</Divider>
+	      <p className="m-0 pb-3 px-5 text-center">Select an Organizational Unit or a Logistic Tree category to see a list of plans filtered according to your selection</p>
+	    </div>
+	  }
+	  
 	  <div id="dimensions" className="container-fluid bg-white ml-auto mr-auto my-2" style={{width:"98%"}}>
 	    <Divider orientation="left" className="mt-0 pt-3">Organizational Units</Divider>
 	    {this.Dimensions()}
 	  </div>
 
 	  <div id="map" className="container-fluid bg-white ml-auto mr-auto my-2" style={{width:"98%"}}>
-	    <Divider  orientation="left" className="mt-0 pt-3">Logistic Map</Divider>
+	    <Divider  orientation="left" className="mt-0 pt-3">Logistic Tree</Divider>
+	    <p  className="m-0 pb-3 px-5"> You can click on the categories to expand or collapse its children, and that way navigate through the Tree. When you click on a node without children (a leave), you will be sent to a plan list filtered based on the leave selected</p>
 	    <div id="mapcanvas" className="container-fluid p-0"></div>
 	  </div>
 	</div>
@@ -81,7 +84,7 @@ class Map extends Component {
 	      return(
 		<div key={index} className="col-md-auto d.flex mr-1 ml-1 p-0">
 		  <div className="m-auto text-center"  onClick={this.handleDimensionClick}>
-		    <Tag style={{"cursor":"pointer"}} color={dimColors[index]}><p className="m-1">{dim}</p></Tag>
+		    <Tag className="dimension-tag" style={{"cursor":"pointer"}} color={dimColors[index]}><p className="m-1">{dim}</p></Tag>
 		  </div>
 		</div>
 	      )
@@ -96,7 +99,9 @@ class Map extends Component {
 
     // Config values
     let  width = this.state.width - 80;
-    let  height = this.state.height - $('#dimensions').outerHeight(true)  - $('#usage').outerHeight(true) - 50;
+    let  height = this.state.height - $('#dimensions').outerHeight(true)  - 50;
+
+    height -= $('#usage').outerHeight(true) ?  $('#usage').outerHeight(true) : 0 ;
 
     // Creage top svg container
     const svg = d3.select("#mapcanvas").append("svg")
@@ -150,7 +155,9 @@ class Map extends Component {
     // Config values
 
     let  width = this.state.width - 80;
-    let  height = this.state.height - $('#dimensions').outerHeight(true)  - $('#usage').outerHeight(true) - 50;
+    let  height = this.state.height - $('#dimensions').outerHeight(true)  - 50;
+
+    height -= $('#usage').outerHeight(true) ?  $('#usage').outerHeight(true) : 0 ;
     
     let   treeWidth = 0.3*width,
 	 treeHeight = 0.95*height,
@@ -390,6 +397,7 @@ class Map extends Component {
   
   handleDimensionClick(e){
     let target = e.target;
+    console.log(target);
     let dimension = target.innerHTML;
     this.props.history.push({
       pathname: '/plan-viewer',
