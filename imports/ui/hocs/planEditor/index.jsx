@@ -13,6 +13,9 @@ import './index.scss'
 const PlanEdit = ({ isLoading, data, id, changemode, oncreatedPlan }) => {
   if (isLoading) return null
   if (!id) return null
+  let wheight = window.innerHeight - $('.navbar').outerHeight();
+  let [height, setHeight] = useState('auto');
+  if  (wheight && height != wheight)  setHeight(wheight) ;
   const [planId, setPlanId] = useState(id)
   const [isEditable, setIsEditable] = useState(true)
   const history = useHistory();
@@ -36,16 +39,17 @@ const PlanEdit = ({ isLoading, data, id, changemode, oncreatedPlan }) => {
   
   handleOkWithGuidanceItems = async() => {
     setGuidance({...guidance, visible: false})
-    const newPlanItems = guidance.selectedItems.map(planItem => (
-      {
+      const newPlanItems = guidance.selectedItems.map(planItem => (
+	{
         title: "New Plan Item",
         item: planItem.item,
-        dimensions: planItem.dimensions,
-        unitIds: planItem.unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] )[0], 
-        ownerId: Meteor.userId(), // TODO: used the random user, but should be changed, extracted after authentication implementation.
+        dimensions: planItem.dimensions.filter(d => d),
+        unitIds: planItem.unitIds.filter(u => u), 
+        ownerId: Meteor.userId(), 
         assignedToIds: []
       }
-    ))
+      ))
+      console.log(newPlanItems);
     try {
       const result = await Promise.all(
         newPlanItems.map(async (planitem) => await Meteor.callPromise('planItem.create', planitem))
@@ -60,41 +64,46 @@ const PlanEdit = ({ isLoading, data, id, changemode, oncreatedPlan }) => {
   handleCancelWithGuidanceItems = e => {
     setGuidance({visible: false, selectedItems: []})
   };  
+
   removefromselecteditems = index => {
     let temp_array = [...guidance.selectedItems]
     temp_array.splice(index, 1)
     setGuidance({...guidance, selectedItems: temp_array})
-  }  
+  }
+  
   return (
     <>
-      <div className="plan-edit container">
-      	<div className="content-wrapper">
+    <div className="plan-edit container-fluid" style={{height: height}}>
+      <div className="content-wrapper" style={{height: height}}>
           <div className="plan-edit-form">
             <PlanEditForm data={data} id={planId} onCreatedPlan={id=>oncreatedPlan(id)} changemode={changemode} planItemOrders={planItemOrders}/>
           </div>
-    {
-      <Button onClick={()=>setGuidance({...guidance, visible:true})} className="my-2 w-100" style={{color:"#2AAAE1"}}><p> <strong>Use Guidance</strong> </p></Button>
-    }          
-{         
-          planId &&<div className="plan-item-list">
-            <PlanItemList data={planItemIds} planId={planId} editable={isEditable} onChangePlanItemsOrder={onChangePlanItemsOrder}/>
-          </div>
-}
+	  {
+	    <div className="container">
+	      <Button onClick={()=>setGuidance({...guidance, visible:true})} className="my-2 w-100" style={{color:"#2AAAE1"}}><p> <strong>Use Guidance</strong> </p></Button>
+	    </div>
+	  }          
+	    {         
+              planId &&<div className="plan-item-list container" style={{height: height - 250}}>
+              <PlanItemList data={planItemIds} planId={planId} editable={isEditable} onChangePlanItemsOrder={onChangePlanItemsOrder}/>
+              </div>
+	    }
       	</div>
-    <Modal
-      title="Guidance Items"
-      visible={guidance.visible}
-      width="90%"
-      bodyStyle={{height: window.innerHeight - $("nav").outerHeight() -120}}
-      okText ="Use Selected Items"
-      onOk={this.handleOkWithGuidanceItems}
-      okButtonProps={{ disabled: isEmpty(guidance.selectedItems) }}
-      onCancel={this.handleCancelWithGuidanceItems}
-    >
-      <GuidanceView isComponent isMultiSelectable onSelect={selectedItems=>setGuidance({...guidance, selectedItems})}/>
-    </Modal>     
+
+	<Modal
+	    title="Guidance Items"
+	    visible={guidance.visible}
+	    width="90%"
+	    bodyStyle={{height: window.innerHeight - $("nav").outerHeight() -120}}
+	    okText ="Use Selected Items"
+	    onOk={this.handleOkWithGuidanceItems}
+	    okButtonProps={{ disabled: isEmpty(guidance.selectedItems) }}
+	    onCancel={this.handleCancelWithGuidanceItems}
+	>
+	  <GuidanceView isComponent isMultiSelectable onSelect={selectedItems=>setGuidance({...guidance, selectedItems})}/>
+	</Modal>     
       </div>
-    </>
+      </>
   )
 }
 

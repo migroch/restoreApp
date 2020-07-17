@@ -54,14 +54,15 @@ const PlanEditComponent = ({id, data, onCreatedPlan, changemode, planItemOrders}
   
   return (
     <>
-    <div className="container text-center my-2">
+    <div className="container text-center my-3">
       <h3 className="d-inline">{title} </h3>
       <p className="d-inline"> edit </p>
     </div>
-    <div className="container d-flex">
+    
+    <div className="container my-2">
       <Form className=""
 	  //{...layout}
-	  layout='vertical'
+	  layout='inline'
 	  form={form}
 	  name="Plan Edit"
 	  initialValues={{ title, scenario }}
@@ -93,13 +94,10 @@ const PlanEditComponent = ({id, data, onCreatedPlan, changemode, planItemOrders}
             }
           </Select>
 	</Form.Item>
-
-	<Form.Item >
-          <Button type="primary" htmlType="submit" style={{backgroundColor: '#2176BB' }} >
-            Done Editing
-          </Button>
-	</Form.Item>
       </Form>
+      <Button type="primary" htmlType="submit"  className="my-2" onClick={form.submit}>
+        Done Editing
+      </Button>
     </div>
     </>
   );

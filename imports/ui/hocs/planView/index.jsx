@@ -67,7 +67,7 @@ let PlanWrapper = ({data, editPlanWithID, isAuthenticated}) => {
   let plan_users = uniq(data.userIds());
 
   const deletePlanWithId = (e)=>{
-    e.stopPropagation();
+    //e.stopPropagation();
     Meteor.call('plans.remove', id, (err, res) => {
       if (err) {
 	alert(err);
@@ -78,7 +78,7 @@ let PlanWrapper = ({data, editPlanWithID, isAuthenticated}) => {
   }
 
   const copyPlanWithId = (e)=>{
-    e.stopPropagation();
+    //e.stopPropagation();
     Meteor.call('plans.copy', id, (err, res) => {
       if (err) {
 	alert(err);

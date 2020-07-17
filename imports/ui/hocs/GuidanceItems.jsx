@@ -48,12 +48,13 @@ class GuidanceItems extends Component {
       {
         title: "New Plan Item",
         item: planItem.item,
-        dimensions: planItem.dimensions,
-        unitIds: planItem.unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] )[0], 
+        dimensions: planItem.dimensions.filter(d => d),
+        unitIds: planItem.unitIds.filter(u => u), 
         ownerId: Meteor.userId(),
         assignedToIds: []
       }
-    ))
+    ));
+    console.log(planItems);
     try {
       const result = await Promise.all(
         newPlanItems.map(async (planitem) => await Meteor.callPromise('planItem.create', planitem))

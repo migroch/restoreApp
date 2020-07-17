@@ -62,21 +62,14 @@ const PlanItemList =({data, editable, planId, onChangePlanItemsOrder})=> {
 
   return (
     <>
-    { editable && 
-      <div className="container-fluid text-center mb-2" >
-	<Tooltip  placement="bottom" title="Add Plan Item">
-	  <span className="add-btn" style={{cursor:'pointer'}} onClick={()=>setAddPlanItemMode(true)}><PlusCircle size="40"  /></span>
-	</Tooltip >
-      </div>
-    }
-   
+       
     { addPlanItemMode && editable &&
       <div className="plan-item-wrapper">
         <PlanItemEdit id={undefined} planId={planId} finishAddItem={()=>setAddPlanItemMode(false)}/>
       </div>
     }
     {!editable ?
-      <List
+     <List
         dataSource={planItemOrders}
         itemLayout='vertical'
         locale={{emptyText: 'No Plan Items'}}
@@ -87,10 +80,10 @@ const PlanItemList =({data, editable, planId, onChangePlanItemsOrder})=> {
     }
 
     { editable && 
-      <div className="container-fluid text-center mb-2" >
-	<Tooltip  placement="bottom" title="Add Plan Item">
-	  <span className="add-btn" style={{cursor:'pointer'}} onClick={()=>setAddPlanItemMode(true)}><PlusCircle size="40"  /></span>
-	</Tooltip >
+      <div className="add-btn-div container-fluid text-center mb-2" >
+	{/* 	<Tooltip  placement="bottom" title="Add Plan Item"> */}
+	<span className="add-btn badge badge-pill badge-dark"  onClick={()=>setAddPlanItemMode(true)}><PlusCircle size="40"  />Add a plan item</span>
+	  {/* 	</Tooltip > */}
       </div>
     }
     

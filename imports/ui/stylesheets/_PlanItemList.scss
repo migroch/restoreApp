@@ -1,3 +1,27 @@
+.plan-item-list{
+  position:relative;
+  overflow:auto;
+  ul{
+    padding:0 !important;
+  }
+  .add-btn-div {
+    position:sticky;
+    bottom:0px;
+    //right:20px;
+    .add-btn{
+      //color: white;
+      background-color: rgba(0,0,0,0.7);
+      //display: flex;
+      //justify: right;
+      //padding: 30px 0;
+      cursor: pointer;
+    }
+  }
+  .ant-list-item{
+    width:95% !important;
+  }
+}
+
 .example {
   border-left: 1px solid #999999;
   border-bottom: 1px solid #eeeeee;

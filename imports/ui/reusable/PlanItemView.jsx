@@ -16,7 +16,7 @@ const catColors = {'Health & Safety / Operations':'#FF9263', 'Instructional Prog
 
 PlanItemView = ({data, isLoading }) => {
   if (isLoading) return null
-  const { item, dimension, assignedToIds, dueDate, unitIds, ownerId, title } = data
+  const { item, dimensions, assignedToIds, dueDate, unitIds, ownerId, title } = data
   const owner = data.ownerId;
   const assignedToNames = data.assignedToNames();
   const schoolNames = data.schoolNames();
@@ -64,13 +64,13 @@ PlanItemView = ({data, isLoading }) => {
 
 	<div className="col-md-auto">
 	  {
-			    dimensions.map( (item, index) => {
-						let color = dimColors[Dimensions.findIndex(D => D==item)];
-						return(
-				<Tag key={index} color={color}>{item}</Tag>
-						)
-					})
-		}
+	    dimensions.map( (item, index) => {
+	      let color = dimColors[Dimensions.findIndex(D => D==item)];
+	      return(
+		<Tag key={index} color={color}>{item}</Tag>
+	      )
+	    })
+	  }
 	</div>
 
 	<div className="col-md-auto d-inline-flex">

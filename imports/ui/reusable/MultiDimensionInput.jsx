@@ -9,12 +9,12 @@ class MultiDimensionInput extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      value: this.props.value,
+      value: this.props.value ? this.props.value : [],
       inputVisible: false,
       inputValue: '',
       editInputIndex: -1,
       editInputValue: '',
-      dimensions: Dimensions.filter(item=>this.props.value.indexOf(item) < 0)
+      dimensions: this.props.value ? Dimensions.filter(item=>this.props.value.indexOf(item) < 0) : Dimensions
     };
   }
 
@@ -88,6 +88,7 @@ class MultiDimensionInput extends React.Component {
 
   render() {
     const { value, inputVisible, inputValue, editInputIndex, editInputValue, dimensions } = this.state;
+
     return (
       <>
         {value.map((tag, index) => {

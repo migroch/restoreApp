@@ -5,9 +5,10 @@ import { Select, DatePicker, Cascader, Form, Button, Modal, Row, Col, Input } fr
 import { withTracker } from 'meteor/react-meteor-data';
 import  Schemas from '../../api/schemas';
 import { planitems, subcategories, units } from '../../api/collections';
+import ReactQuill from 'react-quill/dist/react-quill.min.js';
 import 'react-quill/dist/quill.snow.css';
-import GuidanceView from '../hocs/GuidanceItems'
 import Editor from './CustomQuill'
+import GuidanceView from '../hocs/GuidanceItems'
 import { uniq } from 'lodash'
 import MultiDimensionInput from './MultiDimensionInput'
 import MultiMaplocationInput from './MultiMaplocationInput'
@@ -114,10 +115,12 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
   const [form] = Form.useForm();
   
   if (!!guidance.selectedItem){
+    let unitIds_fromGuidance = guidance.selectedItem.unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] );
+    unitIds_fromGuidance = unitIds_fromGuidance.filter(u => u);
     form.setFieldsValue({
       title: "New Plan Item",
-      dimensions:guidance.selectedItem.dimensions,
-      unitIds:  guidance.selectedItem.unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] ), 
+      dimensions: guidance.selectedItem.dimensions.filter(d => d),
+      unitIds: unitIds_fromGuidance , 
     });
     // if (itemHtml !== guidance.selectedItem.item.text) setItemHtml(guidance.selectedItem.item.text);
     // unitIds = guidance.selectedItem.unitIds
@@ -128,7 +131,7 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
       title,
       unitIds: unitIds.map(id =>  units.findOne(id) ? [units.findOne(id).categoryId(), units.findOne(id).subcategoryId, id] :  subcategories.findOne(id) && [subcategories.findOne(id).categoryId, id] ), 
       assignedToIds, 
-      dimensions,
+      dimensions: dimensions,
       item,
     }
     if (dueDate) values.dueDate = moment(dueDate, dateFormat) ;
@@ -242,15 +245,27 @@ PlanItem = ({id, data, disabled, isLoading, disableEditMode, finishAddItem, plan
 
 	</Row>
       </Form>
-	    {/* <Form.Item
-        name={["item", "text"]}
+
+      {/* <Form.Item
+      name={["item", "text"]}
       > */}
-      <Editor onChange={setItemHtml} value={itemHtml} submit={()=>form.submit()} id={id ?  id : Random.id()} />
+      
+      {/*       <Editor onChange={setItemHtml} defaultValue={itemHtml} submit={()=>form.submit()} id={id ?  id : Random.id()} /> */}
       {/* </Form.Item> */}
-      <Button type="primary" onClick={form.submit}  style={{backgroundColor: '#2176BB' }}>
+
+      <div className="text-editor">
+        <ReactQuill
+            onChange={(v,e)=>setItemHtml(v)}
+	    value={itemHtml}  
+            theme={"snow"} // pass false to use minimal theme
+        >
+	</ReactQuill>
+      </div>
+      
+      <Button type="primary" onClick={form.submit} className="mt-2">
         Save Plan Item
       </Button>
-      <Button type="cancel" style={{marginLeft: 50}} onClick={ id ? disableEditMode : finishAddItem }>
+      <Button type="cancel" style={{marginLeft: 50}} className="mt-2" onClick={ id ? disableEditMode : finishAddItem }>
         Cancel
       </Button>        
             

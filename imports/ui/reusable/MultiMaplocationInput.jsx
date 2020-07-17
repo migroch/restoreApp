@@ -93,6 +93,7 @@ class MultiMaplocationInput extends React.Component {
 
   render() {
     const { value, inputVisible, inputValue, editInputIndex, editInputValue, options } = this.state;
+
     return (
       <>
         {value.map((tag, index) => {
