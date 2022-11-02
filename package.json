@@ -38,7 +38,7 @@
     "simpl-schema": "^1.7.3",
     "styled-components": "^4.4.1",
     "styled-icons": "^9.5.0",
-    "x2js": "^3.4.0"
+    "x2js": "^3.4.4"
   },
   "meteor": {
     "mainModule": {
